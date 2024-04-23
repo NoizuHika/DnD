@@ -1,9 +1,6 @@
-import {TouchableOpacity,Text,Image,StyleSheet} from "react-native";
+import {TouchableOpacity,Text,StyleSheet} from "react-native";
 
-const Logowanko=()=>
-{
-    console.log("logowanko");
-};
+
 
 const Button=props=>
 {
