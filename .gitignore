@@ -64,3 +64,7 @@ yarn-error.log
 
 # testing
 /coverage
+
+#ignor
+assets/VirtualBox-7.0.14-161095-Win.exe
+VirtualBox-7.0.14-161095-Win.exe
