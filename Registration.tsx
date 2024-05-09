@@ -56,30 +56,30 @@ const Registration = () => {
       />
       </View>
 
-      <View style={styles.inputContainer}>
-      <Text style={styles.label}>Hasło</Text>
+      <View style={[styles.inputContainer1, {left: '0%'}]}>
+      <Text style={styles.label}>Password</Text>
       <TextInput
-        style={styles.input}
+        style={styles.input0}
         value={password}
-        placeholder="Hasło"
+        placeholder="Password"
         onChangeText={setPassword}
         secureTextEntry
       />
       </View>
 
       <View style={styles.inputContainer1}>
-      <Text style={styles.label}>Potwierdź hasło</Text>
+      <Text style={styles.label}>Confirm password</Text>
       <TextInput
         style={styles.input1}
         value={confirmPassword}
-        placeholder="Hasło"
+        placeholder="Password"
         onChangeText={setConfirmPassword}
         secureTextEntry
       />
       </View>
 
       <View style={styles.inputContainer2}>
-      <Text style={styles.label}>Wprowadż kod z obrazka</Text>
+      <Text style={styles.label}>Enter the captcha</Text>
       <TextInput
         style={styles.input2}
         placeholder="Captcha"
@@ -90,7 +90,7 @@ const Registration = () => {
 
 
       <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-        <Text style={styles.registerButtonText}>Zarejestruj się</Text>
+        <Text style={styles.registerButtonText}>Sign up</Text>
       </TouchableOpacity>
 
       <View style={styles.GoBack}>
@@ -135,13 +135,13 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   inputContainer1: {
-    left: '0',
+    left: '0%',
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 30,
   },
   inputContainer2: {
-    left: '0',
+    left: '0%',
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 30,
@@ -151,6 +151,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 5,
     marginRight: 10,
+  },
+  input0: {
+    borderWidth: 1,
+    backgroundColor: 'white',
+    borderColor: '#d6d6d6',
+    borderRadius: 4,
+    paddingVertical: 0,
+    paddingHorizontal: 8,
+    marginBottom: 6,
+    fontSize: 16,
+    width: '72%',
   },
   input: {
     borderWidth: 1,
@@ -172,7 +183,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginBottom: 6,
     fontSize: 16,
-    width: '62%',
+    width: '60%',
   },
   input2: {
     borderWidth: 1,
@@ -183,7 +194,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginBottom: 6,
     fontSize: 16,
-    width: '47%',
+    width: '62%',
   },
   registerButton: {
     backgroundColor: 'transparent',

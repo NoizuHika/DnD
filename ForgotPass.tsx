@@ -23,7 +23,7 @@ const ForgotPass = () => {
 
     <View style={styles.separator}>
       <View style={styles.resetPassContainer}>
-        <Text style={styles.resetPass}>Reset hasła</Text>
+        <Text style={styles.resetPass}>Reset password</Text>
         <View style={styles.separatorLine} />
       </View>
     </View>
@@ -34,17 +34,17 @@ const ForgotPass = () => {
        </TouchableOpacity>
     </View>
 
-    <Text style={styles.email}>Podaj nazwę użytkownika lub adres email</Text>
+    <Text style={styles.email}>Enter username or email address</Text>
 
     <TextInput
         style={styles.emailInput}
-        placeholder="Email"
+        placeholder="Username or email"
         value={email}
         onChangeText={setEmail}
     />
 
     <TouchableOpacity style={styles.sendEmail} onPress={handleSendPress}>
-        <Text style={styles.sendEmailText}>Wyślij</Text>
+        <Text style={styles.sendEmailText}>Send</Text>
     </TouchableOpacity>
 
     </ImageBackground>

@@ -26,6 +26,10 @@ const LoggedInScreen = () => {
     navigation.navigate('KontoApple');
   };
 
+  const handleKontynuacja = () => {
+      navigation.navigate('LoggedScreen');
+    };
+
   return (
   <ImageBackground
     style={styles.container}
@@ -35,13 +39,13 @@ const LoggedInScreen = () => {
     <Text style={styles.appName}>DMBook</Text>
 
     {/* Залогинься */}
-    <Text style={styles.title}>Zaloguj się</Text>
+    <Text style={styles.title}>Log in</Text>
 
     {/* Новый пользователь */}
     <View style={styles.newUser}>
-       <Text style={styles.newUserText}>Nowy użytkownik?</Text>
-       <TouchableOpacity style={styles.buttonUser} onPress={() => {handleRegistrationPress()}}>
-           <Text style={styles.buttonUserText}>Utwórz konto</Text>
+       <Text style={styles.newUserText}>New user?</Text>
+       <TouchableOpacity style={[styles.buttonUser, {width: '200%' }]} onPress={() => {handleRegistrationPress()}}>
+           <Text style={styles.buttonUserText}>Create an account</Text>
        </TouchableOpacity>
     </View>
 
@@ -50,23 +54,23 @@ const LoggedInScreen = () => {
     <TextInput style={styles.inputLogin} placeholder="Login" />
 
     {/* Поле для пароля */}
-    <Text style={styles.labelPassword}>Haslo</Text>
-    <TextInput style={styles.inputPassword} placeholder="Haslo" secureTextEntry={true} />
+    <Text style={styles.labelPassword}>Password</Text>
+    <TextInput style={styles.inputPassword} placeholder="Password" secureTextEntry={true} />
 
     {/* Забыл пароль */}
     <TouchableOpacity style={styles.forgotPasswordButton} onPress={() => {handleForgotPassPress()}}>
-       <Text style={styles.forgotPasswordButtonText}>Zapomniałeś hasło?</Text>
+       <Text style={styles.forgotPasswordButtonText}>Forgot your password?</Text>
     </TouchableOpacity>
 
     {/* Продолжить */}
-    <TouchableOpacity style={styles.continueButton}>
-      <Text style={styles.continueButtonText}>Kontynuuj</Text>
+    <TouchableOpacity style={styles.continueButton} onPress={() => {handleKontynuacja()}}>
+      <Text style={styles.continueButtonText}>Continue</Text>
     </TouchableOpacity>
 
     {/* Разделитель */}
     <View style={styles.separator}>
     <View style={styles.separatorLine} />
-       <Text style={styles.separatorText}>lub</Text>
+       <Text style={styles.separatorText}>or</Text>
     <View style={styles.separatorLine} />
     </View>
 
@@ -74,15 +78,15 @@ const LoggedInScreen = () => {
     <View style={styles.media}>
        <TouchableOpacity style={styles.socialGoogle} onPress={() => {handleKontoGoogle()}}>
           <Image source={require('./assets/google.webp')} style={styles.googleicon} />
-          <Text style={styles.socialButtonText}>Użyj konto Google</Text>
+          <Text style={styles.socialButtonText}>Use Google account</Text>
        </TouchableOpacity>
        <TouchableOpacity style={styles.socialFacebook} onPress={() => {handleKontoFacebook()}}>
           <Image source={require('./assets/facebook.jpg')} style={styles.facebookicon} />
-          <Text style={styles.socialButtonText}>Użyj konto Facebook</Text>
+          <Text style={styles.socialButtonText}>Use Facebook account</Text>
        </TouchableOpacity>
        <TouchableOpacity style={styles.socialApple} onPress={() => {handleKontoApple()}}>
           <Image source={require('./assets/apple.webp')} style={styles.appleicon} />
-          <Text style={styles.socialButtonText}>Użyj konto Apple</Text>
+          <Text style={styles.socialButtonText}>Use Apple account</Text>
        </TouchableOpacity>
     </View>
 
@@ -145,8 +149,7 @@ const styles = StyleSheet.create({
   buttonUser: {
     position: 'absolute',
     backgroundColor: 'transparent',
-    borderRadius: 10,
-    left: '103%'
+    left: '95%'
   },
   buttonUserText: {
     color: '#007bff',

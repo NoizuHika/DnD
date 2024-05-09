@@ -13,7 +13,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './HomeScreen';
-import LoggedInScreen from './LoggedInScreen';
+import LogInScreen from './LogInScreen';
 import Registration from './Registration';
 import ForgotPass from './ForgotPass';
 import EmailSend from './EmailSend';
@@ -21,6 +21,9 @@ import RegistrationOkEmail from './RegistrationOkEmail';
 import KontoGoogle from './KontoGoogle';
 import KontoFacebook from './KontoFacebook';
 import KontoApple from './KontoApple';
+import LoggedScreen from './LoggedScreen';
+import RzutKostka from './RzutKostka';
+import Characters from './Characters';
 
 const Stack = createStackNavigator();
 
@@ -29,7 +32,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-        <Stack.Screen name="LoggedIn" component={LoggedInScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="LogIn" component={LogInScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Registration" component={Registration} options={{ headerShown: false }} />
         <Stack.Screen name="ForgotPass" component={ForgotPass} options={{ headerShown: false }} />
         <Stack.Screen name="EmailSend" component={EmailSend} options={{ headerShown: false }} />
@@ -37,6 +40,9 @@ const App = () => {
         <Stack.Screen name="KontoGoogle" component={KontoGoogle} options={{ headerShown: false }} />
         <Stack.Screen name="KontoFacebook" component={KontoFacebook} options={{ headerShown: false }} />
         <Stack.Screen name="KontoApple" component={KontoApple} options={{ headerShown: false }} />
+        <Stack.Screen name="LoggedScreen" component={LoggedScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="RzutKostka" component={RzutKostka} options={{ headerShown: false }} />
+        <Stack.Screen name="Characters" component={Characters} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

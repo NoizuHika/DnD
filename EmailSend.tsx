@@ -10,7 +10,7 @@ const EmailSend = () => {
   };
 
   const handleOkPress = () => {
-    navigation.navigate('LoggedIn');
+    navigation.navigate('LogIn');
   };
 
   return (
@@ -21,7 +21,7 @@ const EmailSend = () => {
 
     <Text style={styles.appName}>DMBook</Text>
 
-    <Text style={styles.message}>Nowe hasło zostało wysłane na twój adres email.</Text>
+    <Text style={styles.message}>Password reset instructions have been sent to your email address.</Text>
 
     <TouchableOpacity style={styles.okButton} onPress={handleOkPress}>
        <Text style={styles.okButtonText}>Ok</Text>

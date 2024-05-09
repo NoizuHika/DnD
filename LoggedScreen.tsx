@@ -6,29 +6,40 @@ const HomeScreen = ({ navigation }) => {
         navigation.navigate('LogIn');
   };
   const handleRegistrationPress = () => {
-        navigation.navigate('Registration');
+        navigation.navigate('RzutKostka');
   };
+  const handleCharactersPress = () => {
+        navigation.navigate('Characters');
+  };
+
   return (
   <ImageBackground
          source={require('./assets/dungeon.jpeg')}
          style={styles.container}
        >
        <Text style={styles.appName}>DMBook</Text>
-       <View style={styles.buttonContainer}>
+
+
+       <View style={[styles.buttonContainer, {bottom: '50%' }]}>
+          <TouchableOpacity style={styles.button} onPress={() => {handleCharactersPress()}}>
+                <Text style={styles.buttonText}>Characters</Text>
+          </TouchableOpacity>
+       </View>
+       <View style={[styles.buttonContainer, {bottom: '30%' }]}>
           <TouchableOpacity style={styles.button} onPress={() => {handleLoginPress()}}>
-                <Text style={styles.buttonText}>Login</Text>
+                <Text style={styles.buttonText}>Log out</Text>
           </TouchableOpacity>
        </View>
-       <View style={[styles.buttonContainer, { bottom: 180 }]}>
+       <View style={[styles.buttonContainer, { bottom: '40%' }]}>
           <TouchableOpacity style={styles.button} onPress={() => {handleRegistrationPress()}}>
-                <Text style={styles.buttonText}>Registration</Text>
+                <Text style={styles.buttonText}>Roll dice</Text>
           </TouchableOpacity>
        </View>
+
+
       </ImageBackground>
 );
 };
-
-//  ; console.log('Кнопка "Регистрация" нажата')
 
 const styles = StyleSheet.create({
   container: {
