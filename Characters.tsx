@@ -23,7 +23,7 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.characterRow}>
               <TouchableOpacity onPress={() => handleCharacterPress('Character1')}>
                 <ImageBackground
-                  source={require('./assets/assasin.png')}
+                  source={require('./assets/assasin.jpeg')}
                   style={styles.characterImage}
                 >
                   <Text style={[styles.characterStatus, {color:'rgba(0,255,0,1)' }]}>Available</Text>
@@ -32,7 +32,7 @@ const HomeScreen = ({ navigation }) => {
 
               <TouchableOpacity onPress={() => handleCharacterPress('Character2')}>
                 <ImageBackground
-                  source={require('./assets/swordsman.png')}
+                  source={require('./assets/swordsman.jpeg')}
                   style={styles.characterImage}
                 >
                   <Text style={[styles.characterStatus, {color:'red' }]}>In session</Text>
@@ -52,7 +52,7 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.characterRow}>
               <TouchableOpacity onPress={() => handleCharacterPress('Character4')}>
                 <ImageBackground
-                  source={require('./assets/archer.png')}
+                  source={require('./assets/archer.jpeg')}
                   style={styles.characterImage}
                 >
                   <Text style={[styles.characterStatus, {color:'rgba(0,255,0,1)' }]}>Available</Text>
@@ -61,7 +61,7 @@ const HomeScreen = ({ navigation }) => {
 
               <TouchableOpacity onPress={() => handleCharacterPress('Character5')}>
                 <ImageBackground
-                  source={require('./assets/wizard.png')}
+                  source={require('./assets/wizard.jpeg')}
                   style={styles.characterImage}
                 >
                   <Text style={[styles.characterStatus, {color:'red' }]}>In session</Text>
