@@ -1,7 +1,7 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity } from 'react-native';
 
-const HomeScreen = ({ navigation }) => {
+const Characters = ({ navigation }) => {
   const handleGoBack = () => {
      navigation.navigate('LoggedScreen');
   };
@@ -9,6 +9,7 @@ const HomeScreen = ({ navigation }) => {
   const handleCharacterPress = (characterName) => {
      //proba na przyszlosc czy dziala
      console.log(`Character ${characterName} pressed`);
+     navigation.navigate(characterName);
   };
 
   return (
@@ -68,7 +69,7 @@ const HomeScreen = ({ navigation }) => {
                 </ImageBackground>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => handleCharacterPress('NewCharacter')}>
+              <TouchableOpacity onPress={() => handleCharacterPress('CreateCharacter')}>
                 <ImageBackground
                   source={require('./assets/add_new.png')}
                   style={styles.characterImage}
@@ -134,4 +135,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default Characters;

@@ -24,6 +24,9 @@ import KontoApple from './KontoApple';
 import LoggedScreen from './LoggedScreen';
 import RzutKostka from './RzutKostka';
 import Characters from './Characters';
+import CreateCharacter from './CreateCharacter'
+import Character1 from './Character1'
+import Character2 from './Character2'
 
 const Stack = createStackNavigator();
 
@@ -43,6 +46,9 @@ const App = () => {
         <Stack.Screen name="LoggedScreen" component={LoggedScreen} options={{ headerShown: false }} />
         <Stack.Screen name="RzutKostka" component={RzutKostka} options={{ headerShown: false }} />
         <Stack.Screen name="Characters" component={Characters} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateCharacter" component={CreateCharacter} options={{ headerShown: false }} />
+        <Stack.Screen name="Character1" component={Character1} options={{ headerShown: false }} />
+        <Stack.Screen name="Character2" component={Character2} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

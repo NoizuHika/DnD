@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity, Animated, Easing } from 'react-native';
 
-const HomeScreen = ({ navigation }) => {
+const RzutKostka = ({ navigation }) => {
   const handleGoBack = () => {
       navigation.navigate('LoggedScreen');
     };
@@ -105,4 +105,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default RzutKostka;

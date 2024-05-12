@@ -2,7 +2,7 @@ import React from 'react';
 import { ImageBackground, TouchableOpacity, Image, Text, View, Button, StyleSheet, TextInput } from 'react-native';
 import { useNavigation, HeaderBackButton } from '@react-navigation/native';
 
-const LoggedInScreen = () => {
+const LogInScreen = () => {
   const navigation = useNavigation();
   const handleRegistrationPress = () => {
     navigation.navigate('Registration');
@@ -291,4 +291,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoggedInScreen;
+export default LogInScreen;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity } from 'react-native';
 
-const HomeScreen = ({ navigation }) => {
+const LoggedScreen = ({ navigation }) => {
   const handleLoginPress = () => {
         navigation.navigate('LogIn');
   };
@@ -70,4 +70,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default HomeScreen;
+export default LoggedScreen;
