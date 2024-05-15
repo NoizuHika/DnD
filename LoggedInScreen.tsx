@@ -112,8 +112,8 @@ const styles = StyleSheet.create({
   },
   GoBack: {
     position: 'absolute',
-    top: '5%',
-    left: '5%',
+    top: 42,
+    left: 20,
     width: '20%',
     borderColor: '#7F7F7F',
     alignItems: 'center',

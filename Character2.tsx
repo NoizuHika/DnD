@@ -45,15 +45,15 @@ const styles = StyleSheet.create({
 
 
   GoBack: {
-        position: 'absolute',
-        top: '5%',
-        left: '5%',
-        width: '20%',
-        borderColor: '#7F7F7F',
-        alignItems: 'center',
-        borderRadius: 10,
-        borderWidth: 1.5,
-      },
+    position: 'absolute',
+    top: 42,
+    left: 20,
+    width: '20%',
+    borderColor: '#7F7F7F',
+    alignItems: 'center',
+    borderRadius: 10,
+    borderWidth: 1.5,
+  },
       GoBackText: {
         color: '#d6d6d6',
       },

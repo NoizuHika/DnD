@@ -61,9 +61,9 @@ const handleGoBack = () => {
           {renderDescription(selectedClassInfo.description)}
         </View>
 
-        <View style={styles.goBack}>
+        <View style={styles.GoBack}>
           <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-            <Text style={styles.goBackText}>Go back</Text>
+            <Text style={styles.GoBackText}>Go back</Text>
           </TouchableOpacity>
         </View>
 
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
-  goBack: {
+  GoBack: {
     position: 'absolute',
     top: 42,
     left: 20,
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1.5,
   },
-  goBackText: {
+  GoBackText: {
     color: '#d6d6d6',
   },
 });
