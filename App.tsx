@@ -27,6 +27,7 @@ import Characters from './Characters';
 import CreateCharacter from './CreateCharacter'
 import Character1 from './Character1'
 import Character2 from './Character2'
+import CreateCharacter2 from './CreateCharacter2'
 
 const Stack = createStackNavigator();
 
@@ -49,6 +50,7 @@ const App = () => {
         <Stack.Screen name="CreateCharacter" component={CreateCharacter} options={{ headerShown: false }} />
         <Stack.Screen name="Character1" component={Character1} options={{ headerShown: false }} />
         <Stack.Screen name="Character2" component={Character2} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateCharacter2" component={CreateCharacter2} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

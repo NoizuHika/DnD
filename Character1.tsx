@@ -13,7 +13,7 @@ const Character1 = ({ navigation }) => {
          style={styles.container}
        >
 
-      <Text style={styles.appName}>DMBook</Text>
+      <Text style={styles.appName}></Text>
 
       <Text style={styles.appName}>1</Text>
 
