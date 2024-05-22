@@ -9,7 +9,7 @@ const Character1 = ({ navigation }) => {
 
   return (
   <ImageBackground
-         source={require('./assets/dungeon.jpeg')}
+         source={require('./assets/Char1.jpg')}
          style={styles.container}
        >
 

@@ -98,7 +98,7 @@ const CreateCharacter = ({ navigation }) => {
   const classInfo = {
     'Dwarf-M-Bard': {
         image: require('./assets/Dwarf-M-Bard.jpg'),
-        description: 'Описание класса Dwarf-M-Bard',
+        description: 'Racial Traits: \n\nAbility Score Increase: Your Constitution score increases by 2. \n\nAge: Dwarves mature at the same rate as humans, but they’re considered young until they reach the age of 50. On average, they live about 350 years.\n\nSize: Dwarves stand between 4 and 5 feet tall and average about 150 pounds. Your size is Medium. \n\nSpeed: Your base walking speed is 25 feet. Your speed is not reduced by wearing heavy armor. \n\nStonecunning: Whenever you make an Intelligence (History) check related to the origin of stonework, you are considered proficient in the History skill and add double your proficiency bonus to the check, instead of your normal proficiency bonus. \n\nTool Proficiency: You gain proficiency with the artisan’s tools of your choice: smith’s tools, brewer’s supplies, or mason’s tools. \n\nDwarven Combat Training: You have proficiency with the battleaxe, handaxe, light hammer, and warhammer. \n\nDwarven Resilience: You have advantage on saving throws against poison, and you have resistance against poison damage (explained in the “Combat” section). \n\nDarkvision: Accustomed to life underground, you have superior vision in dark and dim conditions. You can see in dim light within 60 feet of you as if it were bright light, and in darkness as if it were dim light. You can’t discern color in darkness, only shades of gray. \n\nDwarven Toughness: Your hit point maximum increases by 1, and it increases by 1 every time you gain a level. \n\n\nClass Features \n\n\nHit Points: \n\nHit Dice: 1d8 per bard level \n\nHit Points at 1st Level: 8 + your Constitution modifier \n\nHit Points at Higher Levels: 1d8 (or 5) + your Constitution modifier per bard level after 1st \n\n\nProficiencies: \n\nArmor: Light armor\n\nWeapons: Simple weapons, hand crossbows, longswords, rapiers, shortswords\n\nTools: Three musical instruments of your choice\n\nSaving Throws: Dexterity, Charisma \n\n\nSpellcasting: \n\nCantrips: You know two cantrips of your choice from the bard spell list. You learn additional bard cantrips of your choice at higher levels, as shown in the Cantrips Known column of the Bard table. \n\nSpell Slots: The Bard table shows how many spell slots you have to cast your bard spells of 1st level and higher. To cast one of these spells, you must expend a slot of the spell’s level or higher. You regain all expended spell slots when you finish a long rest. \n\nSpells Known of 1st Level and Higher: You know four 1st-level spells of your choice from the bard spell list \n\nSpellcasting Ability: Charisma is your spellcasting ability for your bard spells. Your magic comes from the heart and soul you pour into the performance of your music or oration. You use your Charisma whenever a spell refers to your spellcasting ability. In addition, you use your Charisma modifier when setting the saving throw DC for a bard spell you cast and when making an attack roll with one. \n\nSpell save DC: 8 + your proficiency bonus + your Charisma modifier \n\nSpell attack modifier: your proficiency bonus + your Charisma modifier \n\nSpell save DC: 8 + your proficiency bonus + your Charisma modifier\n\nSpell attack modifier: your proficiency bonus + your Charisma modifier\n\n\nSpells: \nBardic Inspiration \nJack of All Trades \nSong of Rest \nBard College \nExpertise \nAbility Score Improvement \nFont of Inspiration \nCountercharm \nMagical Secrets \nSuperior Inspiration',
       },
       'Dwarf-W-Bard': {
         image: require('./assets/Dwarf-W-Bard.jpg'),
@@ -202,7 +202,7 @@ const CreateCharacter = ({ navigation }) => {
       },
       'Halfling-M-Bard': {
         image: require('./assets/Halfling-M-Bard.jpg'),
-        description: 'Racial Traits: \n\nLucky: when roll 1 on d20 for attack, ability check or saving throw - reroll \n\nBrave: Advantage on saving throws against being frightened \n\nHalfling Nimbleness: You can move through the space of any creature that is of a size larger than yours \n\nNaturally Stealthy: You can attempt to hide even when you are obscured only by a creature that is at least one size larger than you \n\n\nClass Features \n\n\nHit Points: \n\nHit Dice: 1d8 per bard level \n\nHit Points at 1st Level: 8 + your Constitution modifier \n\nHit Points at Higher Levels: 1d8 (or 5) + your Constitution modifier per bard level after 1st \n\n\nProficiencies: \n\nArmor: Light armor\n\nWeapons: Simple weapons, hand crossbows, longswords, rapiers, shortswords\n\nTools: Three musical instruments of your choice\n\nSaving Throws: Dexterity, Charisma \n\n\nSpellcasting: \n\nCantrips: You know two cantrips of your choice from the bard spell list. You learn additional bard cantrips of your choice at higher levels, as shown in the Cantrips Known column of the Bard table. \n\nSpell Slots: The Bard table shows how many spell slots you have to cast your bard spells of 1st level and higher. To cast one of these spells, you must expend a slot of the spell’s level or higher. You regain all expended spell slots when you finish a long rest. \n\nSpells Known of 1st Level and Higher: You know four 1st-level spells of your choice from the bard spell list \n\nSpellcasting Ability: Charisma is your spellcasting ability for your bard spells. Your magic comes from the heart and soul you pour into the performance of your music or oration. You use your Charisma whenever a spell refers to your spellcasting ability. In addition, you use your Charisma modifier when setting the saving throw DC for a bard spell you cast and when making an attack roll with one. \n\nSpell save DC: 8 + your proficiency bonus + your Charisma modifier \n\nSpell attack modifier: your proficiency bonus + your Charisma modifier \n\nSpell save DC: 8 + your proficiency bonus + your Charisma modifier\n\nSpell attack modifier: your proficiency bonus + your Charisma modifier\n\n\nSpells: \nBardic Inspiration \nJack of All Trades \nSong of Rest \nBard College \nExpertise \nAbility Score Improvement \nFont of Inspiration \nCountercharm \nMagical Secrets \nSuperior Inspiration',
+        description: 'Racial Traits: \n\nAbility Score Increase: Your Dexterity score increases by 2. \n\nAge: A halfling reaches adulthood at the age of 20 and generally lives into the middle of his or her second century. \n\nSize: Halflings average about 3 feet tall and weigh about 40 pounds. Your size is Small. \n\nSpeed: Your base walking speed is 25 feet \n\nLucky: when roll 1 on d20 for attack, ability check or saving throw - reroll \n\nBrave: Advantage on saving throws against being frightened \n\nHalfling Nimbleness: You can move through the space of any creature that is of a size larger than yours \n\nNaturally Stealthy: You can attempt to hide even when you are obscured only by a creature that is at least one size larger than you \n\n\nClass Features \n\n\nHit Points: \n\nHit Dice: 1d8 per bard level \n\nHit Points at 1st Level: 8 + your Constitution modifier \n\nHit Points at Higher Levels: 1d8 (or 5) + your Constitution modifier per bard level after 1st \n\n\nProficiencies: \n\nArmor: Light armor\n\nWeapons: Simple weapons, hand crossbows, longswords, rapiers, shortswords\n\nTools: Three musical instruments of your choice\n\nSaving Throws: Dexterity, Charisma \n\n\nSpellcasting: \n\nCantrips: You know two cantrips of your choice from the bard spell list. You learn additional bard cantrips of your choice at higher levels, as shown in the Cantrips Known column of the Bard table. \n\nSpell Slots: The Bard table shows how many spell slots you have to cast your bard spells of 1st level and higher. To cast one of these spells, you must expend a slot of the spell’s level or higher. You regain all expended spell slots when you finish a long rest. \n\nSpells Known of 1st Level and Higher: You know four 1st-level spells of your choice from the bard spell list \n\nSpellcasting Ability: Charisma is your spellcasting ability for your bard spells. Your magic comes from the heart and soul you pour into the performance of your music or oration. You use your Charisma whenever a spell refers to your spellcasting ability. In addition, you use your Charisma modifier when setting the saving throw DC for a bard spell you cast and when making an attack roll with one. \n\nSpell save DC: 8 + your proficiency bonus + your Charisma modifier \n\nSpell attack modifier: your proficiency bonus + your Charisma modifier \n\nSpell save DC: 8 + your proficiency bonus + your Charisma modifier\n\nSpell attack modifier: your proficiency bonus + your Charisma modifier\n\n\nSpells: \nBardic Inspiration \nJack of All Trades \nSong of Rest \nBard College \nExpertise \nAbility Score Improvement \nFont of Inspiration \nCountercharm \nMagical Secrets \nSuperior Inspiration',
       },
       'Halfling-W-Bard': {
         image: require('./assets/Halfling-W-Bard.jpg'),
@@ -316,9 +316,9 @@ const CreateCharacter = ({ navigation }) => {
   };
 
 
-  const [selectedRace, setSelectedRace] = useState(null);
-  const [selectedGender, setSelectedGender] = useState(null);
-  const [selectedPosition, setSelectedPosition] = useState(null);
+  const [selectedRace, setSelectedRace] = useState('');
+  const [selectedGender, setSelectedGender] = useState('');
+  const [selectedPosition, setSelectedPosition] = useState('');
   const [nickname, setNickname] = useState('');
 
   const renderRaceItem = ({ item }) => (
@@ -414,14 +414,17 @@ const CreateCharacter = ({ navigation }) => {
           )}
         </View>
 
-        <Button title="Continue" onPress={handleContinue} />
-
-
        <View style={styles.GoBack}>
       <TouchableOpacity style={styles.button} onPress={() => {handleGoBack()}} >
             <Text style={styles.GoBackText}>Go back</Text>
       </TouchableOpacity>
      </View>
+
+        <View style={styles.ConButton}>
+          <TouchableOpacity style={styles.button} onPress={handleContinue}>
+            <Text style={styles.ConButtonText}>Continue</Text>
+          </TouchableOpacity>
+        </View>
 
       </ImageBackground>
 );
@@ -440,6 +443,19 @@ const styles = StyleSheet.create({
     top: '16%',
     fontSize: 24,
     color: '#7F7F7F',
+  },
+  ConButton: {
+    backgroundColor: 'transparent',
+    borderRadius: 10,
+    width: '30%',
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: '#7F7F7F',
+    alignItems: 'center',
+  },
+  ConButtonText: {
+    color: '#d6d6d6',
+    fontSize: 20,
   },
 
   RaceGenderPosCont: {

@@ -7,9 +7,14 @@ const CreateCharacter2 = ({ navigation, route }) => {
 const handleGoBack = () => {
      navigation.navigate('CreateCharacter');
   };
-  //const { selectedRace, selectedGender, selectedPosition } = route.params;
+
 
   const { selectedClassInfo, nickname } = route.params;
+
+  const handleContinue = () => {
+    navigation.navigate('CreateCharacter3', { selectedClassInfo, nickname });
+  };
+  //const { selectedRace, selectedGender, selectedPosition } = route.params;
 
   const renderDescription = (description) => {
     return description.split('\n\n\n').map((block, index) => {
@@ -50,7 +55,6 @@ const handleGoBack = () => {
     <ScrollView contentContainerStyle={styles.scrollViewContent}>
 
         <View style={styles.selectedImageContainer}>
-          <Text>Player:</Text>
           <Image
             source={selectedClassInfo.image}
             style={styles.selectedImage}
@@ -64,6 +68,12 @@ const handleGoBack = () => {
         <View style={styles.GoBack}>
           <TouchableOpacity style={styles.button} onPress={handleGoBack}>
             <Text style={styles.GoBackText}>Go back</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.ConButton}>
+          <TouchableOpacity style={styles.button} onPress={handleContinue}>
+            <Text style={styles.ConButtonText}>Continue</Text>
           </TouchableOpacity>
         </View>
 
@@ -87,6 +97,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
+  ConButton: {
+    backgroundColor: 'transparent',
+    borderRadius: 10,
+    width: '30%',
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: '#7F7F7F',
+    alignItems: 'center',
+  },
+  ConButtonText: {
+    color: '#d6d6d6',
+    fontSize: 20,
+  },
 
   RaceGenderPosContTitle: {
     color: '#ffffff',

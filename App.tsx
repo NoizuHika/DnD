@@ -28,6 +28,9 @@ import CreateCharacter from './CreateCharacter'
 import Character1 from './Character1'
 import Character2 from './Character2'
 import CreateCharacter2 from './CreateCharacter2'
+import CreateCharacter3 from './CreateCharacter3'
+import CreateCharacter4 from './CreateCharacter4'
+import CreateCharacter5 from './CreateCharacter5'
 
 const Stack = createStackNavigator();
 
@@ -51,6 +54,9 @@ const App = () => {
         <Stack.Screen name="Character1" component={Character1} options={{ headerShown: false }} />
         <Stack.Screen name="Character2" component={Character2} options={{ headerShown: false }} />
         <Stack.Screen name="CreateCharacter2" component={CreateCharacter2} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateCharacter3" component={CreateCharacter3} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateCharacter4" component={CreateCharacter4} options={{ headerShown: false }} />
+        <Stack.Screen name="CreateCharacter5" component={CreateCharacter5} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
