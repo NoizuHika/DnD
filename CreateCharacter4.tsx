@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { useTranslation } from 'react-i18next';
 
 const alignments = [
   'Chaotic Evil',
@@ -19,6 +20,7 @@ const CreateCharacter4 = ({ navigation, route }) => {
     navigation.navigate('CreateCharacter');
   };
 
+  const { t, i18n } = useTranslation();
   const { selectedClassInfo, nickname } = route.params;
 
   const handleContinue = () => {
@@ -42,7 +44,7 @@ const CreateCharacter4 = ({ navigation, route }) => {
 
         {/* Харки */}
         <TouchableOpacity onPress={() => setCharacterDetailsVisible(!isCharacterDetailsVisible)}>
-          <Text style={styles.blockTitle}>Character Details</Text>
+          <Text style={styles.blockTitle}>{t('Character_Details')}</Text>
         </TouchableOpacity>
         {isCharacterDetailsVisible && (
           <View style={styles.blockContent}>

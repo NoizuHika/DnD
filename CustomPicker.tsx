@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, Picker, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 const Picker = ({ title, options }) => {
   const [selectedOption, setSelectedOption] = useState(options[0]);
-
+  const { t, i18n } = useTranslation();
   return (
     <View style={styles.pickerContainer}>
       <Text style={styles.pickerTitle}>{title}</Text>

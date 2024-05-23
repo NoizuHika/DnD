@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity, FlatList, Image, TextInput } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { useTranslation } from 'react-i18next';
 
 const CreateCharacter = ({ navigation }) => {
   const handleGoBack = () => {
      navigation.navigate('Characters');
   };
+
+  const { t, i18n } = useTranslation();
 
   const races = [
     { name: '-' },
@@ -365,7 +368,7 @@ const CreateCharacter = ({ navigation }) => {
        >
 
       <View style={styles.RaceGenderPosCont}>
-            <Text style={styles.RaceGenderPosContTitle}>Race</Text>
+            <Text style={styles.RaceGenderPosContTitle}>{t('Race')}</Text>
             <Picker
                 selectedValue={selectedRace}
                 style={styles.picker}
@@ -375,17 +378,17 @@ const CreateCharacter = ({ navigation }) => {
                 ))}
             </Picker>
 
-            <Text style={styles.RaceGenderPosContTitle}>Gender</Text>
+            <Text style={styles.RaceGenderPosContTitle}>{t('Gender')}</Text>
               <Picker
                  selectedValue={selectedGender}
                  style={styles.picker}
                  onValueChange={(itemValue) => setSelectedGender(itemValue)}>
                  <Picker.Item label="-" value="-" />
-                 <Picker.Item label="Male" value="M" />
-                 <Picker.Item label="Female" value="W" />
+                 <Picker.Item label={t('Male')} value="M" />
+                 <Picker.Item label={t('Female')} value="W" />
               </Picker>
 
-              <Text style={styles.RaceGenderPosContTitle}>Class</Text>
+              <Text style={styles.RaceGenderPosContTitle}>{t('Class')}</Text>
                 <Picker
                   selectedValue={selectedPosition}
                   style={styles.picker}
@@ -395,12 +398,12 @@ const CreateCharacter = ({ navigation }) => {
                   ))}
              </Picker>
 
-          <Text style={styles.RaceGenderPosContTitle}>Nickname</Text>
+          <Text style={styles.RaceGenderPosContTitle}>{t('Nickname')}</Text>
           <TextInput
             style={styles.textInput}
             value={nickname}
             onChangeText={setNickname}
-            placeholder="Enter your nickname"
+            placeholder={t('Enter_nickname')}
           />
 
         </View>
@@ -416,13 +419,13 @@ const CreateCharacter = ({ navigation }) => {
 
        <View style={styles.GoBack}>
       <TouchableOpacity style={styles.button} onPress={() => {handleGoBack()}} >
-            <Text style={styles.GoBackText}>Go back</Text>
+            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
       </TouchableOpacity>
      </View>
 
         <View style={styles.ConButton}>
           <TouchableOpacity style={styles.button} onPress={handleContinue}>
-            <Text style={styles.ConButtonText}>Continue</Text>
+            <Text style={styles.ConButtonText}>{t('Continue')}</Text>
           </TouchableOpacity>
         </View>
 

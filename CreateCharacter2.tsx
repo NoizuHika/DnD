@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity, FlatList, Image, ScrollView } from 'react-native';
 import HiddenText from './ProbaUkrytegoTekstu';
 import CustomPicker from './Picker';
+import { useTranslation } from 'react-i18next';
 
 const CreateCharacter2 = ({ navigation, route }) => {
 const handleGoBack = () => {
      navigation.navigate('CreateCharacter');
   };
 
+  const { t, i18n } = useTranslation();
 
   const { selectedClassInfo, nickname } = route.params;
 
@@ -67,13 +69,13 @@ const handleGoBack = () => {
 
         <View style={styles.GoBack}>
           <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-            <Text style={styles.GoBackText}>Go back</Text>
+            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.ConButton}>
           <TouchableOpacity style={styles.button} onPress={handleContinue}>
-            <Text style={styles.ConButtonText}>Continue</Text>
+            <Text style={styles.ConButtonText}>{t('Continue')}</Text>
           </TouchableOpacity>
         </View>
 

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 const LoggedScreen = ({ navigation }) => {
   const handleLoginPress = () => {
@@ -11,6 +12,7 @@ const LoggedScreen = ({ navigation }) => {
   const handleCharactersPress = () => {
         navigation.navigate('Characters');
   };
+  const { t, i18n } = useTranslation();
 
   return (
   <ImageBackground
@@ -22,17 +24,17 @@ const LoggedScreen = ({ navigation }) => {
 
        <View style={[styles.buttonContainer, {bottom: '50%' }]}>
           <TouchableOpacity style={styles.button} onPress={() => {handleCharactersPress()}}>
-                <Text style={styles.buttonText}>Characters</Text>
+                <Text style={styles.buttonText}>{t('Characters')}</Text>
           </TouchableOpacity>
        </View>
        <View style={[styles.buttonContainer, {bottom: '30%' }]}>
           <TouchableOpacity style={styles.button} onPress={() => {handleLoginPress()}}>
-                <Text style={styles.buttonText}>Log out</Text>
+                <Text style={styles.buttonText}>{t('Log_out')}</Text>
           </TouchableOpacity>
        </View>
        <View style={[styles.buttonContainer, { bottom: '40%' }]}>
           <TouchableOpacity style={styles.button} onPress={() => {handleRegistrationPress()}}>
-                <Text style={styles.buttonText}>Roll dice</Text>
+                <Text style={styles.buttonText}>{t('Roll_dice')}</Text>
           </TouchableOpacity>
        </View>
 
@@ -58,7 +60,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
       position: 'absolute',
       bottom: '35%',
-      width: '30%',
+      width: '50%',
       backgroundColor: 'transparent',
       borderColor: '#7F7F7F',
       alignItems: 'center',

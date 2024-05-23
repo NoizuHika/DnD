@@ -1,7 +1,21 @@
 import React from 'react';
-import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity } from 'react-native';
+import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity, Image } from 'react-native';
+import { useTranslation } from 'react-i18next';
+
+const languages = [
+  { code: 'en', label: 'English', flag: require('./assets/flags/English.png') },
+  { code: 'pl', label: 'Polski', flag: require('./assets/flags/Polish.png') },
+  { code: 'ua', label: 'Українська', flag: require('./assets/flags/Ukraine.png') },
+  { code: 'ru', label: 'Русский', flag: require('./assets/flags/russia.png') }
+];
 
 const HomeScreen = ({ navigation }) => {
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (code) => {
+    i18n.changeLanguage(code);
+  };
+
   const handleLoginPress = () => {
         navigation.navigate('LogIn');
   };
@@ -16,18 +30,27 @@ const HomeScreen = ({ navigation }) => {
        <Text style={styles.appName}>DMBook</Text>
        <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={() => {handleLoginPress()}}>
-                <Text style={styles.buttonText}>Login</Text>
+                <Text style={styles.buttonText}>{t('Login')}</Text>
           </TouchableOpacity>
        </View>
+
        <View style={[styles.buttonContainer, { bottom: 180 }]}>
           <TouchableOpacity style={styles.button} onPress={() => {handleRegistrationPress()}}>
-                <Text style={styles.buttonText}>Registration</Text>
+                <Text style={styles.buttonText}>{t('Registration')}</Text>
           </TouchableOpacity>
        </View>
+
+      <View style={styles.flagsContainer}>
+        {languages.map((lang) => (
+          <TouchableOpacity key={lang.code} onPress={() => changeLanguage(lang.code)} style={styles.flagButton}>
+            <Image source={lang.flag} style={styles.flag} />
+          </TouchableOpacity>
+        ))}
+      </View>
       </ImageBackground>
 );
 };
-
+//  <Text style={styles.flagLabel}>{lang.label}</Text>
 //  ; console.log('Кнопка "Регистрация" нажата')
 
 const styles = StyleSheet.create({
@@ -44,6 +67,23 @@ const styles = StyleSheet.create({
       fontSize: 24,
       color: '#7F7F7F',
     },
+
+  flagsContainer: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+  },
+  flagButton: {
+    marginVertical: 5,
+  },
+  flag: {
+    width: 50,
+    height: 30,
+  },
+
+
   buttonContainer: {
       position: 'absolute',
       bottom: '35%',

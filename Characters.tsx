@@ -1,10 +1,13 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 const Characters = ({ navigation }) => {
   const handleGoBack = () => {
      navigation.navigate('LoggedScreen');
   };
+
+  const { t, i18n } = useTranslation();
 
   const handleCharacterPress = (characterName) => {
      //proba na przyszlosc czy dziala
@@ -27,7 +30,7 @@ const Characters = ({ navigation }) => {
                   source={require('./assets/assasin.jpeg')}
                   style={styles.characterImage}
                 >
-                  <Text style={[styles.characterStatus, {color:'rgba(0,255,0,1)' }]}>Available</Text>
+                  <Text style={[styles.characterStatus, {color:'rgba(0,255,0,1)' }]}>{t('Available')}</Text>
                 </ImageBackground>
               </TouchableOpacity>
 
@@ -36,7 +39,7 @@ const Characters = ({ navigation }) => {
                   source={require('./assets/swordsman.jpeg')}
                   style={styles.characterImage}
                 >
-                  <Text style={[styles.characterStatus, {color:'red' }]}>In session</Text>
+                  <Text style={[styles.characterStatus, {color:'red' }]}>{t('In_session')}</Text>
                 </ImageBackground>
               </TouchableOpacity>
 
@@ -45,7 +48,7 @@ const Characters = ({ navigation }) => {
                   source={require('./assets/magician.png')}
                   style={styles.characterImage}
                 >
-                  <Text style={[styles.characterStatus, {color:'yellow' }]}>To finish</Text>
+                  <Text style={[styles.characterStatus, {color:'yellow' }]}>{t('To_finish')}</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </View>
@@ -56,7 +59,7 @@ const Characters = ({ navigation }) => {
                   source={require('./assets/archer.jpeg')}
                   style={styles.characterImage}
                 >
-                  <Text style={[styles.characterStatus, {color:'rgba(0,255,0,1)' }]}>Available</Text>
+                  <Text style={[styles.characterStatus, {color:'rgba(0,255,0,1)' }]}>{t('Available')}</Text>
                 </ImageBackground>
               </TouchableOpacity>
 
@@ -65,7 +68,7 @@ const Characters = ({ navigation }) => {
                   source={require('./assets/wizard.jpeg')}
                   style={styles.characterImage}
                 >
-                  <Text style={[styles.characterStatus, {color:'red' }]}>In session</Text>
+                  <Text style={[styles.characterStatus, {color:'red' }]}>{t('In_session')}</Text>
                 </ImageBackground>
               </TouchableOpacity>
 
@@ -74,7 +77,7 @@ const Characters = ({ navigation }) => {
                   source={require('./assets/add_new.png')}
                   style={styles.characterImage}
                 >
-                  <Text style={[styles.characterStatus, {color:'white' }]}>Create new</Text>
+                  <Text style={[styles.characterStatus, {color:'white' }]}>{t('Create_new')}</Text>
                 </ImageBackground>
               </TouchableOpacity>
             </View>
@@ -82,7 +85,7 @@ const Characters = ({ navigation }) => {
 
       <View style={styles.GoBack}>
       <TouchableOpacity style={styles.button} onPress={() => {handleGoBack()}} >
-            <Text style={styles.GoBackText}>Go back</Text>
+            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
       </TouchableOpacity>
      </View>
       </ImageBackground>

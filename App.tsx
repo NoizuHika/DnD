@@ -10,6 +10,9 @@ enableScreens();
 import 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import React from 'react';
+import 'intl-pluralrules';
+import { I18nextProvider } from 'react-i18next';
+import i18n from './i18n';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './HomeScreen';
@@ -34,8 +37,14 @@ import CreateCharacter5 from './CreateCharacter5'
 
 const Stack = createStackNavigator();
 
+import { findBestAvailableLanguage } from 'react-native-localize';
+
+const availableLanguages = findBestAvailableLanguage(['en', 'fr', 'de']);
+console.log(availableLanguages);
+
 const App = () => {
   return (
+  <I18nextProvider i18n={i18n}>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
@@ -59,6 +68,7 @@ const App = () => {
         <Stack.Screen name="CreateCharacter5" component={CreateCharacter5} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
+  </I18nextProvider>
   );
 };
 

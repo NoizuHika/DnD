@@ -1,6 +1,7 @@
 import React from 'react';
 import { ImageBackground, TouchableOpacity, Text, View, Button, StyleSheet, TextInput } from 'react-native';
 import { useNavigation, HeaderBackButton } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 const RegistrationOkEmail = () => {
   const navigation = useNavigation();
@@ -12,6 +13,7 @@ const RegistrationOkEmail = () => {
   const handleOkPress = () => {
     navigation.navigate('LogIn');
   };
+  const { t, i18n } = useTranslation();
 
   return (
   <ImageBackground
@@ -21,7 +23,7 @@ const RegistrationOkEmail = () => {
 
     <Text style={styles.appName}>DMBook</Text>
 
-    <Text style={styles.message}>Registration confirmation has been sent to your email address.</Text>
+    <Text style={styles.message}>{t('Registration_confirmation')}</Text>
 
     <TouchableOpacity style={styles.okButton} onPress={handleOkPress}>
        <Text style={styles.okButtonText}>Ok</Text>

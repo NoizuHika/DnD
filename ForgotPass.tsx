@@ -1,9 +1,11 @@
 import React from 'react';
 import { ImageBackground, TouchableOpacity, Text, View, Button, StyleSheet, TextInput, email, setEmail } from 'react-native';
 import { useNavigation, HeaderBackButton } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 const ForgotPass = () => {
   const navigation = useNavigation();
+  const { t, i18n } = useTranslation();
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -23,18 +25,18 @@ const ForgotPass = () => {
 
     <View style={styles.separator}>
       <View style={styles.resetPassContainer}>
-        <Text style={styles.resetPass}>Reset password</Text>
+        <Text style={styles.resetPass}>{t('Reset_pass')}</Text>
         <View style={styles.separatorLine} />
       </View>
     </View>
 
     <View style={styles.GoBack}>
        <TouchableOpacity style={styles.button} onPress={handleGoBack} >
-           <Text style={styles.GoBackText}>Go back</Text>
+           <Text style={styles.GoBackText}>{t('Go_back')}</Text>
        </TouchableOpacity>
     </View>
 
-    <Text style={styles.email}>Enter username or email address</Text>
+    <Text style={styles.email}>{t('Enter_username_or_email')}</Text>
 
     <TextInput
         style={styles.emailInput}
@@ -44,7 +46,7 @@ const ForgotPass = () => {
     />
 
     <TouchableOpacity style={styles.sendEmail} onPress={handleSendPress}>
-        <Text style={styles.sendEmailText}>Send</Text>
+        <Text style={styles.sendEmailText}>{t('Send')}</Text>
     </TouchableOpacity>
 
     </ImageBackground>

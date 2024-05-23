@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, FlatList, TextInput } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 const CreateCharacter5 = ({ navigation, route }) => {
   const { selectedClassInfo } = route.params;
   const [gold, setGold] = useState({ copper: '0', silver: '0', gold: '0', platinum: '0' });
-
+  const { t, i18n } = useTranslation();
   const startingEquipment = {
     Bard: {
       items: [

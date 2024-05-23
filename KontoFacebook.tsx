@@ -1,11 +1,13 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 const KontoFacebook = ({ navigation }) => {
 
   const handleGoBack = () => {
     navigation.goBack();
   };
+  const { t, i18n } = useTranslation();
 
   return (
   <ImageBackground
@@ -18,7 +20,7 @@ const KontoFacebook = ({ navigation }) => {
 
        <View style={styles.GoBack}>
          <TouchableOpacity style={styles.button} onPress={handleGoBack} >
-            <Text style={styles.GoBackText}>Go back</Text>
+            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
          </TouchableOpacity>
        </View>
 

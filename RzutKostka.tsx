@@ -1,10 +1,12 @@
 import React, {useState} from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity, Animated, Easing } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 const RzutKostka = ({ navigation }) => {
   const handleGoBack = () => {
       navigation.navigate('LoggedScreen');
     };
+  const { t, i18n } = useTranslation();
 
   const [diceValue, setDiceValue] = useState(null);
   const [rotateValue] = useState(new Animated.Value(0));
@@ -52,7 +54,7 @@ const RzutKostka = ({ navigation }) => {
 
       <View style={styles.GoBack}>
           <TouchableOpacity style={styles.button} onPress={() => {handleGoBack()}} >
-            <Text style={styles.GoBackText}>Go back</Text>
+            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
           </TouchableOpacity>
       </View>
 

@@ -1,9 +1,13 @@
 import React from 'react';
 import { ImageBackground, TouchableOpacity, Image, Text, View, Button, StyleSheet, TextInput } from 'react-native';
 import { useNavigation, HeaderBackButton } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 
 const LogInScreen = () => {
   const navigation = useNavigation();
+
+  const { t, i18n } = useTranslation();
+
   const handleRegistrationPress = () => {
     navigation.navigate('Registration');
   };
@@ -39,38 +43,38 @@ const LogInScreen = () => {
     <Text style={styles.appName}>DMBook</Text>
 
     {/* Залогинься */}
-    <Text style={styles.title}>Log in</Text>
+    <Text style={styles.title}>{t('Log_in')}</Text>
 
     {/* Новый пользователь */}
     <View style={styles.newUser}>
-       <Text style={styles.newUserText}>New user?</Text>
+       <Text style={styles.newUserText}>{t('New_user')}?</Text>
        <TouchableOpacity style={[styles.buttonUser, {width: '200%' }]} onPress={() => {handleRegistrationPress()}}>
-           <Text style={styles.buttonUserText}>Create an account</Text>
+           <Text style={styles.buttonUserText}>{t('Create_account')}</Text>
        </TouchableOpacity>
     </View>
 
     {/* Поле для логина */}
-    <Text style={styles.labelLogin}>Login</Text>
-    <TextInput style={styles.inputLogin} placeholder="Login" />
+    <Text style={styles.labelLogin}>{t('Login_nick')}</Text>
+    <TextInput style={styles.inputLogin} placeholder={t('Login_nick')} />
 
     {/* Поле для пароля */}
-    <Text style={styles.labelPassword}>Password</Text>
-    <TextInput style={styles.inputPassword} placeholder="Password" secureTextEntry={true} />
+    <Text style={styles.labelPassword}>{t('Pass')}</Text>
+    <TextInput style={styles.inputPassword} placeholder={t('Pass')} secureTextEntry={true} />
 
     {/* Забыл пароль */}
     <TouchableOpacity style={styles.forgotPasswordButton} onPress={() => {handleForgotPassPress()}}>
-       <Text style={styles.forgotPasswordButtonText}>Forgot your password?</Text>
+       <Text style={styles.forgotPasswordButtonText}>{t('Forgot_pass')}?</Text>
     </TouchableOpacity>
 
     {/* Продолжить */}
     <TouchableOpacity style={styles.continueButton} onPress={() => {handleKontynuacja()}}>
-      <Text style={styles.continueButtonText}>Continue</Text>
+      <Text style={styles.continueButtonText}>{t('Continue')}</Text>
     </TouchableOpacity>
 
     {/* Разделитель */}
     <View style={styles.separator}>
     <View style={styles.separatorLine} />
-       <Text style={styles.separatorText}>or</Text>
+       <Text style={styles.separatorText}>{t('or')}</Text>
     <View style={styles.separatorLine} />
     </View>
 
@@ -78,21 +82,21 @@ const LogInScreen = () => {
     <View style={styles.media}>
        <TouchableOpacity style={styles.socialGoogle} onPress={() => {handleKontoGoogle()}}>
           <Image source={require('./assets/google.webp')} style={styles.googleicon} />
-          <Text style={styles.socialButtonText}>Use Google account</Text>
+          <Text style={styles.socialButtonText}>{t('Use_Google')}</Text>
        </TouchableOpacity>
        <TouchableOpacity style={styles.socialFacebook} onPress={() => {handleKontoFacebook()}}>
           <Image source={require('./assets/facebook.jpg')} style={styles.facebookicon} />
-          <Text style={styles.socialButtonText}>Use Facebook account</Text>
+          <Text style={styles.socialButtonText}>{t('Use_Facebook')}</Text>
        </TouchableOpacity>
        <TouchableOpacity style={styles.socialApple} onPress={() => {handleKontoApple()}}>
           <Image source={require('./assets/apple.webp')} style={styles.appleicon} />
-          <Text style={styles.socialButtonText}>Use Apple account</Text>
+          <Text style={styles.socialButtonText}>{t('Use_Apple')}</Text>
        </TouchableOpacity>
     </View>
 
     <View style={styles.GoBack}>
       <TouchableOpacity style={styles.button} onPress={() => {handleGoBack()}} >
-            <Text style={styles.GoBackText}>Go back</Text>
+            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
       </TouchableOpacity>
      </View>
     </ImageBackground>

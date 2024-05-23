@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity, FlatList, Image, ScrollView, Modal, TouchableWithoutFeedback } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 const initialAttributes = {
   Strength: 8,
@@ -16,6 +17,8 @@ const CreateCharacter3 = ({ navigation, route }) => {
 const handleGoBack = () => {
      navigation.navigate('CreateCharacter');
   };
+
+  const { t, i18n } = useTranslation();
 
   const { selectedClassInfo, nickname } = route.params;
 
@@ -92,7 +95,7 @@ const handleGoBack = () => {
          >
 
         <Text style={[styles.remainingPointsText, { color: getRemainingPointsColor() }]}>
-          Points Remaining: {remainingPoints}/{maxPoints}
+          {t('Points_Remaining')}: {remainingPoints}/{maxPoints}
         </Text>
 
         {Object.keys(attributes).map((attribute) => (
@@ -105,7 +108,7 @@ const handleGoBack = () => {
 
         <View style={styles.GoBack}>
           <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-            <Text style={styles.GoBackText}>Go back</Text>
+            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -138,7 +141,7 @@ const handleGoBack = () => {
 
         <View style={styles.ConButton}>
           <TouchableOpacity style={styles.button} onPress={handleContinue}>
-            <Text style={styles.ConButtonText}>Continue</Text>
+            <Text style={styles.ConButtonText}>{t('Continue')}</Text>
           </TouchableOpacity>
         </View>
 

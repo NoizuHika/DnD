@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ImageBackground, TouchableOpacity, Text, View, Button, StyleSheet, TextInput } from 'react-native';
 import { useNavigation, HeaderBackButton } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
+import { useTranslation } from 'react-i18next';
 
 const Registration = () => {
   const navigation = useNavigation();
@@ -10,6 +11,8 @@ const Registration = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [captcha, setCaptcha] = useState('');
+
+  const { t, i18n } = useTranslation();
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -34,22 +37,22 @@ const Registration = () => {
       <Text style={styles.appName}>DMBook</Text>
 
       <View style={styles.inputContainer}>
-      <Text style={styles.label}>Email</Text>
+      <Text style={styles.label}>{t('Email')}</Text>
       <TextInput
         style={styles.input}
         value={email}
         onChangeText={setEmail}
-        placeholder="Email"
+        placeholder={t('Email')}
         keyboardType="email-address"
         autoCapitalize="none"
       />
       </View>
 
       <View style={styles.inputContainer}>
-      <Text style={styles.label}>Login</Text>
+      <Text style={styles.label}>{t('Login_nick')}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Login"
+        placeholder={t('Login_nick')}
         value={login}
         onChangeText={setLogin}
         autoCapitalize="none"
@@ -57,29 +60,29 @@ const Registration = () => {
       </View>
 
       <View style={[styles.inputContainer1, {left: '0%'}]}>
-      <Text style={styles.label}>Password</Text>
+      <Text style={styles.label}>{t('Pass')}</Text>
       <TextInput
         style={styles.input0}
         value={password}
-        placeholder="Password"
+        placeholder={t('Pass')}
         onChangeText={setPassword}
         secureTextEntry
       />
       </View>
 
       <View style={styles.inputContainer1}>
-      <Text style={styles.label}>Confirm password</Text>
+      <Text style={styles.label}>{t('Confirm_pass')}</Text>
       <TextInput
         style={styles.input1}
         value={confirmPassword}
-        placeholder="Password"
+        placeholder={t('Confirm_pass')}
         onChangeText={setConfirmPassword}
         secureTextEntry
       />
       </View>
 
       <View style={styles.inputContainer2}>
-      <Text style={styles.label}>Enter the captcha</Text>
+      <Text style={styles.label}>{t('Enter_captcha')}</Text>
       <TextInput
         style={styles.input2}
         placeholder="Captcha"
@@ -90,12 +93,12 @@ const Registration = () => {
 
 
       <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-        <Text style={styles.registerButtonText}>Sign up</Text>
+        <Text style={styles.registerButtonText}>{t('Sign_up')}</Text>
       </TouchableOpacity>
 
       <View style={styles.GoBack}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack} >
-          <Text style={styles.GoBackText}>Go back</Text>
+          <Text style={styles.GoBackText}>{t('Go_back')}</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
