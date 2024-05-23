@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -11,9 +11,13 @@ const languages = [
 
 const HomeScreen = ({ navigation }) => {
   const { t, i18n } = useTranslation();
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const [currentLang, setCurrentLang] = useState(i18n.language);
 
   const changeLanguage = (code) => {
     i18n.changeLanguage(code);
+    setCurrentLang(code);
+    setDropdownVisible(false);
   };
 
   const handleLoginPress = () => {
@@ -41,11 +45,19 @@ const HomeScreen = ({ navigation }) => {
        </View>
 
       <View style={styles.flagsContainer}>
-        {languages.map((lang) => (
-          <TouchableOpacity key={lang.code} onPress={() => changeLanguage(lang.code)} style={styles.flagButton}>
-            <Image source={lang.flag} style={styles.flag} />
-          </TouchableOpacity>
-        ))}
+        <TouchableOpacity onPress={() => setDropdownVisible(!isDropdownVisible)}>
+          <Image source={languages.find(lang => lang.code === currentLang).flag} style={styles.flag} />
+        </TouchableOpacity>
+        {isDropdownVisible && (
+          <View style={styles.dropdown}>
+            {languages.filter(lang => lang.code !== currentLang).map((lang) => (
+              <TouchableOpacity key={lang.code} onPress={() => changeLanguage(lang.code)} style={styles.flagButton}>
+                <Image source={lang.flag} style={styles.flag} />
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+
       </View>
       </ImageBackground>
 );
@@ -70,10 +82,15 @@ const styles = StyleSheet.create({
 
   flagsContainer: {
     position: 'absolute',
-    bottom: 10,
-    right: 10,
-    flexDirection: 'column',
-    alignItems: 'flex-end',
+    top: 10,
+    left: 10,
+  },
+  dropdown: {
+    marginTop: 5,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: 5,
+    elevation: 5,
   },
   flagButton: {
     marginVertical: 5,
