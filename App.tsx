@@ -37,11 +37,6 @@ import CreateCharacter5 from './CreateCharacter5'
 
 const Stack = createStackNavigator();
 
-import { findBestAvailableLanguage } from 'react-native-localize';
-
-const availableLanguages = findBestAvailableLanguage(['en', 'fr', 'de']);
-console.log(availableLanguages);
-
 const App = () => {
   return (
   <I18nextProvider i18n={i18n}>
