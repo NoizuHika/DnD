@@ -37,5 +37,6 @@
   "Male": "Мужчина",
   "Female": "Женщина",
   "Points_Remaining": "Осталось очков",
-  "Character_Details": "Детали персонажа"
+  "Character_Details": "Детали персонажа",
+  "Invalid login or password": "Не правильный логин или пароль"
 }

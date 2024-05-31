@@ -37,5 +37,6 @@
   "Male": "Mężczyzna",
   "Female": "Kobieta",
   "Points_Remaining": "Zostalo punktów",
-  "Character_Details": "Szczegóły postaci"
+  "Character_Details": "Szczegóły postaci",
+  "Invalid login or password": "Błędny login albo hasło"
 }

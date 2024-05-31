@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { ImageBackground, TouchableOpacity, Image, Text, View, Button, StyleSheet, TextInput } from 'react-native';
 import { useNavigation, HeaderBackButton } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import { UserData } from './UserData';
 
 const LogInScreen = () => {
   const navigation = useNavigation();
 
   const { t, i18n } = useTranslation();
+
+  const { loginUser } = useContext(UserData);
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleRegistrationPress = () => {
     navigation.navigate('Registration');
@@ -31,7 +36,12 @@ const LogInScreen = () => {
   };
 
   const handleKontynuacja = () => {
-      navigation.navigate('LoggedScreen');
+      const user = loginUser(login, password);
+      if (user) {
+            navigation.navigate('LoggedScreen');
+      } else {
+        alert(t('Invalid login or password'));
+      }
     };
 
   return (
@@ -55,11 +65,17 @@ const LogInScreen = () => {
 
     {/* Поле для логина */}
     <Text style={styles.labelLogin}>{t('Login_nick')}</Text>
-    <TextInput style={styles.inputLogin} placeholder={t('Login_nick')} />
+    <TextInput style={styles.inputLogin}
+    value={login}
+    onChangeText={setLogin}
+    placeholder={t('Login_nick')} />
 
     {/* Поле для пароля */}
     <Text style={styles.labelPassword}>{t('Pass')}</Text>
-    <TextInput style={styles.inputPassword} placeholder={t('Pass')} secureTextEntry={true} />
+    <TextInput style={styles.inputPassword}
+    value={password}
+    onChangeText={setPassword}
+    placeholder={t('Pass')} secureTextEntry={true} />
 
     {/* Забыл пароль */}
     <TouchableOpacity style={styles.forgotPasswordButton} onPress={() => {handleForgotPassPress()}}>

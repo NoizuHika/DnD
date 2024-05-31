@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { ImageBackground, TouchableOpacity, Text, View, Button, StyleSheet, TextInput } from 'react-native';
 import { useNavigation, HeaderBackButton } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import { useTranslation } from 'react-i18next';
+import { UserData } from './UserData';
 
 const Registration = () => {
   const navigation = useNavigation();
@@ -12,19 +13,27 @@ const Registration = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [captcha, setCaptcha] = useState('');
 
+  const { clearUsers } = useContext(UserData);
+
   const { t, i18n } = useTranslation();
+  const { registerUser } = useContext(UserData);
 
   const handleGoBack = () => {
     navigation.goBack();
   };
 
   const handleRegister = () => {
-    // логика для обработки регистрации, например валидация полей и отправка данных на сервер
-    navigation.navigate('RegistrationOkEmail');
+    if (password === confirmPassword) {
+      registerUser({ email, login, password });
+      navigation.navigate('RegistrationOkEmail');
+    } else {
+      alert(t('Passwords do not match'));
+    }
   };
 
   return (
     <ImageBackground
+
       style={styles.container}
       source={require('./assets/dungeon.jpeg')}
       resizeMode="cover">
@@ -64,8 +73,8 @@ const Registration = () => {
       <TextInput
         style={styles.input0}
         value={password}
-        placeholder={t('Pass')}
         onChangeText={setPassword}
+        placeholder={t('Pass')}
         secureTextEntry
       />
       </View>
@@ -91,6 +100,9 @@ const Registration = () => {
       />
       </View>
 
+       <TouchableOpacity onPress={() => {clearUsers()}}>
+           <Text>Clear Users</Text>
+       </TouchableOpacity>
 
       <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
         <Text style={styles.registerButtonText}>{t('Sign_up')}</Text>

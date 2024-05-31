@@ -15,6 +15,10 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { UserProvider } from './UserData';
+
+
+
 import HomeScreen from './HomeScreen';
 import LogInScreen from './LogInScreen';
 import Registration from './Registration';
@@ -40,6 +44,7 @@ const Stack = createStackNavigator();
 const App = () => {
   return (
   <I18nextProvider i18n={i18n}>
+    <UserProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
@@ -63,6 +68,7 @@ const App = () => {
         <Stack.Screen name="CreateCharacter5" component={CreateCharacter5} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
+    </UserProvider>
   </I18nextProvider>
   );
 };

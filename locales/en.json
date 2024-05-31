@@ -37,5 +37,6 @@
   "Male": "Male",
   "Female": "Female",
   "Points_Remaining": "Points Remaining",
-  "Character_Details": "Character Details"
+  "Character_Details": "Character Details",
+  "Invalid login or password": "Invalid login or password"
 }
