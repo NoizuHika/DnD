@@ -2,11 +2,11 @@ import React from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-const KontoApple = ({ navigation }) => {
-
-  const handleGoBack = () => {
-    navigation.goBack();
+const DMPage = ({ navigation }) => {
+  const handleLoginPress = () => {
+        navigation.navigate('LogIn');
   };
+
   const { t, i18n } = useTranslation();
 
   return (
@@ -16,12 +16,11 @@ const KontoApple = ({ navigation }) => {
        >
        <Text style={styles.appName}>DMBook</Text>
 
-       <Text style={styles.cos}>Apple</Text>
 
-       <View style={styles.GoBack}>
-         <TouchableOpacity style={styles.button} onPress={handleGoBack} >
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
-         </TouchableOpacity>
+       <View style={[styles.buttonContainer, {bottom: '30%' }]}>
+          <TouchableOpacity style={styles.button} onPress={() => {handleLoginPress()}}>
+                <Text style={styles.buttonText}>{t('Log_out')}</Text>
+          </TouchableOpacity>
        </View>
 
       </ImageBackground>
@@ -42,25 +41,19 @@ const styles = StyleSheet.create({
       fontSize: 24,
       color: '#7F7F7F',
     },
-  GoBack: {
-    position: 'absolute',
-    top: 42,
-    left: 20,
-    width: '20%',
-    borderColor: '#7F7F7F',
-    alignItems: 'center',
-    borderRadius: 10,
-    borderWidth: 1.5,
-  },
-  GoBackText: {
-    color: '#d6d6d6',
-  },
-  cos: {
-    color: '#d6d6d6',
-    fontSize: 20,
-    position: 'absolute',
-    top: '50%',
-  }
+  buttonContainer: {
+      position: 'absolute',
+      bottom: '35%',
+      width: '50%',
+      backgroundColor: 'transparent',
+      borderColor: '#7F7F7F',
+      alignItems: 'center',
+      borderRadius: 10,
+      borderWidth: 1.5,
+    },
+  buttonText: {
+      color: '#d6d6d6',
+    },
 });
 
-export default KontoApple;
+export default DMPage;

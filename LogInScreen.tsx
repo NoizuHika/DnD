@@ -38,7 +38,7 @@ const LogInScreen = () => {
   const handleKontynuacja = () => {
       const user = loginUser(login, password);
       if (user) {
-            navigation.navigate('LoggedScreen');
+            navigation.navigate('SelectionRole');
       } else {
         alert(t('Invalid login or password'));
       }
@@ -169,11 +169,11 @@ const styles = StyleSheet.create({
   buttonUser: {
     position: 'absolute',
     backgroundColor: 'transparent',
-    left: '95%'
+    left: '105%'
   },
   buttonUserText: {
     color: '#007bff',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   labelLogin: {
     position: 'absolute',

@@ -38,6 +38,11 @@ import CreateCharacter2 from './CreateCharacter2'
 import CreateCharacter3 from './CreateCharacter3'
 import CreateCharacter4 from './CreateCharacter4'
 import CreateCharacter5 from './CreateCharacter5'
+import SelectionRole from './SelectionRole'
+import DMPage from './DMPage'
+import YourCampaigns from './YourCampaigns';
+import YourBook from './YourBook';
+import CampaignOne from './CampaignOne';
 
 const Stack = createStackNavigator();
 
@@ -66,6 +71,11 @@ const App = () => {
         <Stack.Screen name="CreateCharacter3" component={CreateCharacter3} options={{ headerShown: false }} />
         <Stack.Screen name="CreateCharacter4" component={CreateCharacter4} options={{ headerShown: false }} />
         <Stack.Screen name="CreateCharacter5" component={CreateCharacter5} options={{ headerShown: false }} />
+        <Stack.Screen name="SelectionRole" component={SelectionRole} options={{ headerShown: false }} />
+        <Stack.Screen name="DMPage" component={DMPage} options={{ headerShown: false }} />
+        <Stack.Screen name="YourCampaigns" component={YourCampaigns} options={{ headerShown: false }} />
+        <Stack.Screen name="YourBook" component={YourBook} options={{ headerShown: false }} />
+        <Stack.Screen name="CampaignOne" component={CampaignOne} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>

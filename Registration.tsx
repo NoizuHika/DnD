@@ -13,10 +13,8 @@ const Registration = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [captcha, setCaptcha] = useState('');
 
-  const { clearUsers } = useContext(UserData);
-
   const { t, i18n } = useTranslation();
-  const { registerUser } = useContext(UserData);
+  const { registerUser, clearUsers } = useContext(UserData);
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -36,42 +34,42 @@ const Registration = () => {
 
       style={styles.container}
       source={require('./assets/dungeon.jpeg')}
-      resizeMode="cover">
-
+      resizeMode="cover"
+    >
       <WebView
-                source={require('./assets/captcha.html')}
-                style={{ flex: 1 }}
-            />
+        source={require('./assets/captcha.html')}
+        style={{ flex: 1 }}
+      />
 
       <Text style={styles.appName}>DMBook</Text>
 
-      <View style={styles.inputContainer}>
-      <Text style={styles.label}>{t('Email')}</Text>
-      <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={setEmail}
-        placeholder={t('Email')}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
+      <View style={styles.emailContainer}>
+        <Text style={styles.label}>{t('Email')}</Text>
+        <TextInput
+          style={styles.emailInput}
+          value={email}
+          onChangeText={setEmail}
+          placeholder={t('Email')}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
       </View>
 
-      <View style={styles.inputContainer}>
-      <Text style={styles.label}>{t('Login_nick')}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder={t('Login_nick')}
-        value={login}
-        onChangeText={setLogin}
-        autoCapitalize="none"
-      />
+      <View style={styles.loginContainer}>
+        <Text style={styles.label}>{t('Login_nick')}</Text>
+        <TextInput
+          style={styles.loginInput}
+          placeholder={t('Login_nick')}
+          value={login}
+          onChangeText={setLogin}
+          autoCapitalize="none"
+        />
       </View>
 
-      <View style={[styles.inputContainer1, {left: '0%'}]}>
+      <View style={[styles.passContainer]}>
       <Text style={styles.label}>{t('Pass')}</Text>
       <TextInput
-        style={styles.input0}
+        style={styles.passInput}
         value={password}
         onChangeText={setPassword}
         placeholder={t('Pass')}
@@ -79,10 +77,10 @@ const Registration = () => {
       />
       </View>
 
-      <View style={styles.inputContainer1}>
+      <View style={styles.passContainer}>
       <Text style={styles.label}>{t('Confirm_pass')}</Text>
       <TextInput
-        style={styles.input1}
+        style={styles.confirmPassInput}
         value={confirmPassword}
         placeholder={t('Confirm_pass')}
         onChangeText={setConfirmPassword}
@@ -90,10 +88,10 @@ const Registration = () => {
       />
       </View>
 
-      <View style={styles.inputContainer2}>
+      <View style={styles.captchaContainer}>
       <Text style={styles.label}>{t('Enter_captcha')}</Text>
       <TextInput
-        style={styles.input2}
+        style={styles.captchaInput}
         placeholder="Captcha"
         value={captcha}
         onChangeText={setCaptcha}
@@ -144,22 +142,29 @@ const styles = StyleSheet.create({
   GoBackText: {
     color: '#d6d6d6',
   },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 30,
+  emailContainer: {
+   flexDirection: 'row',
+   alignItems: 'center',
+   marginBottom: 30,
+   marginHorizontal: 10,
   },
-  inputContainer1: {
-    left: '0%',
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 30,
+ loginContainer: {
+   flexDirection: 'row',
+   alignItems: 'center',
+   marginBottom: 30,
+   marginHorizontal: 10,
   },
-  inputContainer2: {
-    left: '0%',
+  passContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 30,
+    marginHorizontal: 10,
+  },
+  captchaContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 30,
+    marginHorizontal: 10,
   },
   label: {
     color: '#d6d6d6',
@@ -167,7 +172,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginRight: 10,
   },
-  input0: {
+  emailInput: {
     borderWidth: 1,
     backgroundColor: 'white',
     borderColor: '#d6d6d6',
@@ -176,9 +181,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginBottom: 6,
     fontSize: 16,
-    width: '72%',
+    flex: 1,
   },
-  input: {
+  loginInput: {
     borderWidth: 1,
     backgroundColor: 'white',
     borderColor: '#d6d6d6',
@@ -187,9 +192,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginBottom: 6,
     fontSize: 16,
-    width: '80%',
+    flex: 1,
   },
-  input1: {
+  passInput: {
     borderWidth: 1,
     backgroundColor: 'white',
     borderColor: '#d6d6d6',
@@ -198,9 +203,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginBottom: 6,
     fontSize: 16,
-    width: '60%',
+    flex: 1,
   },
-  input2: {
+  confirmPassInput: {
     borderWidth: 1,
     backgroundColor: 'white',
     borderColor: '#d6d6d6',
@@ -209,7 +214,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     marginBottom: 6,
     fontSize: 16,
-    width: '62%',
+    flex: 1,
+  },
+  captchaInput: {
+    borderWidth: 1,
+    backgroundColor: 'white',
+    borderColor: '#d6d6d6',
+    borderRadius: 4,
+    paddingVertical: 0,
+    paddingHorizontal: 8,
+    marginBottom: 6,
+    fontSize: 16,
+    flex: 1,
   },
   registerButton: {
     backgroundColor: 'transparent',
