@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CampaignOne = ({ navigation }) => {
   const { t, i18n } = useTranslation();
@@ -15,17 +16,44 @@ const CampaignOne = ({ navigation }) => {
   const [activeSessionIndex, setActiveSessionIndex] = useState(0);
   const [addingNewSession, setAddingNewSession] = useState(false);
 
+  useEffect(() => {
+    const loadSessions = async () => {
+      try {
+        const savedSessions = await AsyncStorage.getItem('sessions');
+        if (savedSessions !== null) {
+          console.log('Loaded sessions from storage:', savedSessions);
+          setSessions(JSON.parse(savedSessions));
+        }
+      } catch (error) {
+        console.error('Failed to load sessions', error);
+      }
+    };
+    loadSessions();
+  }, []);
+
+  const saveSessions = async (updatedSessions) => {
+    try {
+      await AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
+      setSessions(updatedSessions);
+    } catch (error) {
+      console.error('Failed to save sessions', error);
+    }
+  };
+
   const handleGoBack = () => {
     navigation.goBack();
   };
 
   const handleAddSession = () => {
     if (newSessionName && newSessionContent) {
-      setSessions([...sessions, { name: newSessionName, content: newSessionContent }]);
+      const updatedSessions = [...sessions, { name: newSessionName, content: newSessionContent }];
+      saveSessions(updatedSessions);
       setNewSessionName('');
       setNewSessionContent('');
       setAddingNewSession(false);
-      setActiveSessionIndex(sessions.length); // Set the new session as active
+      setActiveSessionIndex(updatedSessions.length - 1);
+    } else {
+      Alert.alert(t('Please enter both name and content for the session.'));
     }
   };
 
@@ -35,19 +63,26 @@ const CampaignOne = ({ navigation }) => {
     setNewSessionContent(sessions[index].content);
   };
 
-  const handleSaveEdit = (index) => {
-    const updatedSessions = [...sessions];
-    updatedSessions[index] = { name: newSessionName, content: newSessionContent };
-    setSessions(updatedSessions);
-    setEditingSession(null);
-    setNewSessionName('');
-    setNewSessionContent('');
+  const handleSaveEdit = () => {
+    if (editingSession !== null) {
+      const updatedSessions = [...sessions];
+      updatedSessions[editingSession] = { name: newSessionName, content: newSessionContent };
+      saveSessions(updatedSessions);
+      setEditingSession(null);
+      setNewSessionName('');
+      setNewSessionContent('');
+    }
   };
 
   const handleDeleteSession = (index) => {
     const updatedSessions = sessions.filter((_, i) => i !== index);
-    setSessions(updatedSessions);
-    setActiveSessionIndex(Math.max(0, activeSessionIndex - 1)); // Adjust the active session index
+    saveSessions(updatedSessions);
+    setActiveSessionIndex(0);
+  };
+
+  const handleNewSessionTab = () => {
+    setAddingNewSession(true);
+    setActiveSessionIndex(sessions.length);
   };
 
   return (
@@ -60,49 +95,52 @@ const CampaignOne = ({ navigation }) => {
         <Text style={styles.appName}>LOREM PSILUM</Text>
         <ScrollView horizontal>
           {sessions.map((session, index) => (
-            <TouchableOpacity key={index} style={styles.sessionTab} onPress={() => setActiveSessionIndex(index)}>
+            <TouchableOpacity key={index} style={styles.sessionTab} onPress={() => {
+              setActiveSessionIndex(index);
+              setAddingNewSession(false);
+            }}>
               <Text style={styles.sessionTabText}>{session.name}</Text>
             </TouchableOpacity>
           ))}
-          <TouchableOpacity style={styles.sessionTab} onPress={() => setAddingNewSession(true)}>
-            <Text style={styles.sessionTabText}>+</Text>
+          <TouchableOpacity style={styles.sessionTab} onPress={handleNewSessionTab}>
+            <Text style={styles.sessionTabText}>{t('Add new')}</Text>
           </TouchableOpacity>
         </ScrollView>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.sessionContainer}>
-          <View style={styles.sessionHeader}>
-            <Text style={styles.sessionName}>{sessions[activeSessionIndex]?.name}</Text>
-            <TouchableOpacity onPress={() => handleEditSession(activeSessionIndex)}>
-              <Text style={styles.editText}>{t('Edit')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleDeleteSession(activeSessionIndex)}>
-              <Text style={styles.deleteText}>{t('Delete')}</Text>
-            </TouchableOpacity>
+        {sessions.length > 0 && activeSessionIndex < sessions.length && !addingNewSession && (
+          <View style={styles.sessionContainer}>
+            <View style={styles.sessionHeader}>
+              <Text style={styles.sessionName}>{sessions[activeSessionIndex]?.name}</Text>
+              <TouchableOpacity onPress={() => handleEditSession(activeSessionIndex)}>
+                <Text style={styles.editText}>{t('Edit')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleDeleteSession(activeSessionIndex)}>
+                <Text style={styles.deleteText}>{t('Delete')}</Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.sessionContent}>{sessions[activeSessionIndex]?.content}</Text>
           </View>
-          <Text style={styles.sessionContent}>{sessions[activeSessionIndex]?.content}</Text>
-        </View>
-        {editingSession === null && !addingNewSession ? (
-          <></>
-        ) : (
+        )}
+        {(editingSession !== null || addingNewSession) && (
           <View style={styles.newSessionContainer}>
             <TextInput
-              style={styles.input}
+              style={styles.inputName}
               value={newSessionName}
               onChangeText={setNewSessionName}
               placeholder={t('Enter session name')}
               placeholderTextColor="#d6d6d6"
             />
             <TextInput
-              style={[styles.input, styles.textArea]}
+              style={[styles.inputContent, styles.textArea]}
               value={newSessionContent}
               onChangeText={setNewSessionContent}
               placeholder={t('Enter session content')}
               placeholderTextColor="#d6d6d6"
               multiline
             />
-            <TouchableOpacity style={styles.addButton} onPress={editingSession === null ? handleAddSession : () => handleSaveEdit(editingSession)}>
+            <TouchableOpacity style={styles.addButton} onPress={editingSession === null ? handleAddSession : handleSaveEdit}>
               <Text style={styles.buttonText}>{editingSession === null ? t('Add Session') : t('Save Session')}</Text>
             </TouchableOpacity>
           </View>
@@ -114,7 +152,6 @@ const CampaignOne = ({ navigation }) => {
           <Text style={styles.goBackText}>{t('Go_back')}</Text>
         </TouchableOpacity>
       </View>
-
     </ImageBackground>
   );
 };
@@ -131,6 +168,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 24,
     color: '#7F7F7F',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   scrollContainer: {
     paddingTop: '20%',
@@ -140,13 +178,16 @@ const styles = StyleSheet.create({
     borderColor: '#7F7F7F',
     borderWidth: 1.5,
     borderRadius: 10,
-    marginBottom: 15,
+    marginTop: 10,
+    marginBottom: 10,
     padding: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   sessionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   sessionName: {
     color: '#d6d6d6',
@@ -162,6 +203,8 @@ const styles = StyleSheet.create({
     width: '100%',
     borderColor: '#7F7F7F',
     borderBottomWidth: 1.5,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    zIndex: 1, //przez tą linijke stracilem kilka godzin, bo kod nie dzialal
   },
   sessionTab: {
     padding: 10,
@@ -183,7 +226,16 @@ const styles = StyleSheet.create({
   newSessionContainer: {
     marginBottom: 15,
   },
-  input: {
+  inputName: {
+    borderColor: '#7F7F7F',
+    borderWidth: 1.5,
+    borderRadius: 10,
+    color: '#d6d6d6',
+    paddingHorizontal: 10,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  inputContent: {
     borderColor: '#7F7F7F',
     borderWidth: 1.5,
     borderRadius: 10,
@@ -192,7 +244,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   textArea: {
-    height: 60,
+    height: 100,
   },
   addButton: {
     borderColor: '#7F7F7F',

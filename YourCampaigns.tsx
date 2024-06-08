@@ -1,17 +1,68 @@
-import React, { useState } from 'react';
-import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const YourCampaigns = ({ navigation }) => {
   const { t, i18n } = useTranslation();
 
-  const [campaigns, setCampaigns] = useState(["LOREM PSILUM", "UNGA BUNGA", "KRWAWA ŁAŹNIA"]);
+  const [campaigns, setCampaigns] = useState([]);
   const [newCampaign, setNewCampaign] = useState('');
   const [showInput, setShowInput] = useState(false);
 
+  useEffect(() => {
+    const loadCampaigns = async () => {
+      try {
+        const storedCampaigns = await AsyncStorage.getItem('campaigns');
+        if (storedCampaigns) {
+          console.log('Loaded campaigns from storage:', storedCampaigns);
+          setCampaigns(JSON.parse(storedCampaigns));
+        } else {
+          const initialCampaigns = ["LOREM PSILUM", "UNGA BUNGA", "KRWAWA ŁAŹNIA"];
+          await AsyncStorage.setItem('campaigns', JSON.stringify(initialCampaigns));
+          setCampaigns(initialCampaigns);
+        }
+      } catch (error) {
+        console.error('Failed to load campaigns:', error);
+      }
+    };
+    loadCampaigns();
+  }, []);
+
+  const saveCampaigns = async (newCampaigns) => {
+    try {
+      await AsyncStorage.setItem('campaigns', JSON.stringify(newCampaigns));
+      setCampaigns(newCampaigns);
+    } catch (error) {
+      console.error('Failed to save campaigns:', error);
+    }
+  };
+
+  const handleDeleteCampaign = (index) => {
+    Alert.alert(
+      t('Delete Campaign'),
+      t('Are you sure you want to delete this campaign?'),
+      [
+        {
+          text: t('Cancel'),
+          style: 'cancel'
+        },
+        {
+          text: t('Delete'),
+          style: 'destructive',
+          onPress: () => {
+            const updatedCampaigns = campaigns.filter((_, i) => i !== index);
+            saveCampaigns(updatedCampaigns);
+          }
+        }
+      ]
+    );
+  };
+
   const handleAddCampaign = () => {
     if (newCampaign) {
-      setCampaigns([...campaigns, newCampaign]);
+      const updatedCampaigns = [...campaigns, newCampaign];
+      saveCampaigns(updatedCampaigns);
       setNewCampaign('');
       setShowInput(false);
     }
@@ -50,6 +101,9 @@ const YourCampaigns = ({ navigation }) => {
             <TouchableOpacity style={styles.button} onPress={() => handleCampaignPress(campaign)}>
               <Text style={styles.buttonText}>{campaign}</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteCampaign(index)}>
+              <Text style={styles.deleteButtonText}>{t('Delete')}</Text>
+            </TouchableOpacity>
           </View>
         ))}
 
@@ -69,7 +123,7 @@ const YourCampaigns = ({ navigation }) => {
             </View>
           ) : (
             <TouchableOpacity style={styles.button} onPress={() => setShowInput(true)}>
-              <Text style={styles.buttonText}>+</Text>
+              <Text style={styles.buttonTextPlus}>{t('Add')}</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -110,6 +164,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flex: 1,
     marginBottom: 30,
+    paddingHorizontal: 40,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     backgroundColor: 'transparent',
     borderColor: '#7F7F7F',
     alignItems: 'center',
@@ -117,6 +174,18 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
   },
   buttonText: {
+    color: '#d6d6d6',
+  },
+  buttonTextPlus: {
+    color: '#d6d6d6',
+    justifyContent: 'center',
+    textAlign: 'center',
+    marginLeft: "55%",
+  },
+  deleteButton: {
+    padding: 10,
+  },
+  deleteButtonText: {
     color: '#d6d6d6',
   },
   addCampaignContainer: {
