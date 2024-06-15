@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView, Alert } from 'react-native';
+import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView, Alert, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -15,6 +15,55 @@ const CampaignOne = ({ navigation }) => {
   const [editingSession, setEditingSession] = useState(null);
   const [activeSessionIndex, setActiveSessionIndex] = useState(0);
   const [addingNewSession, setAddingNewSession] = useState(false);
+
+  const [players, setPlayers] = useState([
+    { id: 1, name: "Player 1", image: require('./assets/assasin.jpeg'), coins: 0, level: 1, hp: 100 },
+    { id: 2, name: "Player 2", image: require('./assets/archer.jpeg'), coins: 0, level: 1, hp: 100 },
+  ]);
+  const [selectedPlayers, setSelectedPlayers] = useState([]);
+
+  const handleSelectPlayer = (player) => {
+    if (selectedPlayers.includes(player.id)) {
+      setSelectedPlayers(selectedPlayers.filter(id => id !== player.id));
+    } else {
+      setSelectedPlayers([...selectedPlayers, player.id]);
+    }
+  };
+
+  const handlePlayerAction = (action) => {
+    const updatedPlayers = players.map(player => {
+      if (selectedPlayers.includes(player.id)) {
+        switch (action) {
+          case 'addCoins':
+            player.coins += 10;
+            break;
+          case 'levelUp':
+            player.level += 1;
+            break;
+          case 'changeHP':
+            player.hp = player.hp < 100 ? 100 : player.hp - 10;
+            break;
+          case 'remove':
+            return null;
+        }
+      }
+      return player;
+    }).filter(player => player !== null);
+    setPlayers(updatedPlayers);
+    setSelectedPlayers([]);
+  };
+
+  const handleAddPlayer = () => {
+    const newPlayer = {
+      id: players.length + 1,
+      name: `Player ${players.length + 1}`,
+      image: require('./assets/adventurer.jpeg'),
+      coins: 0,
+      level: 1,
+      hp: 100,
+    };
+    setPlayers([...players, newPlayer]);
+  };
 
   useEffect(() => {
     const loadSessions = async () => {
@@ -147,6 +196,45 @@ const CampaignOne = ({ navigation }) => {
         )}
       </ScrollView>
 
+      <View style={styles.playerPanel}>
+        <ScrollView horizontal>
+          {players.map(player => (
+            <TouchableOpacity
+              key={player.id}
+              style={[
+                styles.playerAvatar,
+                selectedPlayers.includes(player.id) && styles.selectedPlayer
+              ]}
+              onPress={() => handleSelectPlayer(player)}
+            >
+              <Image source={player.image} style={styles.playerImage} />
+            </TouchableOpacity>
+          ))}
+          <TouchableOpacity style={styles.playerAvatar} onPress={handleAddPlayer}>
+            <Text style={styles.addPlayerText}>+</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+      {selectedPlayers.length > 0 && (
+        <View style={styles.playerActions}>
+          <TouchableOpacity style={styles.playerActionButton} onPress={() => handlePlayerAction('addCoins')}>
+            <Text style={styles.playerActionText}>{t('Add Coins')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.playerActionButton} onPress={() => handlePlayerAction('levelUp')}>
+            <Text style={styles.playerActionText}>{t('Level Up')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.playerActionButton} onPress={() => handlePlayerAction('manageInventory')}>
+            <Text style={styles.playerActionText}>{t('Manage Inventory')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.playerActionButton} onPress={() => handlePlayerAction('changeHP')}>
+            <Text style={styles.playerActionText}>{t('Change HP')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.playerActionButton} onPress={() => handlePlayerAction('remove')}>
+            <Text style={styles.playerActionText}>{t('Remove Player')}</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
       <View style={styles.goBack}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <Text style={styles.goBackText}>{t('Go_back')}</Text>
@@ -255,6 +343,52 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
+    color: '#d6d6d6',
+  },
+  playerPanel: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    borderTopColor: '#7F7F7F',
+    borderTopWidth: 1.5,
+    padding: 10,
+  },
+  playerAvatar: {
+    margin: 5,
+    padding: 5,
+    borderColor: '#7F7F7F',
+    borderWidth: 1.5,
+    borderRadius: 50,
+  },
+  playerImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 50,
+  },
+  selectedPlayer: {
+    borderColor: 'yellow',
+  },
+  addPlayerText: {
+    color: '#d6d6d6',
+    fontSize: 18,
+    top: 10,
+    paddingHorizontal: 20,
+  },
+  playerActions: {
+    bottom: 90,
+    width: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    padding: 5,
+    borderTopColor: '#7F7F7F',
+    borderTopWidth: 1,
+  },
+  playerActionButton: {
+    padding: 4,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    borderRadius: 50,
+  },
+  playerActionText: {
     color: '#d6d6d6',
   },
   goBack: {

@@ -73,14 +73,11 @@ const YourCampaigns = ({ navigation }) => {
       case 'LOREM PSILUM':
         navigation.navigate('CampaignOne');
         break;
-      case 'UNGA BUNGA':
-        navigation.navigate('CampaignTwo');
-        break;
       case 'KRWAWA ŁAŹNIA':
         navigation.navigate('CampaignThree');
         break;
       default:
-        navigation.navigate('GenerateCampaign', { campaignName: campaign });
+        navigation.navigate('GenericCampaign', { campaignName: campaign });
     }
   };
 

@@ -43,6 +43,7 @@ import DMPage from './DMPage'
 import YourCampaigns from './YourCampaigns';
 import YourBook from './YourBook';
 import CampaignOne from './CampaignOne';
+import GenericCampaign from './GenericCampaign';
 
 const Stack = createStackNavigator();
 
@@ -75,6 +76,7 @@ const App = () => {
         <Stack.Screen name="DMPage" component={DMPage} options={{ headerShown: false }} />
         <Stack.Screen name="YourCampaigns" component={YourCampaigns} options={{ headerShown: false }} />
         <Stack.Screen name="YourBook" component={YourBook} options={{ headerShown: false }} />
+        <Stack.Screen name="GenericCampaign" component={GenericCampaign} options={{ headerShown: false }} />
         <Stack.Screen name="CampaignOne" component={CampaignOne} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
