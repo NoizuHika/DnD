@@ -44,6 +44,7 @@ import YourCampaigns from './YourCampaigns';
 import YourBook from './YourBook';
 import CampaignOne from './CampaignOne';
 import GenericCampaign from './GenericCampaign';
+import RzutKostka_Bonus from './RzutKostka_Bonus';
 
 const Stack = createStackNavigator();
 
@@ -78,6 +79,7 @@ const App = () => {
         <Stack.Screen name="YourBook" component={YourBook} options={{ headerShown: false }} />
         <Stack.Screen name="GenericCampaign" component={GenericCampaign} options={{ headerShown: false }} />
         <Stack.Screen name="CampaignOne" component={CampaignOne} options={{ headerShown: false }} />
+        <Stack.Screen name="RzutKostka_Bonus" component={RzutKostka_Bonus} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>
