@@ -1,0 +1,162 @@
+[
+  {
+    "name": "Longsword",
+    "type": ["Weapon"],
+    "rarity": ["Legendary"],
+    "price": 15,
+    "weight": 3,
+    "description": "A versatile, slashing weapon."
+  },
+  {
+    "name": "Potion of Healing",
+    "type": ["Potion"],
+    "rarity": ["Uncommon"],
+    "price": 50,
+    "weight": 0.5,
+    "description": "Heals 2d4+2 hit points."
+  },
+  {
+    "name": "Plate Armor",
+    "type": ["Armor"],
+    "rarity": ["Rare"],
+    "price": 1500,
+    "weight": 65,
+    "description": "Heavy armor that provides excellent protection."
+  },
+  {
+    "name": "Dagger",
+    "type": ["Weapon"],
+    "rarity": ["Common"],
+    "price": 2,
+    "weight": 1,
+    "description": "A light weapon ideal for close combat."
+  },
+  {
+    "name": "Bag of Holding",
+    "type": ["Tools"],
+    "rarity": ["Uncommon"],
+    "price": 400,
+    "weight": 15,
+    "description": "A magical bag that holds up to 500 lbs of items."
+  },
+  {
+    "name": "Fireball Scroll",
+    "type": ["Scrolls"],
+    "rarity": ["Rare"],
+    "price": 1000,
+    "weight": 0.1,
+    "description": "Casts a Fireball spell when used."
+  },
+  {
+    "name": "Rope of Climbing",
+    "type": ["Adventuring Gear"],
+    "rarity": ["Uncommon"],
+    "price": 200,
+    "weight": 5,
+    "description": "A magical rope that can move and knot itself."
+  },
+  {
+    "name": "Potion of Invisibility",
+    "type": ["Potions"],
+    "rarity": ["Rare"],
+    "price": 350,
+    "weight": 0.5,
+    "description": "Grants invisibility for 1 hour."
+  },
+  {
+    "name": "Warhammer",
+    "type": ["Weapon"],
+    "rarity": ["Common"],
+    "price": 20,
+    "weight": 2,
+    "description": "A versatile hammer for close combat."
+  },
+  {
+    "name": "Shield",
+    "type": ["Armor"],
+    "rarity": ["Common"],
+    "price": 10,
+    "weight": 6,
+    "description": "Provides a +2 bonus to AC."
+  },
+  {
+    "name": "Alchemist's Fire",
+    "type": ["Other"],
+    "rarity": ["Uncommon"],
+    "price": 50,
+    "weight": 1,
+    "description": "A sticky liquid that ignites when exposed to air."
+  },
+  {
+    "name": "Crossbow Bolts (20)",
+    "type": ["Ammunition"],
+    "rarity": ["Common"],
+    "price": 1,
+    "weight": 1.5,
+    "description": "Ammunition for crossbows."
+  },
+  {
+    "name": "Something",
+    "type": ["Other"],
+    "rarity": ["Legendary"],
+    "price": 22,
+    "weight": 22,
+    "description": "Something"
+  },
+  {
+    "name": "Something",
+    "type": ["Other"],
+    "rarity": ["Legendary"],
+    "price": 44,
+    "weight": 44,
+    "description": "Something"
+  },
+  {
+    "name": "Something",
+    "type": ["Other"],
+    "rarity": ["Legendary"],
+    "price": 33,
+    "weight": 33,
+    "description": "Something"
+  },
+  {
+    "name": "Something",
+    "type": ["Other"],
+    "rarity": ["Legendary"],
+    "price": 11,
+    "weight": 11,
+    "description": "Something"
+  },
+  {
+    "name": "Something",
+    "type": ["Other"],
+    "rarity": ["Legendary"],
+    "price": 55,
+    "weight": 55,
+    "description": "Something"
+  },
+  {
+    "name": "Something",
+    "type": ["Other"],
+    "rarity": ["Legendary"],
+    "price": 66,
+    "weight": 66,
+    "description": "Something"
+  },
+  {
+    "name": "Something",
+    "type": ["Other"],
+    "rarity": ["Legendary"],
+    "price": 77,
+    "weight": 77,
+    "description": "Something"
+  },
+  {
+    "name": "Something",
+    "type": ["Other"],
+    "rarity": ["Legendary"],
+    "price": 88,
+    "weight": 88,
+    "description": "Something"
+  }
+]

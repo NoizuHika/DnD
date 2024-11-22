@@ -1,0 +1,92 @@
+[
+    {
+        "name": "Wand of Fireballs",
+        "type": "Item",
+        "subtype": "Wand",
+        "rarity": "Rare",
+        "weight": 1,
+        "price": 5000,
+        "attunement": "Requires attunement by a wizard",
+        "description": "This wand has 7 charges. While holding it, you can use an action to expend 1 or more of its charges to cast the Fireball spell (save DC 15) from it."
+    },
+    {
+        "name": "Ring of Protection",
+        "type": "Item",
+        "subtype": "Ring",
+        "rarity": "Rare",
+        "weight": 0.1,
+        "price": 3000,
+        "attunement": "a",
+        "description": "While wearing this ring, you gain a +1 bonus to AC and saving throws while you are attuned to it."
+    },
+    {
+        "name": "Potion of Healing",
+        "type": "Item",
+        "subtype": "Potion",
+        "rarity": "Common",
+        "weight": 0.5,
+        "price": 50,
+        "attunement": "b",
+        "description": "You regain 2d4+2 hit points when you drink this potion."
+    },
+    {
+        "name": "Scroll of Fireball",
+        "type": "Item",
+        "subtype": "Scroll",
+        "rarity": "Uncommon",
+        "weight": 0.1,
+        "price": 150,
+        "attunement": "c",
+        "description": "This scroll contains the Fireball spell."
+    },
+    {
+        "name": "Sword of Sharpness",
+        "type": "Weapon",
+        "subtype": "Longsword",
+        "rarity": "Very Rare",
+        "weight": 3,
+        "price": 15000,
+        "attunement": "d",
+        "description": "When you attack an object with this magic sword and hit, maximize your weapon damage dice against the target."
+    },
+    {
+        "name": "Longbow of Accuracy",
+        "type": "Weapon",
+        "subtype": "Longbow",
+        "rarity": "Rare",
+        "weight": 2,
+        "price": 12000,
+        "attunement": "e",
+        "description": "This longbow grants a +2 bonus to attack rolls made with it."
+    },
+    {
+        "name": "Armor of Invulnerability",
+        "type": "Armor",
+        "subtype": "Heavy armor",
+        "rarity": "Legendary",
+        "weight": 40,
+        "price": 50000,
+        "attunement": "f",
+        "description": "While wearing this armor, you have resistance to nonmagical damage."
+    },
+    {
+        "name": "Scale Mail of Resistance",
+        "type": "Armor",
+        "subtype": "Scale mail",
+        "rarity": "Uncommon",
+        "weight": 45,
+        "price": 5000,
+        "attunement": "g",
+        "description": "This scale mail grants resistance to a specific damage type."
+    },
+    {
+        "name": "Leather Armor of Stealth",
+        "type": "Armor",
+        "subtype": "Leather",
+        "rarity": "Rare",
+        "weight": 10,
+        "price": 2000,
+        "attunement": "h",
+        "description": "This leather armor grants advantage on stealth checks."
+    }
+]

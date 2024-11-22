@@ -1,0 +1,21 @@
+{
+  "items":
+[
+  { "name": "Potion of Healing", "weight": 0.5, "quantity": 2, "cost": 50, "description": "heal yourself or friends", "category": ["All", "Potions"] },
+  { "name": "Rope", "weight": 5, "quantity": 1, "cost": 1, "description": "you can use it when you want", "category": ["All", "Adventuring Gear"] },
+  { "name": "Torch", "weight": 0.2, "quantity": 5, "cost": 0.01, "description": "To light in dark", "category": ["All", "Other"] },
+  { "name": "Backpack", "weight": 1, "quantity": 1, "cost": 2, "description": "You can store your items here", "category": ["All", "Armor"] },
+  { "name": "Spellbook", "weight": 1.5, "quantity": 1, "cost": 75, "description": "Use to find spell", "category": ["All", "Scrolls"] },
+  { "name": "Sword", "weight": 3, "quantity": 1, "cost": 15, "description": "usual metal sword", "category": ["All", "Weapon"] },
+  { "name": "Shield", "weight": 6, "quantity": 1, "cost": 20, "description": "Something", "category": ["All", "Armor"] },
+  { "name": "Helmet", "weight": 2, "quantity": 1, "cost": 10, "description": "Something", "category": ["All", "Armor"] },
+  { "name": "Armor", "weight": 15, "quantity": 1, "cost": 50, "description": "Something", "category": ["All", "Armor"] },
+  { "name": "Boots", "weight": 1, "quantity": 1, "cost": 5, "description": "Something", "category": ["All", "Armor"] },
+  { "name": "Gloves", "weight": 0.5, "quantity": 1, "cost": 2, "description": "Something", "category": ["All", "Armor"] },
+  { "name": "Ring", "weight": 0.1, "quantity": 1, "cost": 25, "description": "Something", "category": ["All", "Magic Items"] },
+  { "name": "Amulet", "weight": 0.2, "quantity": 1, "cost": 30, "description": "Something", "category": ["All", "Magic Items"] },
+  { "name": "Arrow", "weight": 0.1, "quantity": 10, "cost": 1, "description": "A sharp arrow", "category": ["All", "Ammunition"] },
+  { "name": "Tools", "weight": 0.1, "quantity": 10, "cost": 1, "description": "A sharp arrow", "category": ["All", "Tools"] },
+],
+  "gold": 100
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Ancient Red Dragon",
+    "cr": 24,
+    "type": "Dragon",
+    "environment": "Mountains",
+    "alignment": "Chaotic Evil"
+  },
+  {
+    "name": "Goblin",
+    "cr": 0.25,
+    "type": "Humanoid",
+    "environment": "Forest",
+    "alignment": "Neutral Evil"
+  },
+  {
+    "name": "Beholder",
+    "cr": 13,
+    "type": "Aberration",
+    "environment": "Underground",
+    "alignment": "Lawful Evil"
+  }
+]
