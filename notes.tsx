@@ -1,2 +1,2 @@
 creatorsMonFeatItemMagic
-fetch?
+fetch? no
