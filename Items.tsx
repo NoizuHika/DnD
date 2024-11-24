@@ -178,14 +178,14 @@ const Items = ({ navigation }) => {
                 </View>
                 <Text style={styles.itemDescription}>{selectedItem.description}</Text>
                 <View style={styles.modalButtons}>
-                  <TouchableOpacity onPress={closeItemModal} style={styles.closeButtonItem}>
-                    <Text style={styles.closeButtonText}>{t('Close')}</Text>
-                  </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => setIsEditing(true)}
                     style={styles.editButton}
                   >
                     <Text style={styles.editButtonText}>{t('Edit')}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={closeItemModal} style={styles.closeButtonItem}>
+                    <Text style={styles.closeButtonText}>{t('Close')}</Text>
                   </TouchableOpacity>
                 </View>
               </View>

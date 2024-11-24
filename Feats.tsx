@@ -22,12 +22,9 @@ const Feats = ({ navigation }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedFeat, setEditedFeat] = useState(null);
 
-  const crOptions = [0.25, 1, 2, 5, 10, 20, 24];
-  const typeOptions = ['Dragon', 'Humanoid', 'Aberration'];
-  const environmentOptions = ['Underground', 'Forest', 'Mountains'];
-
-  const categories = ['Type', 'Creature', 'Monster'];
-  const environmentCategories = ['Environment'];
+  const crOptions = ["1/4", "1", "2", "3", "5", "10", "20", "24"];
+  const typeOptions = ['Large Ooze', 'Large Beast', 'Small Humanoid', 'Medium Beast'];
+  const environmentOptions = ["Forest", "Grassland", "Hill", "Underdark", "Arctic", "Desert"];
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -51,7 +48,9 @@ const Feats = ({ navigation }) => {
     }
 
     if (selectedEnvironment !== 'All') {
-      filtered = filtered.filter((feat) => feat.environment === selectedEnvironment);
+      filtered = filtered.filter((feat) =>
+        feat.environment && feat.environment.includes(selectedEnvironment)
+      );
     }
 
     return filtered;
@@ -284,18 +283,6 @@ const Feats = ({ navigation }) => {
 
                 <View style={styles.statsContainerFeatsC}>
                   <View style={styles.statsContainerFeatsD}>
-                    {['strbonus', 'dexbonus', 'conbonus', 'intbonus', 'wisbonus', 'chabonus'].map((statbonus) => (
-                      <View key={statbonus} style={styles.statBlock}>
-                        <TextInput
-                          style={styles.statValue}
-                          value={editedFeat?.[statbonus]?.toString() || ''}
-                          onChangeText={(value) => handleEditChange(statbonus, value)}
-                          keyboardType="numeric"
-                        />
-                      </View>
-                    ))}
-                  </View>
-                  <View style={styles.statsContainerFeatsD}>
                     {['str', 'dex', 'con', 'int', 'wis', 'cha'].map((stat) => (
                       <View key={stat} style={styles.statBlock}>
                         <View style={styles.rowContainer}>
@@ -347,6 +334,7 @@ const Feats = ({ navigation }) => {
                         value={action.description}
                         onChangeText={(value) => handleActionChange(index, value)}
                         placeholder={t('Description')}
+                        multiline
                       />
                     </View>
                   ))}
@@ -362,17 +350,18 @@ const Feats = ({ navigation }) => {
                         value={feature.description}
                         onChangeText={(value) => handleFeatureChange(index, value)}
                         placeholder={t('Description')}
+                        multiline
                       />
                     </View>
                   ))}
                 </View>
 
                 <View style={styles.modalButtons}>
-                  <TouchableOpacity onPress={saveFeatChanges} style={styles.editButton}>
-                    <Text style={styles.editButtonText}>{t('Save')}</Text>
-                  </TouchableOpacity>
                   <TouchableOpacity onPress={() => setIsEditing(false)} style={styles.closeButtonItem}>
                     <Text style={styles.closeButtonText}>{t('Cancel')}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={saveFeatChanges} style={styles.editButton}>
+                    <Text style={styles.editButtonText}>{t('Save')}</Text>
                   </TouchableOpacity>
                 </View>
               </ScrollView>

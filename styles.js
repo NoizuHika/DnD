@@ -97,7 +97,8 @@ const styles = StyleSheet.create({
   },
   sessionDescription: {
     fontSize: 14,
-    color: '#ccc'
+    color: '#ccc',
+    textAlignVertical: 'top',
   },
   image: {
     width: '100%',
@@ -928,6 +929,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#2d2d38',
     color: "#d6d6d6",
   },
+  pickerItemsA: {
+    width: "100%",
+    backgroundColor: '#2d2d38',
+    color: "#d6d6d6",
+  },
   abilityImage: {
     width: 40,
     height: 40,
@@ -1637,6 +1643,7 @@ const styles = StyleSheet.create({
   actionDescription: {
     fontSize: 14,
     color: '#c5c6c9',
+    textAlignVertical: 'top',
   },
   featureName: {
     fontSize: 16,
@@ -1646,6 +1653,7 @@ const styles = StyleSheet.create({
   featureDescription: {
     fontSize: 14,
     color: '#c5c6c9',
+    textAlignVertical: 'top',
   },
   sectionTitleFeats: {
     fontSize: 20,

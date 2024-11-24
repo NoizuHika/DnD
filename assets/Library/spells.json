@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "name": "Fire Bolt",
     "level": 0,
     "castingTime": "1 action",
@@ -14,6 +15,7 @@
     "upgrade": "The damage increases by 1d10 when you reach levels 5 (2d10), 11 (3d10), and 17 (4d10)."
   },
   {
+    "id": 2,
     "name": "Mage Armor",
     "level": 1,
     "castingTime": "1 action",
@@ -28,6 +30,7 @@
     "upgrade": null
   },
   {
+    "id": 3,
     "name": "Magic Missile",
     "level": 1,
     "castingTime": "1 action",
@@ -42,6 +45,7 @@
     "upgrade": "You create additional darts as you level up (5 at 11th level, 6 at 17th level)."
   },
   {
+    "id": 4,
     "name": "Shield",
     "level": 1,
     "castingTime": "1 action",
@@ -56,6 +60,7 @@
     "upgrade": null
   },
   {
+    "id": 5,
     "name": "Counterspell",
     "level": 3,
     "castingTime": "1 reaction",
@@ -70,6 +75,7 @@
     "upgrade": null
   },
   {
+    "id": 6,
     "name": "Fireball",
     "level": 3,
     "castingTime": "1 action",
@@ -84,6 +90,7 @@
     "upgrade": "The damage increases by 1d6 for every two levels beyond 3rd."
   },
   {
+    "id": 7,
     "name": "Polymorph",
     "level": 4,
     "castingTime": "1 action",
@@ -98,6 +105,7 @@
     "upgrade": null
   },
   {
+    "id": 8,
     "name": "Wall of Force",
     "level": 5,
     "castingTime": "1 action",
@@ -112,6 +120,7 @@
     "upgrade": null
   },
   {
+    "id": 9,
     "name": "Time Stop",
     "level": 9,
     "castingTime": "1 action",
@@ -126,6 +135,7 @@
     "upgrade": null
   },
   {
+    "id": 10,
     "name": "Wish",
     "level": 9,
     "castingTime": "1 action",
@@ -140,6 +150,7 @@
     "upgrade": null
   },
   {
+    "id": 11,
     "name": "Cure Wounds",
     "level": 1,
     "castingTime": "1 action",
@@ -154,6 +165,7 @@
     "upgrade": "Healing increases by 1d8 per level above 1st."
   },
   {
+    "id": 12,
     "name": "Summon Monster",
     "level": 4,
     "castingTime": "1 action",
@@ -168,6 +180,7 @@
     "upgrade": "At higher levels, you can summon more powerful creatures."
   },
   {
+    "id": 13,
     "name": "Healing Word",
     "level": 1,
     "castingTime": "1 bonus action",
@@ -182,6 +195,7 @@
     "upgrade": "At higher levels, healing increases by 1d4 for every level above 1st."
   },
   {
+    "id": 14,
     "name": "Misty Step",
     "level": 2,
     "castingTime": "1 bonus action",
@@ -196,6 +210,7 @@
     "upgrade": null
   },
   {
+    "id": 15,
     "name": "Mirror Image",
     "level": 2,
     "castingTime": "1 action",
@@ -210,6 +225,7 @@
     "upgrade": null
   },
   {
+    "id": 16,
     "name": "Hold Person",
     "level": 2,
     "castingTime": "1 action",
@@ -224,6 +240,7 @@
     "upgrade": "At higher levels, you can target more creatures (up to 5 at level 6)."
   },
   {
+    "id": 17,
     "name": "Detect Thoughts",
     "level": 2,
     "castingTime": "1 action",
@@ -238,6 +255,7 @@
     "upgrade": null
   },
   {
+    "id": 18,
     "name": "Greater Invisibility",
     "level": 4,
     "castingTime": "1 action",
@@ -252,6 +270,7 @@
     "upgrade": null
   },
   {
+    "id": 19,
     "name": "Cloudkill",
     "level": 5,
     "castingTime": "1 action",
@@ -266,6 +285,7 @@
     "upgrade": "The damage increases by 1d8 for every level above 5th."
   },
   {
+    "id": 20,
     "name": "Finger of Death",
     "level": 7,
     "castingTime": "1 action",
@@ -280,6 +300,7 @@
     "upgrade": null
   },
   {
+    "id": 21,
     "name": "Telekinesis",
     "level": 5,
     "castingTime": "1 action",
@@ -294,6 +315,7 @@
     "upgrade": null
   },
   {
+    "id": 22,
     "name": "True Seeing",
     "level": 6,
     "castingTime": "1 action",
@@ -308,6 +330,7 @@
     "upgrade": null
   },
   {
+    "id": 23,
     "name": "Power Word Heal",
     "level": 9,
     "castingTime": "1 action",
@@ -322,6 +345,7 @@
     "upgrade": null
   },
   {
+    "id": 24,
     "name": "Divination",
     "level": 4,
     "castingTime": "1 minute",
@@ -336,6 +360,7 @@
     "upgrade": null
   },
   {
+    "id": 25,
     "name": "Banishment",
     "level": 4,
     "castingTime": "1 action",
@@ -350,6 +375,7 @@
     "upgrade": null
   },
   {
+    "id": 26,
     "name": "Earthquake",
     "level": 8,
     "castingTime": "1 action",

@@ -33,7 +33,7 @@ const Spells = ({ navigation }) => {
   const [selectedSchool, setSelectedSchool] = useState('All');
   const [selectedSpell, setSelectedSpell] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedSpell, setEditedSpell] = useState({ ...selectedSpell });
+  const [editedSpell, setEditedSpell] = useState(null);
 
   const levels = Array.from({ length: 10 }, (_, i) => i);
   const effects = ['Attack', 'Defense', 'Support'];
@@ -45,7 +45,8 @@ const Spells = ({ navigation }) => {
 
   useEffect(() => {
     setSpells(spellsData);
-  }, []);
+    setEditedSpell({ ...selectedSpell });
+  }, [selectedSpell]);
 
   const filterSpells = () => {
     let filtered = spells;
@@ -79,6 +80,7 @@ const Spells = ({ navigation }) => {
 
   const closeSpellModal = () => {
     setSelectedSpell(null);
+    setIsEditing(false);
   };
 
   const handleEditChange = (field, value) => {
@@ -88,8 +90,24 @@ const Spells = ({ navigation }) => {
     }));
   };
 
+  const updateSpell = (updatedSpell) => {
+    setSpells((prevSpells) =>
+      prevSpells.map((spell) =>
+        spell.id === updatedSpell.id ? updatedSpell : spell
+      )
+    );
+  };
+
   const saveSpellChanges = () => {
-    updateSpell(editedSpell);
+    const updatedSpell = { ...editedSpell };
+
+    setSpells((prevSpells) =>
+      prevSpells.map((spell) =>
+        spell.id === updatedSpell.id ? updatedSpell : spell
+      )
+    );
+
+    setSelectedSpell(updatedSpell);
     setIsEditing(false);
   };
 
@@ -251,17 +269,21 @@ const Spells = ({ navigation }) => {
                   placeholder={t('Spell Name')}
                 />
 
+          <View style={styles.twoColumnContainer}>
+            <View style={styles.columnSpells}>
+
                 <TextInput
                   style={styles.modalDetails}
                   value={String(editedSpell.level)}
                   onChangeText={(value) => handleEditChange('level', value)}
                   placeholder={t('Level')}
+                  placeholderTextColor="#808080"
                 />
 
                 <Picker
                   selectedValue={editedSpell.school}
                   onValueChange={(value) => handleEditChange('school', value)}
-                  style={styles.pickerItems}
+                  style={styles.pickerItemsA}
                 >
                   <Picker.Item label={t('Evocation')} value="Evocation" />
                   <Picker.Item label={t('Necromancy')} value="Necromancy" />
@@ -271,47 +293,70 @@ const Spells = ({ navigation }) => {
                   <Picker.Item label={t('Enchantment')} value="Enchantment" />
                   <Picker.Item label={t('Transmutation')} value="Transmutation" />
                 </Picker>
+
+          </View>
+            <View style={styles.columnSpells}>
+
                 <TextInput
                   style={styles.modalDetails}
                   value={editedSpell.castingTime}
                   onChangeText={(value) => handleEditChange('castingTime', value)}
                   placeholder={t('Casting Time')}
-                />
-                <TextInput
-                  style={styles.modalDetails}
-                  value={editedSpell.range}
-                  onChangeText={(value) => handleEditChange('range', value)}
-                  placeholder={t('Range')}
-                />
-                <TextInput
-                  style={styles.modalDetails}
-                  value={editedSpell.area}
-                  onChangeText={(value) => handleEditChange('area', value)}
-                  placeholder={t('Area')}
+                  placeholderTextColor="#808080"
                 />
                 <TextInput
                   style={styles.modalDetails}
                   value={editedSpell.duration}
                   onChangeText={(value) => handleEditChange('duration', value)}
                   placeholder={t('Duration')}
+                  placeholderTextColor="#808080"
+                />
+
+          </View>
+            <View style={styles.columnSpells}>
+
+                <TextInput
+                  style={styles.modalDetails}
+                  value={editedSpell.range}
+                  onChangeText={(value) => handleEditChange('range', value)}
+                  placeholder={t('Range')}
+                  placeholderTextColor="#808080"
                 />
                 <TextInput
                   style={styles.modalDetails}
                   value={editedSpell.attackSave}
                   onChangeText={(value) => handleEditChange('attackSave', value)}
                   placeholder={t('Attack/Save')}
+                  placeholderTextColor="#808080"
+                />
+
+          </View>
+            <View style={styles.columnSpells}>
+
+                <TextInput
+                  style={styles.modalDetails}
+                  value={editedSpell.area}
+                  onChangeText={(value) => handleEditChange('area', value)}
+                  placeholder={t('Area')}
+                  placeholderTextColor="#808080"
                 />
                 <TextInput
                   style={styles.modalDetails}
                   value={editedSpell.components ? editedSpell.components.join(', ') : ''}
                   onChangeText={(value) => handleEditChange('components', value.split(', '))}
                   placeholder={t('Components')}
+                  placeholderTextColor="#808080"
                 />
+
+          </View>
+          </View>
+
                 <TextInput
                   style={styles.itemDescription}
                   value={editedSpell.description}
                   onChangeText={(value) => handleEditChange('description', value)}
                   placeholder={t('Description')}
+                  placeholderTextColor="#808080"
                   multiline
                 />
                 {editedSpell.upgrade && (
@@ -320,6 +365,7 @@ const Spells = ({ navigation }) => {
                     value={editedSpell.upgrade}
                     onChangeText={(value) => handleEditChange('upgrade', value)}
                     placeholder={t('Upgrade')}
+                    placeholderTextColor="#808080"
                     multiline
                   />
                 )}

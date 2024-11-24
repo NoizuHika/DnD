@@ -51,11 +51,6 @@ const Registration = () => {
       source={theme.background}
       resizeMode="cover"
     >
-      <WebView
-        source={require('./assets/captcha.html')}
-        style={{ height: 150 }}
-        onMessage={onCaptchaMessage}
-      />
 
       <Text style={[styles.appName, { color: theme.fontColor }]}>DMBook</Text>
 
@@ -107,7 +102,13 @@ const Registration = () => {
       <TouchableOpacity onPress={clearUsers}>
         <Text>Clear Users</Text>
       </TouchableOpacity>
-
+      <View style={{ height: 100}}>
+          <WebView
+           style={{ height: 150}}
+            source={require('./assets/captcha.html')}
+            onMessage={onCaptchaMessage}
+          />
+          </View>
       <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
         <Text style={styles.registerButtonText}>{t('Sign_up')}</Text>
       </TouchableOpacity>
