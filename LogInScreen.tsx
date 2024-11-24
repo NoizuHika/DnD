@@ -5,6 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { UserData } from './UserData';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const LogInScreen = () => {
   const navigation = useNavigation();

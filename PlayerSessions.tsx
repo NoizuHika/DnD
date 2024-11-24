@@ -5,6 +5,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const PlayerSessions = () => {
     const [sessions, setSessions] = useState([]);

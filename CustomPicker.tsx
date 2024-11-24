@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, Picker, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const Picker = ({ title, options }) => {
   const [selectedOption, setSelectedOption] = useState(options[0]);

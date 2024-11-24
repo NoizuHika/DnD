@@ -5,6 +5,9 @@ import { Picker } from '@react-native-picker/picker';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import sampleItems from './items.json';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const Inventory = ({ navigation }) => {
   const { t } = useTranslation();

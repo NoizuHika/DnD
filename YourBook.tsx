@@ -4,6 +4,9 @@ import { useTranslation } from 'react-i18next';
 import * as ImagePicker from 'react-native-image-picker';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const YourBook = ({ navigation }) => {
   const { t, i18n } = useTranslation();

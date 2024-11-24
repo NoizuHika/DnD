@@ -4,6 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { ThemeContext } from './theme/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import styles from './styles';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const SelectionRole = () => {
   const { theme } = useContext(ThemeContext);

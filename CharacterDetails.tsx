@@ -5,6 +5,9 @@ import { Picker } from '@react-native-picker/picker';
 import PlayerCharacter from './PlayerCharacter';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const CharacterDetail = ({ navigation }) => {
   const { t, i18n } = useTranslation();

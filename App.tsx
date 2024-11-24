@@ -55,6 +55,7 @@ import PlayerSessionDetails from './PlayerSessionDetails';
 import MonsterCreationScreen from './MonsterCreationScreen';
 import MonsterCreationDescription from './MonsterCreationDescription';
 import MagicItems from './MagicItems';
+import Creator from './Creator';
 
 const Stack = createStackNavigator();
 
@@ -101,6 +102,7 @@ const App = () => {
         <Stack.Screen name="MonsterCreationScreen" component={MonsterCreationScreen} options={{ headerShown: false }} />
         <Stack.Screen name="MonsterCreationDescription" component={MonsterCreationDescription} options={{ headerShown: false }} />
         <Stack.Screen name="MagicItems" component={MagicItems} options={{ headerShown: false }} />
+        <Stack.Screen name="Creator" component={Creator} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>

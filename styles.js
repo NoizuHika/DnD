@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   largeButtonMonCre: {
     position: 'absolute',
     borderRadius: 8,
-    top: -28,
+    top: -90,
     right: -180,
     alignItems: 'center',
     width: '30%',
@@ -137,6 +137,10 @@ const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     width: '100%',
+  },
+  buttonMonstrum: {
+    alignItems: 'center',
+    width: '30%',
   },
   buttonContainerUsu: {
     position: 'absolute',
@@ -1724,6 +1728,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  rowContainerMonstrum: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 20,
+  },
   infoColumn: {
     flex: 1,
   },
@@ -1949,6 +1959,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
     borderWidth: 1.5,
+  },
+  GoBackMonstrum: {
+    flex: 1,
+    alignItems: 'center',
+    marginHorizontal: 5,
   },
   GoBackText: {
     color: '#d6d6d6',

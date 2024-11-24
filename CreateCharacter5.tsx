@@ -3,6 +3,9 @@ import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, FlatList, Te
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const CreateCharacter5 = ({ navigation, route }) => {
   const { selectedClassInfo } = route.params;

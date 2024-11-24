@@ -1,6 +1,9 @@
 import React from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const Character2 = ({ navigation }) => {
   const handleGoBack = () => {

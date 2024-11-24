@@ -3,6 +3,9 @@ import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, Image, Modal
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const languages = [
   { code: 'en', label: 'English', flag: require('./assets/flags/English.png') },

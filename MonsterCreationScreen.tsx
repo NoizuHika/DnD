@@ -5,6 +5,10 @@ import { useTranslation } from 'react-i18next';
 import CheckBox from '@react-native-community/checkbox';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import autofill from './assets/Library/autofill.json';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const MonsterCreationScreen = ({ navigation }) => {
   const [monster, setMonster] = useState({
@@ -89,24 +93,51 @@ const MonsterCreationScreen = ({ navigation }) => {
     closeHitPointsModal();
   };
 
+  const autoFill = () => {
+    setMonster(autofill);
+  };
+
+  const saveMonster = () => {
+    console.log("Monster saved:", monster);
+  };
+
   return (
     <ImageBackground source={theme.background} style={styles.containerMonCre}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <View style={styles.buttonContainerMonCre}>
-          <TouchableOpacity style={styles.largeButtonMonCre} onPress={() => navigation.navigate('MonsterCreationDescription', { monster })}>
+
+     <View style={styles.rowContainerMonstrum}>
+      <View style={styles.GoBackMonstrum}>
+        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
+          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
+            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+          </ImageBackground>
+        </TouchableOpacity>
+      </View>
+
+        <View style={styles.GoBackMonstrum}>
+          <TouchableOpacity style={styles.button} onPress={autoFill}>
+            <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
+              <Text style={styles.buttonTextCharacter}>{t('Auto Fill')}</Text>
+            </ImageBackground>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.GoBackMonstrum}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MonsterCreationDescription', { monster })}>
            <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
             <Text style={styles.buttonTextCharacter}>{t('Description')}</Text>
            </ImageBackground>
           </TouchableOpacity>
         </View>
+        </View>
 
           <View style={styles.twoColumnContainer}>
             <View style={styles.columnTop}>
-            <Text style={styles.labelMonCre}>{t('Name')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Name')}</Text>
             <TextInput style={styles.inputMonCre} placeholder={t('Enter name')} value={monster.name} onChangeText={(text) => handleInputChange('name', text)} />
           </View>
             <View style={styles.columnTop}>
-            <Text style={styles.labelMonCre}>{t('Challenge Rating')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Challenge Rating')}</Text>
             <Picker selectedValue={monster.challengeRating} onValueChange={(value) => handleInputChange('challengeRating', value)} style={styles.pickerMonCre}>
               <Picker.Item label="1/8" value="1/8" />
               <Picker.Item label="1/4" value="1/4" />
@@ -120,23 +151,23 @@ const MonsterCreationScreen = ({ navigation }) => {
 
           <View style={styles.twoColumnContainer}>
             <View style={styles.column}>
-            <Text style={styles.labelMonCre}>{t('Armor Class')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Armor Class')}</Text>
             <TextInput style={styles.inputMonCre} placeholder={t('Armor')} value={monster.armorClass} onChangeText={(text) => handleInputChange('armorClass', text)} keyboardType="numeric" />
 
-            <Text style={styles.labelMonCre}>{t('Hit Points')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Hit Points')}</Text>
             <TouchableOpacity onPress={openHitPointsModal} style={styles.inputMonCre}>
               <Text>{monster.hitPoints || t('HP')}</Text>
             </TouchableOpacity>
           </View>
             <View style={styles.column}>
-            <Text style={styles.labelMonCre}>{t('Size')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Size')}</Text>
             <Picker selectedValue={monster.size} onValueChange={(value) => handleInputChange('size', value)} style={styles.pickerMonCre}>
               <Picker.Item label="Small" value="Small" />
               <Picker.Item label="Medium" value="Medium" />
               <Picker.Item label="Large" value="Large" />
             </Picker>
 
-            <Text style={styles.labelMonCre}>{t('Alignment')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Alignment')}</Text>
             <Picker selectedValue={monster.alignment} onValueChange={(value) => handleInputChange('alignment', value)} style={styles.pickerMonCre}>
               <Picker.Item label="Good" value="Good" />
               <Picker.Item label="Evil" value="Evil" />
@@ -144,7 +175,7 @@ const MonsterCreationScreen = ({ navigation }) => {
             </Picker>
           </View>
             <View style={styles.column}>
-            <Text style={styles.labelMonCre}>{t('Monster Type')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Monster Type')}</Text>
             <Picker selectedValue={monster.monsterType} onValueChange={(value) => handleInputChange('monsterType', value)} style={styles.pickerMonCre}>
               <Picker.Item label="Beast" value="Beast" />
               <Picker.Item label="Dragon" value="Dragon" />
@@ -152,7 +183,7 @@ const MonsterCreationScreen = ({ navigation }) => {
             </Picker>
 
           <View style={styles.section}>
-            <Text style={styles.labelMonstrum}>{t('Monster Subtype?')}</Text>
+            <Text style={[styles.labelMonstrum, { color: theme.textColor }]}>{t('Monster Subtype?')}</Text>
             <View style={styles.checkboxContainer1}>
               <CheckBox
                 value={isSubtype}
@@ -163,7 +194,7 @@ const MonsterCreationScreen = ({ navigation }) => {
 
             {isSubtype && (
               <View>
-                <Text style={styles.labelMonCre}>{t('Select Subtype')}</Text>
+                <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Select Subtype')}</Text>
                 <Picker
                   selectedValue={subtypeValue}
                   onValueChange={(value) => setSubtypeValue(value)}
@@ -182,32 +213,32 @@ const MonsterCreationScreen = ({ navigation }) => {
 
         <View style={styles.twoColumnContainer}>
           <View style={styles.column}>
-            <Text style={styles.labelMonCre}>{t('Strength')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Strength')}</Text>
             <TextInput style={styles.inputMonCreStat} placeholder={t('Strength')} value={monster.strength} onChangeText={(text) => handleInputChange('strength', text)} keyboardType="numeric" />
 
-            <Text style={styles.labelMonCre}>{t('Dexterity')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Dexterity')}</Text>
             <TextInput style={styles.inputMonCreStat} placeholder={t('Dexterity')} value={monster.dexterity} onChangeText={(text) => handleInputChange('dexterity', text)} keyboardType="numeric" />
           </View>
           <View style={styles.column}>
-            <Text style={styles.labelMonCre}>{t('Constitution')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Constitution')}</Text>
             <TextInput style={styles.inputMonCreStat} placeholder={t('Constitution')} value={monster.dexterity} onChangeText={(text) => handleInputChange('constitution', text)} keyboardType="numeric" />
 
-            <Text style={styles.labelMonCre}>{t('Intelligence')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Intelligence')}</Text>
             <TextInput style={styles.inputMonCreStat} placeholder={t('Intelligence')} value={monster.dexterity} onChangeText={(text) => handleInputChange('intelligence', text)} keyboardType="numeric" />
           </View>
           <View style={styles.column}>
-            <Text style={styles.labelMonCre}>{t('Wisdom')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Wisdom')}</Text>
             <TextInput style={styles.inputMonCreStat} placeholder={t('Wisdom')} value={monster.dexterity} onChangeText={(text) => handleInputChange('wisdom', text)} keyboardType="numeric" />
 
-            <Text style={styles.labelMonCre}>{t('Charisma')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Charisma')}</Text>
             <TextInput style={styles.inputMonCreStat} placeholder={t('Charisma')} value={monster.dexterity} onChangeText={(text) => handleInputChange('charisma', text)} keyboardType="numeric" />
           </View>
         </View>
 
           <View style={styles.columnAdding}>
-            <Text style={styles.labelMonCre}>{t('Movement')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Movement')}</Text>
             <TouchableOpacity style={styles.addButtonMonCre} onPress={() => openInputModal('movement')}>
-              <Text style={styles.addButtonText}>{t('Add Movement')}</Text>
+              <Text style={[styles.addButtonText, { color: theme.textColor }]}>{t('Add Movement')}</Text>
             </TouchableOpacity>
           </View>
             {monster.movement.map((item, index) => (
@@ -220,9 +251,9 @@ const MonsterCreationScreen = ({ navigation }) => {
             ))}
 
           <View style={styles.columnAdding}>
-            <Text style={styles.labelMonCre}>{t('Skills')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Skills')}</Text>
             <TouchableOpacity style={styles.addButtonMonCre} onPress={() => openInputModal('skills')}>
-              <Text style={styles.addButtonText}>{t('Add Skill')}</Text>
+              <Text style={[styles.addButtonText, { color: theme.textColor }]}>{t('Add Skill')}</Text>
             </TouchableOpacity>
           </View>
             {monster.skills.map((item, index) => (
@@ -235,9 +266,9 @@ const MonsterCreationScreen = ({ navigation }) => {
             ))}
 
           <View style={styles.columnAdding}>
-            <Text style={styles.labelMonCre}>{t('Senses')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Senses')}</Text>
             <TouchableOpacity style={styles.addButtonMonCre} onPress={() => openInputModal('senses')}>
-              <Text style={styles.addButtonText}>{t('Add Sense')}</Text>
+              <Text style={[styles.addButtonText, { color: theme.textColor }]}>{t('Add Sense')}</Text>
             </TouchableOpacity>
           </View>
             {monster.senses.map((item, index) => (
@@ -250,9 +281,9 @@ const MonsterCreationScreen = ({ navigation }) => {
             ))}
 
           <View style={styles.columnAdding}>
-            <Text style={styles.labelMonCre}>{t('Languages')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor }]}>{t('Languages')}</Text>
             <TouchableOpacity style={styles.addButtonMonCre} onPress={() => openInputModal('languages')}>
-              <Text style={styles.addButtonText}>{t('Add language')}</Text>
+              <Text style={[styles.addButtonText, { color: theme.textColor }]}>{t('Add language')}</Text>
             </TouchableOpacity>
           </View>
             {monster.languages.map((item, index) => (
@@ -352,13 +383,13 @@ const MonsterCreationScreen = ({ navigation }) => {
         </Modal>
       </ScrollView>
 
-      <View style={styles.GoBack}>
-        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
-          </ImageBackground>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.saveButton}>
+          <TouchableOpacity style={styles.buttonMonstrum} onPress={saveMonster}>
+            <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
+              <Text style={styles.GoBackText}>{t('Save Monster')}</Text>
+            </ImageBackground>
+          </TouchableOpacity>
+        </View>
     </ImageBackground>
   );
 };

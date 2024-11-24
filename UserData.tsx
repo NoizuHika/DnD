@@ -1,5 +1,8 @@
 import React, { createContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 export const UserData = createContext();
 

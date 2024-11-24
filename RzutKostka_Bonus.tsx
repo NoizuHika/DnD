@@ -3,6 +3,9 @@ import { ImageBackground, View, Text, TouchableOpacity, Animated, Easing } from 
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const RzutKostka_Bonus = ({ route, navigation }) => {
   const { statValue } = route.params;

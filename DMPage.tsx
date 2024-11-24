@@ -3,6 +3,9 @@ import { ImageBackground, StyleSheet, View, Button, Image, Text, TouchableOpacit
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
   const languages = [
     { code: 'en', label: 'English', flag: require('./assets/flags/English.png') },
@@ -39,10 +42,6 @@ const DMPage = ({ navigation }) => {
     navigation.navigate('LoggedScreen');
   };
 
-  const handleMonsterCreationScreen = () => {
-    navigation.navigate('MonsterCreationScreen');
-  };
-
   const handleLibraryPress = (page) => {
     setModalVisible(false);
     navigation.navigate(page);
@@ -63,16 +62,6 @@ const DMPage = ({ navigation }) => {
       style={styles.container}
     >
       <Text style={[styles.appName, { color: theme.fontColor }]}>DMBook</Text>
-
-      <View style={[styles.buttonContainerUsu, { bottom: '70%' }]}>
-        <TouchableOpacity style={styles.button} onPress={handleMonsterCreationScreen}>
-          <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
-            <Image source={theme.icons.yourcamp} style={styles.icons} />
-            <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
-            {t('Monstrum')}</Text>
-          </ImageBackground>
-        </TouchableOpacity>
-      </View>
 
       <View style={[styles.buttonContainerUsu, { bottom: '60%' }]}>
         <TouchableOpacity style={styles.button} onPress={handleCampaignsPress}>
@@ -159,6 +148,13 @@ const DMPage = ({ navigation }) => {
               <Image source={theme.icons.feats} style={styles.icons} />
               <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
               {t('Feats')}</Text>
+            </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalButton} onPress={() => handleLibraryPress('Creator')}>
+            <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
+              <Image source={theme.icons.creator} style={styles.icons} />
+              <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
+              {t('Creator')}</Text>
             </ImageBackground>
             </TouchableOpacity>
             <TouchableOpacity style={styles.modalCloseButton} onPress={() => setModalVisible(false)}>
