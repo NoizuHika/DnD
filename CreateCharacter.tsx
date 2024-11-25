@@ -10,7 +10,7 @@ Appearance.setColorScheme('light');
 
 const CreateCharacter = ({ navigation }) => {
   const handleGoBack = () => {
-     navigation.navigate('Characters');
+    navigation.goBack();
   };
 
   const { t, i18n } = useTranslation();

@@ -305,10 +305,10 @@ const Character1 = ({ navigation }) => {
         <View style={styles.healthBar}>
           <View style={[styles.healthFill, { width: `${health}%` }]} />
         </View>
-        <TouchableOpacity style={styles.healthButton} onPress={() => handleHealthChange(10)}>
+        <TouchableOpacity style={styles.healthButtonChar} onPress={() => handleHealthChange(10)}>
           <Text style={styles.healthText}>{t('Heal')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.damageButton} onPress={() => handleHealthChange(-10)}>
+        <TouchableOpacity style={styles.damageButtonChar} onPress={() => handleHealthChange(-10)}>
           <Text style={styles.damageText}>{t('Damage')}</Text>
         </TouchableOpacity>
        </View>

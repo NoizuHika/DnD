@@ -10,8 +10,8 @@ import { Appearance } from 'react-native';
 Appearance.setColorScheme('light');
 
 const CreateCharacter2 = ({ navigation, route }) => {
-const handleGoBack = () => {
-     navigation.navigate('CreateCharacter');
+  const handleGoBack = () => {
+    navigation.goBack();
   };
 
   const { t, i18n } = useTranslation();

@@ -365,13 +365,13 @@ const CampaignOne = ({ navigation }) => {
               <View style={styles.noteActions}>
                 <Text style={styles.noteTitle}>{note.title}</Text>
                     <TouchableOpacity
-                      style={styles.editButton}
+                      style={styles.editButtonCamp}
                       onPress={() => handleEditNote(index)}
                     >
                       <Text style={styles.editTextCamp}>{t('Edit')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      style={styles.shareButton}
+                      style={styles.shareButtonCamp}
                       onPress={() => handleShareNote(note)}
                     >
                       <Text style={styles.shareText}>{t('Share')}</Text>

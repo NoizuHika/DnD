@@ -45,7 +45,14 @@ const Spells = ({ navigation }) => {
 
   useEffect(() => {
     setSpells(spellsData);
-    setEditedSpell({ ...selectedSpell });
+  }, []);
+
+  useEffect(() => {
+    if (selectedSpell) {
+      setEditedSpell({ ...selectedSpell });
+    } else {
+      setEditedSpell(null);
+    }
   }, [selectedSpell]);
 
   const filterSpells = () => {
@@ -99,6 +106,8 @@ const Spells = ({ navigation }) => {
   };
 
   const saveSpellChanges = () => {
+    if (!editedSpell) return;
+
     const updatedSpell = { ...editedSpell };
 
     setSpells((prevSpells) =>

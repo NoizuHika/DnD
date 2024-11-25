@@ -8,6 +8,10 @@ const Creator = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
 
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
+
   const handleItemCreatorPress = () => {
     navigation.navigate('ItemCreator');
   };
@@ -27,6 +31,14 @@ const Creator = ({ navigation }) => {
   return (
     <ImageBackground source={theme.background} style={styles.container}>
       <Text style={[styles.appName, { color: theme.fontColor }]}>DMBook</Text>
+
+      <View style={styles.GoBack}>
+        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
+          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
+            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+          </ImageBackground>
+        </TouchableOpacity>
+      </View>
 
       <View style={[styles.buttonContainerUsu, { bottom: '60%' }]}>
         <TouchableOpacity style={styles.button} onPress={handleItemCreatorPress}>

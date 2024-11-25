@@ -22,7 +22,7 @@ const alignments = [
 
 const CreateCharacter4 = ({ navigation, route }) => {
   const handleGoBack = () => {
-    navigation.navigate('CreateCharacter');
+    navigation.goBack();
   };
 
   const { t, i18n } = useTranslation();

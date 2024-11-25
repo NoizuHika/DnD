@@ -32,7 +32,7 @@ const CreateCharacter5 = ({ navigation, route }) => {
   };
 
   const handleGoBack = () => {
-    navigation.navigate('CreateCharacter');
+    navigation.goBack();
   };
 
   const handleContinue = () => {
