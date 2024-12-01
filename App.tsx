@@ -56,6 +56,10 @@ import MonsterCreationScreen from './MonsterCreationScreen';
 import MonsterCreationDescription from './MonsterCreationDescription';
 import MagicItems from './MagicItems';
 import Creator from './Creator';
+import Bestiary from './Bestiary';
+import ItemCreator from './ItemCreator';
+import MagicItemCreator from './MagicItemCreator';
+import SpellCreator from './SpellCreator';
 
 const Stack = createStackNavigator();
 
@@ -103,6 +107,10 @@ const App = () => {
         <Stack.Screen name="MonsterCreationDescription" component={MonsterCreationDescription} options={{ headerShown: false }} />
         <Stack.Screen name="MagicItems" component={MagicItems} options={{ headerShown: false }} />
         <Stack.Screen name="Creator" component={Creator} options={{ headerShown: false }} />
+        <Stack.Screen name="Bestiary" component={Bestiary} options={{ headerShown: false }} />
+        <Stack.Screen name="ItemCreator" component={ItemCreator} options={{ headerShown: false }} />
+        <Stack.Screen name="MagicItemCreator" component={MagicItemCreator} options={{ headerShown: false }} />
+        <Stack.Screen name="SpellCreator" component={SpellCreator} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>

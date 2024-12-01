@@ -8,3 +8,7 @@ creatorsMonFeatItemMagic
                   placeholderTextColor="#808080"
                   multiline
                 />
+
+
+
+   style registration forgot pass

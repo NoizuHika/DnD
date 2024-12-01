@@ -143,11 +143,11 @@ const DMPage = ({ navigation }) => {
                {t('Magic Items')}</Text>
              </ImageBackground>
              </TouchableOpacity>
-            <TouchableOpacity style={styles.modalButton} onPress={() => handleLibraryPress('Feats')}>
+            <TouchableOpacity style={styles.modalButton} onPress={() => handleLibraryPress('Bestiary')}>
             <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
               <Image source={theme.icons.feats} style={styles.icons} />
               <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
-              {t('Feats')}</Text>
+              {t('Bestiary')}</Text>
             </ImageBackground>
             </TouchableOpacity>
             <TouchableOpacity style={styles.modalButton} onPress={() => handleLibraryPress('Creator')}>

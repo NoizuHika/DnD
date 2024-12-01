@@ -9,6 +9,9 @@ const styles = StyleSheet.create({
     height: '100%',
     resizeMode: 'cover',
   },
+  containerCreator: {
+    flex: 1,
+  },
   containerMonCre: {
     flex: 1,
     padding: 10,
@@ -216,6 +219,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
+  },
+  checkboxContainerMagicItem: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    alignSelf: 'flex-start',
   },
   labelMonstrum: {
     textAlign: 'center',
@@ -457,6 +467,22 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
   },
+  inputItemCreator: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 10,
+    marginHorizontal: 70,
+    marginLeft: 0,
+  },
+  inputSpellCreator: {
+    backgroundColor: '#fff',
+    marginTop: 10,
+    padding: 10,
+    marginBottom: 10,
+    marginHorizontal: 60,
+    marginLeft: 5,
+  },
   noteHeader: {
     borderColor: '#7F7F7F',
     borderWidth: 1.5,
@@ -494,6 +520,38 @@ const styles = StyleSheet.create({
   saveButton: {
     alignItems: 'center',
   },
+  labelItemCre: {
+    alignItems: 'center',
+    textAlign: "center",
+  },
+  labelMagicItemCre: {
+    width: '100%',
+    textAlign: 'left',
+    paddingLeft: 0,
+    marginLeft: 0,
+  },
+  inputItemCreator: {
+    textAlign: "center",
+    width: '60%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    backgroundColor: '#fff',
+  },
+  inputItemCreatorSmall: {
+    padding: 8,
+    borderWidth: 1,
+    marginHorizontal: 20,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    textAlign: 'center',
+  },
+  inputMagicItemCreatorSmall: {
+    padding: 14,
+    backgroundColor: '#fff',
+    textAlign: 'center',
+  },
   saveText: {
     color: 'green',
     fontSize: 16,
@@ -513,6 +571,32 @@ const styles = StyleSheet.create({
     color: 'black',
     backgroundColor: '#fff',
     marginVertical: 3,
+  },
+  centeredBlockDescription: {
+    marginTop: 50,
+    alignSelf: 'flex-start',
+    marginLeft: 10,
+  },
+  centeredBlockMagicItemCont: {
+    alignSelf: 'flex-start',
+  },
+  pickerLeftContainer: {
+    width: "50%",
+    alignSelf: 'flex-start',
+    marginLeft: 10,
+    marginTop: 10,
+  },
+  pickerLeftContainerA: {
+    width: "95%",
+    alignSelf: 'flex-start',
+    marginLeft: 10,
+    marginTop: 10,
+  },
+  pickerMagicItemCre: {
+    color: 'black',
+    backgroundColor: '#fff',
+    marginHorizontal: 5,
+    width: "70%",
   },
   addButtonMonCre: {
     backgroundColor: '#ffa500',
@@ -1126,6 +1210,16 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
   },
+  centeredBlock: {
+    marginBottom: 20,
+    alignItems: 'center',
+    width: '100%',
+  },
+  centeredBlockA: {
+    marginBottom: 20,
+    width: '100%',
+    marginTop: 20,
+  },
   diceResult: {
     fontSize: 18,
     color: '#d9534f',
@@ -1175,6 +1269,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
+  },
+  rowCreateItemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
   },
   itemTitle: {
     fontSize: 18,
@@ -2006,6 +2105,7 @@ const styles = StyleSheet.create({
   },
   GoBackText: {
     color: '#d6d6d6',
+    textAlign: 'center',
   },
   titleLogin: {
     position: 'absolute',
