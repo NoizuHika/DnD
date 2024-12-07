@@ -63,6 +63,7 @@ const SpellCreator = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
+      <View style = {styles.containerSpellCreator}>
         <View style={styles.rowContainer}>
           <View style={styles.column}>
             <Text style={styles.label}>{t('Name')}</Text>
@@ -112,16 +113,7 @@ const SpellCreator = ({ navigation }) => {
               <Picker.Item label={t('Minutes')} value="minutes" />
               <Picker.Item label={t('Hours')} value="hours" />
             </Picker>
-            <Text style={styles.label}>{t('Amount')}</Text>
-            {showAmountInput && (
-              <TextInput
-                style={styles.inputSpellCreator}
-                placeholder={t('Enter amount')}
-                value={amount}
-                onChangeText={setAmount}
-                keyboardType="numeric"
-              />
-            )}
+
           </View>
 
           <View style={styles.column}>
@@ -143,7 +135,19 @@ const SpellCreator = ({ navigation }) => {
           </View>
         </View>
 
-        <View style={styles.rowContainer}>
+          <View style={styles.column}>
+            {showAmountInput && (
+              <TextInput
+                style={styles.inputSpellCreator}
+                placeholder={t('Enter amount')}
+                value={amount}
+                onChangeText={setAmount}
+                keyboardType="numeric"
+              />
+            )}
+          </View>
+
+        <View style={styles.rowContainerA}>
           <Text style={styles.label}>{t('Components')}</Text>
           <CheckBox
             value={verbal}
@@ -168,7 +172,9 @@ const SpellCreator = ({ navigation }) => {
             tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
           />
           <Text style={styles.label}>{t('Material')}</Text>
+        </View>
 
+          <View style={styles.column}>
           {showMaterialInput && (
             <TextInput
               style={styles.inputSpellCreator}
@@ -177,7 +183,7 @@ const SpellCreator = ({ navigation }) => {
               onChangeText={setMaterialDescription}
             />
           )}
-        </View>
+          </View>
 
         <View style={styles.rowContainer}>
           <View style={styles.column}>
@@ -195,15 +201,7 @@ const SpellCreator = ({ navigation }) => {
               <Picker.Item label={t('Minutes')} value="minutes" />
               <Picker.Item label={t('Hours')} value="hours" />
             </Picker>
-            {showDurationInput && (
-              <TextInput
-                style={styles.inputSpellCreator}
-                placeholder={t('Enter duration amount')}
-                value={durationAmount}
-                onChangeText={setDurationAmount}
-                keyboardType="numeric"
-              />
-            )}
+
           </View>
 
           <CheckBox
@@ -214,18 +212,19 @@ const SpellCreator = ({ navigation }) => {
           <Text style={styles.label}>{t('Is Concentration?')}</Text>
         </View>
 
-        <View style={styles.rowContainer}>
           <View style={styles.column}>
-            <Text style={styles.label}>{t('Range')}</Text>
-            <TextInput
-              style={styles.inputSpellCreator}
-              placeholder={t('Enter range')}
-              value={range}
-              onChangeText={setRange}
-              keyboardType="numeric"
-            />
-          </View>
+            {showDurationInput && (
+              <TextInput
+                style={styles.inputSpellCreator}
+                placeholder={t('Enter duration amount')}
+                value={durationAmount}
+                onChangeText={setDurationAmount}
+                keyboardType="numeric"
+              />
+            )}
+        </View>
 
+        <View style={styles.rowContainer}>
           <View style={styles.column}>
             <Text style={styles.label}>{t('Area Type')}</Text>
             <Picker
@@ -242,6 +241,23 @@ const SpellCreator = ({ navigation }) => {
               <Picker.Item label={t('Line')} value="line" />
               <Picker.Item label={t('Sphere')} value="sphere" />
             </Picker>
+
+          </View>
+
+          <View style={styles.column}>
+            <Text style={styles.label}>{t('Range')}</Text>
+            <TextInput
+              style={styles.inputSpellCreator}
+              placeholder={t('Enter range')}
+              value={range}
+              onChangeText={setRange}
+              keyboardType="numeric"
+            />
+          </View>
+
+        </View>
+
+          <View style={styles.column}>
             {showRangeInput && (
               <TextInput
                 style={styles.inputSpellCreator}
@@ -251,7 +267,6 @@ const SpellCreator = ({ navigation }) => {
                 keyboardType="numeric"
               />
             )}
-          </View>
         </View>
 
         <View style={styles.centeredBlockDescription}>
@@ -288,6 +303,7 @@ const SpellCreator = ({ navigation }) => {
             />
           </View>
         </View>
+       </View>
       </ScrollView>
 
         <View style={styles.saveButton}>

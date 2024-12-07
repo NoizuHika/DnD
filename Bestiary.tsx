@@ -8,7 +8,7 @@ import { Appearance } from 'react-native';
 
 Appearance.setColorScheme('light');
 
-const feats = require('./assets/Library/feats.json');
+const feats = require('./assets/Library/bestiary.json');
 
 const Bestiary = ({ navigation }) => {
   const { t } = useTranslation();

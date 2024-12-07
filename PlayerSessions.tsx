@@ -16,19 +16,19 @@ const PlayerSessions = () => {
     const { theme } = useContext(ThemeContext);
 
     useEffect(() => {
-            const loadSessions = async () => {
-                try {
-                    // Fetch campaigns from AsyncStorage
-                    const storedCampaigns = await AsyncStorage.getItem('campaigns');
-                    if (storedCampaigns) {
-                        setSessions(JSON.parse(storedCampaigns));
-                    }
-                } catch (error) {
-                    console.error('Failed to load sessions:', error);
+        const loadSessions = async () => {
+            try {
+                // Fetch campaigns from AsyncStorage
+                const storedCampaigns = await AsyncStorage.getItem('campaigns');
+                if (storedCampaigns) {
+                    setSessions(JSON.parse(storedCampaigns));
                 }
-            };
-            loadSessions();
-        }, []);
+            } catch (error) {
+                console.error('Failed to load sessions:', error);
+            }
+        };
+        loadSessions();
+    }, []);
 
 
     const openSessionDetails = (session) => {
