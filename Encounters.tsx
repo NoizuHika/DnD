@@ -36,7 +36,7 @@ const Encounters = ({ navigation, route }) => {
   };
 
   const handleRunEncounter = (encounter) => {
-    alert(`Running ${encounter.name}`);
+    navigation.navigate('EncounterRun', { encounter });
   };
 
   return (

@@ -62,6 +62,8 @@ import MagicItemCreator from './MagicItemCreator';
 import SpellCreator from './SpellCreator';
 import Encounters from './Encounters';
 import EncounterEdit from './EncounterEdit';
+import EncounterRun from './EncounterRun';
+import EncounterRunStart from './EncounterRunStart';
 
 const Stack = createStackNavigator();
 
@@ -115,6 +117,8 @@ const App = () => {
         <Stack.Screen name="SpellCreator" component={SpellCreator} options={{ headerShown: false }} />
         <Stack.Screen name="Encounters" component={Encounters} options={{ headerShown: false }} />
         <Stack.Screen name="EncounterEdit" component={EncounterEdit} options={{ headerShown: false }} />
+        <Stack.Screen name="EncounterRun" component={EncounterRun} options={{ headerShown: false }} />
+        <Stack.Screen name="EncounterRunStart" component={EncounterRunStart} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
     </UserProvider>

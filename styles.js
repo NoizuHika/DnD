@@ -18,6 +18,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  containerEncounterRun: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+  },
   containerMonCre: {
     flex: 1,
     padding: 10,
@@ -1865,6 +1870,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#d6d6d6',
   },
+  monsterTextEncRun: {
+    flex: 1,
+    fontSize: 16,
+    color: '#d6d6d6',
+  },
   monsterRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1872,6 +1882,15 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     backgroundColor: '#3f3f4d',
+  },
+  monsterRowEncounterRun: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    backgroundColor: '#222',
+    borderBottomWidth: 1,
+    borderColor: '#fff',
   },
   sectionTitleEncounter: {
     fontSize: 18,
@@ -1923,6 +1942,184 @@ const styles = StyleSheet.create({
     flex: 0.5,
     paddingHorizontal: 20,
     paddingVertical: 10,
+  },
+  topBarEncounterRun: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#222',
+  },
+  turnTextEncounterRun: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  nextTurnButtonEncounterRun: {
+    padding: 10,
+    backgroundColor: '#444',
+    borderRadius: 5,
+  },
+  nextTurnTextEncounterRun: {
+    color: '#fff',
+  },
+
+  tableContainerEncounterRun: {
+    marginTop: 10,
+  },
+  tableRowEncounterRun: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 5,
+    backgroundColor: '#222',
+    borderBottomWidth: 1,
+    borderColor: '#444',
+  },
+  activeRowEncounterRun: {
+    backgroundColor: '#444',
+  },
+  tableCellEncounterRun: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  initiativeCellEncounterRun: {
+    flex: 0.5,
+  },
+  avatarCellEncounterRun: {
+    flex: 0.8,
+  },
+  avatarImageEncounterRun: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  placeholderAvatarEncounterRun: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#555',
+  },
+  nameCellEncounterRun: {
+    flex: 2,
+    alignItems: 'flex-start',
+  },
+  nameTextEncounterRun: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  detailsRowEncounterRun: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  acTextEncounterRun: {
+    color: '#aaa',
+  },
+  crTextEncounterRun: {
+    color: '#aaa',
+  },
+  hpCellEncounterRun: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+  },
+  hpButtonEncounterRun: {
+    padding: 5,
+    backgroundColor: '#444',
+    borderRadius: 5,
+  },
+  hpButtonTextEncounterRun: {
+    color: '#fff',
+  },
+  hpTextEncounterRun: {
+    color: '#fff',
+  },
+
+  middleEncounterContRun: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: '25%',
+  },
+  autoRollEncounterButton: {
+    width: '40%',
+    backgroundColor: '#222',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    textAlign: 'center',
+  },
+  monsterRowOdd: {
+    backgroundColor: '#333',
+  },
+  cellEncounterRun: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#fff',
+    padding: 5,
+  },
+  cellInitiativeEncounterRun: {
+    flex: 0.7,
+    textAlign: 'center',
+  },
+  cellAvatarEncounterRun: {
+    flex: 0.5,
+    textAlign: 'center',
+  },
+  cellNameEncounterRun: {
+    flex: 2,
+    textAlign: 'center',
+  },
+  cellCountEncounterRun: {
+    flex: 0.7,
+    textAlign: 'center',
+  },
+  autoRollEncounterText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  startEncounterButton: {
+    width: '40%',
+    backgroundColor: '#5a5',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    textAlign: 'center',
+  },
+  startEncounterButtonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  acEncounterText: {
+    color: '#fff',
+    fontSize: 14,
+    flex: 1,
+    textAlign: 'center',
+    marginLeft: 30,
+    borderColor: '#fff',
+    borderWidth: 1,
+  },
+  crEncounterText: {
+    color: '#fff',
+    fontSize: 14,
+    flex: 1,
+    textAlign: 'center',
+    marginRight: 30,
+    borderColor: '#fff',
+    borderWidth: 1,
+  },
+  countEncounterText: {
+    color: '#fff',
+    fontSize: 14,
+    flex: 1,
+    textAlign: 'center',
+  },
+  avatarImage: {
+    width: 70,
+    height: 70,
+    marginVertical: -15,
+    backgroundColor: '#555',
   },
   filterEncounter: {
     flex: 0.5,
