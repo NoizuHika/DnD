@@ -50,7 +50,7 @@ const EncounterRun = ({ route, navigation }) => {
   };
 
   const handleStart = () => {
-    navigation.navigate('EncounterRunStart');
+    navigation.navigate('EncounterRunStart', { encounter: { ...encounter, players: playersFromState },});
   };
 
   return (

@@ -1953,6 +1953,21 @@ const styles = StyleSheet.create({
   turnTextEncounterRun: {
     color: '#fff',
     fontSize: 16,
+    backgroundColor: '#222',
+    padding: 5,
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  endEncounterButton: {
+    color: '#fff',
+    fontSize: 16,
+    backgroundColor: '#f44336',
+    padding: 5,
+    borderWidth: 1,
+    borderColor: '#444',
+  },
+  endEncounterButtonText: {
+    color: '#fff',
   },
   nextTurnButtonEncounterRun: {
     padding: 10,
@@ -1962,80 +1977,6 @@ const styles = StyleSheet.create({
   nextTurnTextEncounterRun: {
     color: '#fff',
   },
-
-  tableContainerEncounterRun: {
-    marginTop: 10,
-  },
-  tableRowEncounterRun: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    paddingHorizontal: 5,
-    backgroundColor: '#222',
-    borderBottomWidth: 1,
-    borderColor: '#444',
-  },
-  activeRowEncounterRun: {
-    backgroundColor: '#444',
-  },
-  tableCellEncounterRun: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  initiativeCellEncounterRun: {
-    flex: 0.5,
-  },
-  avatarCellEncounterRun: {
-    flex: 0.8,
-  },
-  avatarImageEncounterRun: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-  },
-  placeholderAvatarEncounterRun: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#555',
-  },
-  nameCellEncounterRun: {
-    flex: 2,
-    alignItems: 'flex-start',
-  },
-  nameTextEncounterRun: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  detailsRowEncounterRun: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  acTextEncounterRun: {
-    color: '#aaa',
-  },
-  crTextEncounterRun: {
-    color: '#aaa',
-  },
-  hpCellEncounterRun: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-around',
-  },
-  hpButtonEncounterRun: {
-    padding: 5,
-    backgroundColor: '#444',
-    borderRadius: 5,
-  },
-  hpButtonTextEncounterRun: {
-    color: '#fff',
-  },
-  hpTextEncounterRun: {
-    color: '#fff',
-  },
-
   middleEncounterContRun: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -2113,6 +2054,24 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
     flex: 1,
+    textAlign: 'center',
+  },
+  hpButtonEncounterRun: {
+    backgroundColor: '#444',
+    padding: 5,
+    borderRadius: 3,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginHorizontal: 5,
+  },
+  hpButtonTextEncounterRun: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  hpTextEncounterRun: {
+    color: '#fff',
+    fontSize: 14,
     textAlign: 'center',
   },
   avatarImage: {
