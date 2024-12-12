@@ -112,6 +112,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 10,
   },
+  closeNoteButton: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  closeNoteButtonCampaign: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+    paddingBottom: 50,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+  },
   sessionDescription: {
     fontSize: 14,
     color: '#ccc',
@@ -398,25 +412,54 @@ const styles = StyleSheet.create({
   deleteTextCamp: {
     color: 'red',
     marginHorizontal: 10,
+    marginVertical: 15,
+  },
+  deleteTextCampNote: {
+    color: 'red',
+    marginHorizontal: 10,
+    marginVertical: 15,
+    textAlign: 'center',
+  },
+  modalNoteCampaignContainer: {
+    flex: 1,
+    padding: 10,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+  },
+  modalNoteCampaignContent: {
+    color: '#d6d6d6',
+    paddingHorizontal: 10,
+    marginBottom: 10,
+    alignItems: 'center',
+  },
+  modalNoteCampaignTitle: {
+    fontSize: 24,
+    color: '#c5c6c9',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  modalNoteCampaignText: {
+    color: 'white',
+    fontSize: 16,
   },
   editButtonCamp: {
     marginHorizontal: 10,
+    justifyContent: 'center',
   },
   shareButtonCamp: {
     marginHorizontal: 10,
+    justifyContent: 'center',
   },
   deleteText: {
     color: '#d6d6d6',
     marginHorizontal: 5,
   },
   newNoteContainer: {
-    borderColor: '#7F7F7F',
-    borderWidth: 1.5,
-    borderRadius: 10,
-    marginTop: 10,
-    marginBottom: 10,
     padding: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.95)',
   },
   inputCampNote: {
     borderColor: '#7F7F7F',
@@ -568,6 +611,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   saveText: {
+    marginVertical: 15,
     color: 'green',
     fontSize: 16,
   },
@@ -659,9 +703,11 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   deleteButtonCamp: {
-    alignItems: 'center',
     color: 'red',
-    fontSize: 16,
+    justifyContent: 'center',
+  },
+  deleteButtonCampNote: {
+    color: 'red',
   },
   newSessionContainer: {
     borderColor: '#7F7F7F',
@@ -2164,6 +2210,19 @@ const styles = StyleSheet.create({
     width: 165,
     borderRadius: 10,
   },
+  modalImageNoteCampaign: {
+    width: '100%',
+    height: 165,
+    width: 165,
+    borderRadius: 10,
+    marginVertical: 15,
+  },
+  modalActionsNoteCampaign: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    padding: 10,
+  },
   modalContentFeats: {
     backgroundColor: '#333',
     borderRadius: 10,
@@ -3021,6 +3080,42 @@ const styles = StyleSheet.create({
   addCampaignContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  mainCampaignContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  leftCampaignContainer: {
+    flex: 0.6,
+    borderRightWidth: 1,
+    borderRightColor: '#ccc',
+  },
+  rightCampaignContainer: {
+    flex: 0.4,
+  },
+  titleCampaignOne: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  contentCampaignOne: {
+    fontSize: 16,
+  },
+  diceResultCampaignOne: {
+    fontSize: 16,
+    marginVertical: 5,
+  },
+  encounterButtonCampaignOne: {
+    marginTop: 20,
+    padding: 10,
+    backgroundColor: '#6200ea',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  encounterButtonTextCampaignOne: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

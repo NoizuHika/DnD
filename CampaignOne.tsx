@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView, Alert, Image } from 'react-native';
+import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView, Alert, Image, Modal } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeContext } from './theme/ThemeContext';
@@ -38,6 +38,8 @@ const CampaignOne = ({ navigation }) => {
   const [activeSessionIndex, setActiveSessionIndex] = useState(0);
   const [addingNewSession, setAddingNewSession] = useState(false);
   const [addingNewNote, setAddingNewNote] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedNote, setSelectedNote] = useState(null);
 
   const [players, setPlayers] = useState([
     { id: 1, name: "Player 1", image: require('./assets/assasin.jpeg'), coins: 0, level: 1, hp: 100 },
@@ -45,6 +47,7 @@ const CampaignOne = ({ navigation }) => {
   ]);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [noteVisibility, setNoteVisibility] = useState(new Array(notes.length).fill(false));
+  const [modalVisible, setModalVisible] = useState(false);
 
   const handleSelectPlayer = (player) => {
     if (selectedPlayers.includes(player.id)) {
@@ -94,7 +97,6 @@ const CampaignOne = ({ navigation }) => {
       try {
         const savedSessions = await AsyncStorage.getItem('sessions');
         if (savedSessions !== null) {
-          console.log('Loaded sessions from storage:', savedSessions);
           setSessions(JSON.parse(savedSessions));
         }
       } catch (error) {
@@ -191,6 +193,7 @@ const CampaignOne = ({ navigation }) => {
 
   const handleShareNote = (note) => {
     Alert.alert(`Sharing note: ${note.title}`);
+    handleCloseNote();
   };
 
   const handleAddNote = () => {
@@ -199,6 +202,7 @@ const CampaignOne = ({ navigation }) => {
     setNewNoteTitle('');
     setNewNoteContent('');
     setNewNoteImage(null);
+    setModalVisible(true);
   };
 
   const handleSaveNote = async () => {
@@ -221,11 +225,13 @@ const CampaignOne = ({ navigation }) => {
   };
 
   const handleEditNote = (index) => {
+    handleCloseNote();
     setEditingNoteIndex(index);
     setNewNoteTitle(notes[index].title);
     setNewNoteContent(notes[index].content);
     setNewNoteImage(notes[index].image.uri || null);
     setAddingNewNote(!addingNewNote);
+    setModalVisible(true);
   };
 
   const handleSaveEditNote = () => {
@@ -250,6 +256,8 @@ const CampaignOne = ({ navigation }) => {
     setNotes(updatedNotes);
     setNoteVisibility(noteVisibility.filter((_, i) => i !== index));
     setAddingNewNote(false);
+    handleCloseNote();
+    saveNotes(updatedNotes);
   };
 
   const pickImage = async () => {
@@ -263,6 +271,22 @@ const CampaignOne = ({ navigation }) => {
     if (!result.canceled) {
       setNewNoteImage(result.assets[0].uri);
     }
+  };
+
+  const handleGoToEncounter = () => {
+    navigation.navigate('Encounters');
+  };
+
+  const handleOpenNote = (note, index) => {
+    setSelectedNote(note);
+    setEditingNoteIndex(index);
+    setIsModalVisible(true);
+  };
+
+  const handleCloseNote = () => {
+    setSelectedNote(null);
+    setAddingNewNote(null);
+    setIsModalVisible(false);
   };
 
   return (
@@ -283,10 +307,9 @@ const CampaignOne = ({ navigation }) => {
               <Text style={styles.sessionTabText}>{session.name}</Text>
             </TouchableOpacity>
           ))}
-          <TouchableOpacity style={styles.sessionTab} onPress={handleNewSessionTab}>
-            <Text style={[styles.sessionTabText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
-            {t('Add new')}</Text>
-          </TouchableOpacity>
+            <TouchableOpacity style={styles.sessionTab} onPress={handleNewSessionTab}>
+              <Text style={styles.sessionTabText}>{t('Add new')}</Text>
+            </TouchableOpacity>
         </ScrollView>
       </View>
 
@@ -354,50 +377,58 @@ const CampaignOne = ({ navigation }) => {
           </View>
         )}
 
+      <View style={styles.mainCampaignContainer}>
+        <View style={styles.leftCampaignContainer}>
+          <ScrollView>
+
       {!addingNewSession && (
-        <View style={styles.noteContent}>
-          {notes.map((note, index) => (
-            <View key={index} style={styles.noteHeader}>
-              <TouchableOpacity
-                onPress={() => toggleNoteVisibility(index)}
-                onLongPress={() => handleEditNote(index)}
-              >
+      <View style={styles.noteContent}>
+        {notes.map((note, index) => (
+          <View key={index} style={styles.noteHeader}>
+            <TouchableOpacity onPress={() => handleOpenNote(note, index)}>
               <View style={styles.noteActions}>
                 <Text style={styles.noteTitle}>{note.title}</Text>
-                    <TouchableOpacity
-                      style={styles.editButtonCamp}
-                      onPress={() => handleEditNote(index)}
-                    >
-                      <Text style={styles.editTextCamp}>{t('Edit')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.shareButtonCamp}
-                      onPress={() => handleShareNote(note)}
-                    >
-                      <Text style={styles.shareText}>{t('Share')}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.deleteButtonCamp}
-                      onPress={() => handleDeleteNote(index)}
-                    >
-                      <Text style={styles.deleteTextCamp}>{t('Delete')}</Text>
-                    </TouchableOpacity>
-                  </View>
-              </TouchableOpacity>
-              {noteVisibility[index] && (
-                <>
-                  <Text style={styles.noteContent}>{note.content}</Text>
-                  <Image source={note.image} style={styles.noteImage} />
-                </>
-              )}
-            </View>
-          ))}
+              </View>
+            </TouchableOpacity>
+            {noteVisibility[index] && (
+              <>
+                <Text style={styles.noteContent}>{note.content}</Text>
+                <Image source={note.image} style={styles.noteImage} />
+              </>
+            )}
+          </View>
+        ))}
 
-      {diceResults.map((result, index) => (
-        <Text key={index} style={styles.diceResult}>
-          {t('Dice roll result')}: Dice {result}
-        </Text>
-      ))}
+        {selectedNote && (
+         <Modal
+           visible={isModalVisible}
+           animationType="slide"
+           transparent={true}
+           onRequestClose={handleCloseNote}
+         >
+           <View style={styles.modalNoteCampaignContainer}>
+             <View style={styles.modalNoteCampaignContent}>
+               <Text style={styles.modalNoteCampaignTitle}>{selectedNote?.title}</Text>
+               <Text style={styles.modalNoteCampaignText}>{selectedNote?.content}</Text>
+               <Image source={selectedNote?.image} style={styles.modalImageNoteCampaign} />
+               <View style={styles.modalActionsNoteCampaign}>
+                 <TouchableOpacity style={styles.editButtonCamp} onPress={() => handleEditNote(editingNoteIndex)}>
+                   <Text style={styles.editTextCamp}>{t('Edit')}</Text>
+                 </TouchableOpacity>
+                 <TouchableOpacity style={styles.shareButtonCamp} onPress={() => handleShareNote(selectedNote)}>
+                   <Text style={styles.shareText}>{t('Share')}</Text>
+                 </TouchableOpacity>
+                 <TouchableOpacity style={styles.deleteButtonCamp} onPress={() => handleDeleteNote(editingNoteIndex)}>
+                   <Text style={styles.deleteTextCamp}>{t('Delete')}</Text>
+                 </TouchableOpacity>
+               </View>
+             </View>
+           </View>
+                 <TouchableOpacity onPress={handleCloseNote}>
+                   <Text style={styles.closeNoteButtonCampaign}>{t('Close')}</Text>
+                 </TouchableOpacity>
+         </Modal>
+        )}
 
           <TouchableOpacity
             style={styles.addButtonCamp}
@@ -408,7 +439,16 @@ const CampaignOne = ({ navigation }) => {
         </View>
       )}
 
+          </ScrollView>
+      </View>
+
         {addingNewNote && !addingNewSession && (
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => setModalVisible(false)}
+          >
           <View style={styles.newNoteContainer}>
             <TextInput
               style={styles.inputCampNote}
@@ -446,16 +486,36 @@ const CampaignOne = ({ navigation }) => {
             </TouchableOpacity>
             {editingNoteIndex !== null && (
               <TouchableOpacity
-                style={styles.deleteButtonCamp}
+                style={styles.deleteButtonCampNote}
                 onPress={() => handleDeleteNote(editingNoteIndex)}
               >
-                <Text style={styles.deleteTextCamp}>{t('Delete Note')}</Text>
+                <Text style={styles.deleteTextCampNote}>{t('Delete Note')}</Text>
               </TouchableOpacity>
             )}
           </View>
+            <TouchableOpacity onPress={handleCloseNote}>
+              <Text style={styles.closeNoteButtonCampaign}>{t('Close')}</Text>
+            </TouchableOpacity>
+        </Modal>
         )}
-      </ScrollView>
 
+        <View style={styles.rightCampaignContainer}>
+         <View>
+          <ScrollView>
+          {diceResults.map((result, index) => (
+            <Text key={index} style={styles.diceResult}>
+              {t('Dice roll result')}: Dice {result}
+            </Text>
+          ))}
+          </ScrollView>
+        </View>
+          <TouchableOpacity style={styles.encounterButtonCampaignOne} onPress={handleGoToEncounter}>
+            <Text style={styles.encounterButtonTextCampaignOne}>{t('Start Encounter')}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+     </ScrollView>
 
       <View style={styles.playerPanel}>
         <ScrollView horizontal>

@@ -3,6 +3,9 @@ import { ImageBackground, View, Text, TouchableOpacity, ScrollView } from 'react
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const Encounters = ({ navigation, route }) => {
   const { t } = useTranslation();

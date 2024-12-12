@@ -4,6 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import bestiary from './assets/Library/bestiary.json';
+import { Appearance } from 'react-native';
+
+Appearance.setColorScheme('light');
 
 const EncounterEdit = ({ route, navigation }) => {
   const { t } = useTranslation();
