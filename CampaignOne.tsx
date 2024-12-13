@@ -294,7 +294,7 @@ const CampaignOne = ({ navigation }) => {
       source={theme.background}
       style={styles.containerCamp}
     >
-
+     <View style={styles.CampaignOneContainerMainA}>
       <View style={styles.sessionsList}>
         <Text style={[styles.CampName, { color: theme.fontColor }]}>LOREM PSILUM</Text>
 
@@ -313,11 +313,15 @@ const CampaignOne = ({ navigation }) => {
         </ScrollView>
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <View style={styles.CampaignOneContainerMain}>
         {sessions.length > 0 && activeSessionIndex < sessions.length && !addingNewSession && (
           <View style={styles.sessionContainer}>
             <View style={styles.sessionHeader}>
-              <Text style={styles.sessionName}>{sessions[activeSessionIndex]?.name}</Text>
+           <ScrollView style={styles.sessionContentScrollContainer}>
+            <Text style={styles.sessionContent}>{sessions[activeSessionIndex]?.content}</Text>
+           </ScrollView>
+            </View>
+             <View style={styles.rowContainerRight}>
               <TouchableOpacity onPress={() => handleEditSession(activeSessionIndex)}>
                 <Text style={styles.editTextCamp}>
                 {t('Edit')}</Text>
@@ -327,19 +331,11 @@ const CampaignOne = ({ navigation }) => {
                 {t('Delete')}</Text>
               </TouchableOpacity>
             </View>
-            <Text style={styles.sessionContent}>{sessions[activeSessionIndex]?.content}</Text>
           </View>
         )}
 
         {addingNewSession && (
           <View style={styles.sessionContainer}>
-            <TextInput
-              style={styles.inputName}
-              value={newSessionName}
-              onChangeText={setNewSessionName}
-              placeholder={t('Enter session name')}
-              placeholderTextColor="#d6d6d6"
-            />
             <TextInput
               style={[styles.inputContent, styles.textArea]}
               value={newSessionContent}
@@ -357,13 +353,6 @@ const CampaignOne = ({ navigation }) => {
         {editingSession !== null && !addingNewSession && (
           <View style={styles.sessionContainer}>
             <TextInput
-              style={styles.inputName}
-              value={newSessionName}
-              onChangeText={setNewSessionName}
-              placeholder={t('Enter session name')}
-              placeholderTextColor="#d6d6d6"
-            />
-            <TextInput
               style={[styles.inputContent, styles.textArea]}
               value={newSessionContent}
               onChangeText={setNewSessionContent}
@@ -377,9 +366,12 @@ const CampaignOne = ({ navigation }) => {
           </View>
         )}
 
+      </View>
+
       <View style={styles.mainCampaignContainer}>
         <View style={styles.leftCampaignContainer}>
           <ScrollView>
+
 
       {!addingNewSession && (
       <View style={styles.noteContent}>
@@ -500,22 +492,24 @@ const CampaignOne = ({ navigation }) => {
         )}
 
         <View style={styles.rightCampaignContainer}>
-         <View>
-          <ScrollView>
+          <ScrollView style={styles.rightCampaignContainerScrollArea}>
           {diceResults.map((result, index) => (
             <Text key={index} style={styles.diceResult}>
               {t('Dice roll result')}: Dice {result}
             </Text>
           ))}
+               <Text style={styles.modalNoteCampaignText}>gracz wyrzucil 2</Text>
+               <Text style={styles.modalNoteCampaignText}>Monster dolącza do walki</Text>
+               <Text style={styles.modalNoteCampaignText}>Gracz1 i Gracz2 rozpoczęli walkę z Wilkiem</Text>
+
           </ScrollView>
-        </View>
           <TouchableOpacity style={styles.encounterButtonCampaignOne} onPress={handleGoToEncounter}>
             <Text style={styles.encounterButtonTextCampaignOne}>{t('Start Encounter')}</Text>
           </TouchableOpacity>
         </View>
       </View>
 
-     </ScrollView>
+     </View>
 
       <View style={styles.playerPanel}>
         <ScrollView horizontal>

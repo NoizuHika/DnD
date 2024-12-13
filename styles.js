@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
   },
   noteContentSesDet: {
     fontSize: 16,
+    marginBottom: 95,
   },
   noteImageSesDet: {
     width: '100%',
@@ -361,7 +362,6 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderRadius: 10,
     marginTop: 10,
-    marginBottom: 10,
     padding: 10,
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
@@ -378,6 +378,13 @@ const styles = StyleSheet.create({
   sessionContent: {
     color: '#d6d6d6',
     marginTop: 10,
+    width: '100%',
+    alignSelf: 'stretch',
+  },
+  sessionContentScrollContainer: {
+    maxHeight: 120,
+    width: '100%',
+    marginTop: 10,
   },
   sessionsList: {
     textAlign: 'center',
@@ -392,6 +399,14 @@ const styles = StyleSheet.create({
     padding: 10,
     borderColor: '#7F7F7F',
     borderRightWidth: 1.5,
+  },
+  CampaignOneContainerMain: {
+    padding: 10,
+    marginTop: 75,
+  },
+  CampaignOneContainerMainA: {
+    flex: 1,
+    alignItems: 'center',
   },
   sessionTabText: {
     color: '#d6d6d6',
@@ -567,9 +582,13 @@ const styles = StyleSheet.create({
     color: '#9F9F9F',
   },
   noteContent: {
+    flex: 1,
     fontSize: 16,
     color: '#8F8F8F',
-    marginTop: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#fff",
   },
   shareText: {
     color: 'green',
@@ -710,6 +729,7 @@ const styles = StyleSheet.create({
     color: 'red',
   },
   newSessionContainer: {
+    flex: 1,
     borderColor: '#7F7F7F',
     borderWidth: 1.5,
     borderRadius: 10,
@@ -800,6 +820,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   playerPanel: {
+    height: 95,
     position: 'absolute',
     bottom: 0,
     width: '100%',
@@ -1287,11 +1308,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    textAlign: 'center',
-    borderColor: '#7F7F7F',
-    borderWidth: 1.5,
-    borderRadius: 10,
-    backgroundColor: 'rgba(0, 0, 0, 1)',
   },
   selectedImage: {
     width: 400,
@@ -2236,6 +2252,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  rowContainerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
   rowContainerA: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -3084,14 +3105,22 @@ const styles = StyleSheet.create({
   mainCampaignContainer: {
     flex: 1,
     flexDirection: 'row',
+    marginBottom: 95,
   },
   leftCampaignContainer: {
     flex: 0.6,
-    borderRightWidth: 1,
-    borderRightColor: '#ccc',
   },
   rightCampaignContainer: {
     flex: 0.4,
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#fff",
+  },
+  rightCampaignContainerScrollArea: {
+    flex: 1,
+    marginBottom: 10,
   },
   titleCampaignOne: {
     fontSize: 20,
@@ -3106,7 +3135,6 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   encounterButtonCampaignOne: {
-    marginTop: 20,
     padding: 10,
     backgroundColor: '#6200ea',
     borderRadius: 5,

@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
-import { ImageBackground, Text, View, ScrollView, Image } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView, Alert, Image, Modal } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
@@ -25,7 +26,13 @@ const PlayerSessionDetails = () => {
     }
 
     return (
-        <ImageBackground source={theme.background} style={styles.container}>
+    <ImageBackground
+      source={theme.background}
+      style={styles.containerCamp}
+    >
+
+        <Text style={[styles.CampName, { color: theme.fontColor }]}>LOREM PSILUM</Text>
+
             <Text style={[styles.titleSesDet, { color: theme.fontColor }]}>
                 {session.name}
             </Text>
