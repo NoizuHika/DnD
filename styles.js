@@ -3110,6 +3110,55 @@ const styles = StyleSheet.create({
   leftCampaignContainer: {
     flex: 0.6,
   },
+  rollSessionDetailButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    borderWidth: 1,
+    borderColor: "#fff",
+  },
+  rollSessionDetailButtonText: {
+    fontSize: 18,
+    color: '#fff',
+    textAlign: 'center',
+  },
+  playersSessionDetailStatsContainer: {
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "#fff",
+  },
+  playerSessionDetailStatsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  playerSessionDetailStatHP: {
+    fontSize: 14,
+    color: 'red',
+    paddingLeft: 20,
+  },
+  playerSessionDetailStatAC: {
+    fontSize: 14,
+    color: 'yellow',
+    paddingRight: 20,
+  },
+  playerSessionDetailAvatarContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  playerSessionDetailAvatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 10,
+  },
+  playerSessionDetailName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
   rightCampaignContainer: {
     flex: 0.4,
     justifyContent: 'space-between',
