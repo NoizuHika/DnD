@@ -294,7 +294,7 @@ return (
     <View style={styles.playersSessionDetailStatsContainer}>
       {players.map((player) => (
         <View key={player.id} style={styles.playerSessionDetailStatsRow}>
-          <Text style={styles.playerSessionDetailStatHP}>{t('HP')}: {player.hp}</Text>
+          <Text style={[styles.playerSessionDetailStatHP, styles.statWithBorder]}>{t('HP')}: {player.hp}</Text>
           <Text style={styles.playerSessionDetailStatAC}>{t('AC')}: {player.ac}</Text>
         </View>
       ))}
