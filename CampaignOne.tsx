@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView, Alert, Image, Modal } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -48,6 +48,14 @@ const CampaignOne = ({ navigation }) => {
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [noteVisibility, setNoteVisibility] = useState(new Array(notes.length).fill(false));
   const [modalVisible, setModalVisible] = useState(false);
+
+  const scrollViewRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  }, [diceResults]);
 
   const handleSelectPlayer = (player) => {
     if (selectedPlayers.includes(player.id)) {
@@ -492,7 +500,7 @@ const CampaignOne = ({ navigation }) => {
         )}
 
         <View style={styles.rightCampaignContainer}>
-          <ScrollView style={styles.rightCampaignContainerScrollArea}>
+          <ScrollView style={styles.rightCampaignContainerScrollArea} ref={scrollViewRef}>
           {diceResults.map((result, index) => (
             <Text key={index} style={styles.diceResult}>
               {t('Dice roll result')}: Dice {result}
@@ -501,7 +509,7 @@ const CampaignOne = ({ navigation }) => {
                <Text style={styles.modalNoteCampaignText}>gracz wyrzucil 2</Text>
                <Text style={styles.modalNoteCampaignText}>Monster dolącza do walki</Text>
                <Text style={styles.modalNoteCampaignText}>Gracz1 i Gracz2 rozpoczęli walkę z Wilkiem</Text>
-
+               <Text style={styles.modalNoteCampaignText}>Gracz2 wyrzucil 20</Text>
           </ScrollView>
           <TouchableOpacity style={styles.encounterButtonCampaignOne} onPress={handleGoToEncounter}>
             <Text style={styles.encounterButtonTextCampaignOne}>{t('Start Encounter')}</Text>

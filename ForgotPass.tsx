@@ -24,35 +24,36 @@ const ForgotPass = () => {
   return (
   <ImageBackground
     style={styles.container}
-         source={theme.background}
+    source={theme.background}
     resizeMode="cover">
 
-    <Text style={styles.appName}>DMBook</Text>
-
-    <View style={styles.separator}>
-      <View style={styles.resetPassContainer}>
-        <Text style={styles.resetPass}>{t('Reset_pass')}</Text>
-        <View style={styles.separatorLine} />
+      <View style={styles.GoBack}>
+        <TouchableOpacity style={styles.button} onPress={() => {handleGoBack()}} >
+          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
+            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+          </ImageBackground>
+        </TouchableOpacity>
       </View>
-    </View>
 
-    <View style={styles.GoBack}>
-       <TouchableOpacity style={styles.button} onPress={handleGoBack} >
-           <Text style={styles.GoBackText}>{t('Go_back')}</Text>
-       </TouchableOpacity>
-    </View>
+      <Text style={[styles.appName, { color: theme.fontColor }]}>DMBook</Text>
 
-    <Text style={styles.email}>{t('Enter_username_or_email')}</Text>
+      <View style={styles.resetForgotPassContainer}>
+        <Text style={styles.resetForgotPass}>{t('Reset_pass')}</Text>
+      </View>
+
+    <Text style={styles.emailForgotPass}>{t('Enter_username_or_email')}</Text>
 
     <TextInput
-        style={styles.emailInput}
+        style={styles.emailForgotPassInput}
         placeholder="Username or email"
         value={email}
         onChangeText={setEmail}
     />
 
-    <TouchableOpacity style={styles.sendEmail} onPress={handleSendPress}>
-        <Text style={styles.sendEmailText}>{t('Send')}</Text>
+    <TouchableOpacity style={styles.sendForgotPassEmail} onPress={handleSendPress}>
+      <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
+        <Text style={styles.sendForgotPassEmailText}>{t('Send')}</Text>
+      </ImageBackground>
     </TouchableOpacity>
 
     </ImageBackground>

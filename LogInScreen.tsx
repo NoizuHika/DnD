@@ -58,34 +58,48 @@ const LogInScreen = () => {
 
       <Text style={[styles.appName, { color: theme.fontColor }]}>DMBook</Text>
 
-    <Text style={[styles.titleLogin, { color: theme.textColor }]}>{t('Log in')}</Text>
+    <View style={styles.logInContainerBackground}>
+      <Text style={[styles.titleLogin, { color: theme.textColor }]}>{t('Log in')}</Text>
 
-    <View style={styles.newUser}>
-       <Text style={[styles.newUserText, { color: theme.textColor }]}>{t('New_user')}?</Text>
-       <TouchableOpacity style={styles.buttonUser } onPress={() => {handleRegistrationPress()}}>
-           <Text style={styles.buttonUserText}>{t('Create_account')}</Text>
-       </TouchableOpacity>
+      <View style={styles.newUser}>
+        <Text style={[styles.newUserText, { color: theme.textColor }]}>{t('New_user')}?</Text>
+        <TouchableOpacity style={styles.buttonUser} onPress={handleRegistrationPress}>
+          <Text style={styles.buttonUserText}>{t('Create_account')}</Text>
+        </TouchableOpacity>
+      </View>
+
+     <View style={styles.inputLoginPageContainer}>
+      <Text style={[styles.labelLogin, { color: theme.textColor }]}>{t('Login_nick')}</Text>
+      <TextInput
+        style={styles.inputLogin}
+        value={login}
+        onChangeText={setLogin}
+        placeholder={t('Login_nick')}
+        placeholderTextColor="#a1a1a1"
+      />
+
+      <Text style={[styles.labelPassword, { color: theme.textColor }]}>{t('Pass')}</Text>
+      <TextInput
+        style={styles.inputPassword}
+        value={password}
+        onChangeText={setPassword}
+        placeholder={t('Pass')}
+        placeholderTextColor="#a1a1a1"
+        secureTextEntry={true}
+      />
+     </View>
+
+      <TouchableOpacity style={styles.forgotPasswordButton} onPress={handleForgotPassPress}>
+        <Text style={styles.forgotPasswordButtonText}>{t('Forgot_pass')}?</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.continueButton} onPress={handleKontynuacja}>
+       <ImageBackground source={theme.backgroundButton} style={styles.buttonBackgroundContinueLogin}>
+        <Text style={[styles.continueButtonText, { color: theme.textColor }]}>{t('Continue')}</Text>
+       </ImageBackground>
+      </TouchableOpacity>
+
     </View>
-
-    <Text style={[styles.labelLogin, { color: theme.textColor }]}>{t('Login_nick')}</Text>
-    <TextInput style={styles.inputLogin}
-    value={login}
-    onChangeText={setLogin}
-    placeholder={t('Login_nick')} />
-
-    <Text style={[styles.labelPassword, { color: theme.textColor }]}>{t('Pass')}</Text>
-    <TextInput style={styles.inputPassword}
-    value={password}
-    onChangeText={setPassword}
-    placeholder={t('Pass')} secureTextEntry={true} />
-
-    <TouchableOpacity style={styles.forgotPasswordButton} onPress={() => {handleForgotPassPress()}}>
-       <Text style={styles.forgotPasswordButtonText}>{t('Forgot_pass')}?</Text>
-    </TouchableOpacity>
-
-    <TouchableOpacity style={styles.continueButton} onPress={() => {handleKontynuacja()}}>
-      <Text style={[styles.continueButtonText, { color: theme.textColor }]}>{t('Continue')}</Text>
-    </TouchableOpacity>
 
     <View style={styles.separator}>
     <View style={styles.separatorLine} />

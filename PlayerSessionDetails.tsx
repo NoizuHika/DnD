@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useRef, useState, useEffect, useContext } from 'react';
 import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView, Alert, Image, Modal } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -50,6 +50,14 @@ const PlayerSessionDetails = ({ navigation }) => {
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [noteVisibility, setNoteVisibility] = useState(new Array(notes.length).fill(false));
   const [modalVisible, setModalVisible] = useState(false);
+
+  const scrollViewRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  }, [diceResults]);
 
   const handleSelectPlayer = (player) => {
     if (selectedPlayers.includes(player.id)) {
@@ -254,38 +262,6 @@ return (
       <View style={styles.CampaignOneContainerMain}>
         <Text style={[styles.CampName, { color: theme.fontColor }]}>LOREM PSILUM</Text>
 
-        {addingNewSession && (
-          <View style={styles.sessionContainer}>
-            <TextInput
-              style={[styles.inputContent, styles.textArea]}
-              value={newSessionContent}
-              onChangeText={setNewSessionContent}
-              placeholder={t('Enter session content')}
-              placeholderTextColor="#d6d6d6"
-              multiline
-            />
-            <TouchableOpacity style={styles.addButtonCamp} onPress={handleAddSession}>
-              <Text style={styles.buttonTextCamp}>{t('Add Session')}</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {editingSession !== null && !addingNewSession && (
-          <View style={styles.sessionContainer}>
-            <TextInput
-              style={[styles.inputContent, styles.textArea]}
-              value={newSessionContent}
-              onChangeText={setNewSessionContent}
-              placeholder={t('Enter session content')}
-              placeholderTextColor="#d6d6d6"
-              multiline
-            />
-            <TouchableOpacity style={styles.addButtonCamp} onPress={handleSaveEdit}>
-              <Text style={styles.buttonTextCamp}>{t('Save Changes')}</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
       </View>
 
       <View style={styles.mainCampaignContainer}>
@@ -431,16 +407,16 @@ return (
             <Image source={players[0].image} style={styles.playerSessionDetailAvatar} />
             <Text style={styles.playerSessionDetailName}>{players[0].name}</Text>
           </View>
-          <ScrollView style={styles.rightCampaignContainerScrollArea}>
+          <ScrollView style={styles.rightCampaignContainerScrollArea} ref={scrollViewRef}>
           {diceResults.map((result, index) => (
             <Text key={index} style={styles.diceResult}>
               {t('Dice roll result')}: Dice {result}
             </Text>
           ))}
                <Text style={styles.modalNoteCampaignText}>gracz wyrzucil 2</Text>
-               <Text style={styles.modalNoteCampaignText}>Monster dolącza do walki</Text>
+               <Text style={styles.modalNoteCampaignText}>Wilk dolącza do walki</Text>
                <Text style={styles.modalNoteCampaignText}>Gracz1 i Gracz2 rozpoczęli walkę z Wilkiem</Text>
-
+               <Text style={styles.modalNoteCampaignText}>Gracz2 wyrzucil 20</Text>
           </ScrollView>
         </View>
       </View>
