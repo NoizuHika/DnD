@@ -498,17 +498,15 @@ const styles = StyleSheet.create({
   },
   inputMonCre: {
     backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 10,
+    padding: 13,
     marginBottom: 10,
     marginLeft: 0,
   },
   inputMonCreStat: {
     backgroundColor: '#fff',
-    borderRadius: 8,
-    padding: 10,
+    padding: 11,
     marginBottom: 10,
-    marginHorizontal: 70,
+    marginHorizontal: 0,
     marginLeft: 0,
   },
   inputInventory: {
@@ -2170,7 +2168,8 @@ const styles = StyleSheet.create({
   },
   statsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#444',
     backgroundColor: '#292929',
