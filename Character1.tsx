@@ -7,6 +7,8 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 
+const spellsData = require('./assets/Library/spells.json');
+
 Appearance.setColorScheme('light');
 
 const Character1 = ({ navigation }) => {
@@ -18,12 +20,19 @@ const Character1 = ({ navigation }) => {
   const [actionVisible, setActionVisible] = useState(false);
   const [bonusVisible, setBonusVisible] = useState(false);
   const [reactVisible, setReactVisible] = useState(false);
+  const [romanVisible, setRomanVisible] = useState(false);
   const [selectedRomanNumeral, setSelectedRomanNumeral] = useState(null);
   const { theme } = useContext(ThemeContext);
+  const [selectedLevel, setSelectedLevel] = useState(null);
+  const [spells, setSpells] = useState([]);
 
 
   useEffect(() => {
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    setSpells(spellsData);
   }, []);
 
   const fetchData = async () => {
@@ -74,6 +83,8 @@ const Character1 = ({ navigation }) => {
     setBonusVisible(false);
     setReactVisible(false);
     setActionVisible(false);
+    setRomanVisible(false);
+    setSelectedLevel(null);
     setSelectedRomanNumeral(null);
   };
 
@@ -82,6 +93,8 @@ const Character1 = ({ navigation }) => {
     setBonusVisible(false);
     setReactVisible(false);
     setSkillsVisible(false);
+    setRomanVisible(false);
+    setSelectedLevel(null);
     setSelectedRomanNumeral(null);
   };
 
@@ -90,6 +103,8 @@ const Character1 = ({ navigation }) => {
     setActionVisible(false);
     setReactVisible(false);
     setSkillsVisible(false);
+    setRomanVisible(false);
+    setSelectedLevel(null);
     setSelectedRomanNumeral(null);
   };
 
@@ -98,20 +113,49 @@ const Character1 = ({ navigation }) => {
     setActionVisible(false);
     setBonusVisible(false);
     setSkillsVisible(false);
+    setRomanVisible(false);
+    setSelectedLevel(null);
     setSelectedRomanNumeral(null);
   };
 
+  const toggleRoman = (level) => {
+    if (selectedLevel === level) {
+      setSelectedLevel(null);
+      setRomanVisible(false);
+    } else {
+      setSelectedLevel(level);
+      setRomanVisible(true);
+      setSkillsVisible(false);
+      setActionVisible(false);
+      setBonusVisible(false);
+      setReactVisible(false);
+    }
+  };
+
   const handleRomanNumeralPress = (label) => {
+    const levelMap = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8, IX: 9 };
+    const level = levelMap[label];
     if (selectedRomanNumeral === label) {
       setSelectedRomanNumeral(null);
     } else {
-      setActionVisible(false);
-      setBonusVisible(false);
-      setSkillsVisible(false);
-      setReactVisible(false);
-      setSelectedRomanNumeral(label);
+      setSelectedRomanNumeral(level);
     }
   };
+
+  {selectedRomanNumeral && <AbilitiesWindow level={selectedRomanNumeral - 1} />}
+
+  const groupSpellsByLevel = (spells) => {
+    const grouped = {};
+    spells.forEach((spell) => {
+      if (!grouped[spell.level]) {
+        grouped[spell.level] = [];
+      }
+      grouped[spell.level].push(spell);
+    });
+    return grouped;
+  };
+
+  const spellsByLevel = groupSpellsByLevel(spells);
 
   const abilitiesData = {
     I: [{ image: require('./assets/skills/bootofspeed.png') }, { image: require('./assets/skills/powershot.png') }],
@@ -119,35 +163,26 @@ const Character1 = ({ navigation }) => {
     //...
   };
 
-  const AbilitiesWindow = ({ abilities }) => {
-    const [showPowerLevels, setShowPowerLevels] = useState(false);
-
-    const handleImagePress = () => {
-      setShowPowerLevels(!showPowerLevels);
-    };
+  const AbilitiesWindow = ({ level }) => {
+    const spells = spellsByLevel[level] || [];
 
     return (
       <View style={styles.abilityWindow}>
-        <View style={styles.skillsContainer}>
-          {abilities.map((ability, index) => (
-            <TouchableOpacity key={index} onPress={handleImagePress}>
-              <Image source={ability.image} style={styles.abilityImage} />
-            </TouchableOpacity>
+        <ScrollView>
+          {spells.map((spell, index) => (
+            <View key={index} style={styles.spellContainer}>
+              <Text style={styles.spellName}>{spell.name}</Text>
+              <Text style={styles.spellDetails}>
+                {t('Level')}: {spell.level}, {t('Casting Time')}: {spell.castingTime}, {t('Range')}: {spell.range}
+              </Text>
+              <Text style={styles.spellDescription}>{spell.description}</Text>
+            </View>
           ))}
-        </View>
-
-        {showPowerLevels && (
-          <View style={styles.powerLevels}>
-            {['I', 'II', 'III', 'IV', 'V', 'VI'].map((label, index) => (
-              <TouchableOpacity key={index} style={styles.rightButton}>
-                <Text style={styles.buttonTextCharacter}>{label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
+        </ScrollView>
       </View>
     );
   };
+
 
   const ActionWindow = ({ onClose }) => {
     const [showPowerLevels, setShowPowerLevels] = useState(false);
@@ -406,28 +441,51 @@ const Character1 = ({ navigation }) => {
         </View>
       )}
 
-      <View style={styles.rightContainer}>
-      <TouchableOpacity style={styles.rightButton} onPress={toggleAction}>
-        <Text style={styles.buttonTextCharacter}>{t('Action')}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.rightButton} onPress={toggleBonus}>
-        <Text style={styles.buttonTextCharacter}>{t('Bonus')}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.rightButton} onPress={toggleReact}>
-        <Text style={styles.buttonTextCharacter}>{t('React')}</Text>
-      </TouchableOpacity>
-        {['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'].map((label, index) => (
-          <TouchableOpacity key={index} style={styles.rightButton} onPress={() => handleRomanNumeralPress(label)}>
-            <Text style={styles.buttonTextCharacter}>{label}</Text>
+        <View style={styles.rightContainer}>
+          <TouchableOpacity style={styles.rightButton} onPress={toggleAction}>
+            <Text style={styles.buttonTextCharacter}>{t('Action')}</Text>
           </TouchableOpacity>
-        ))}
-      </View>
+          <TouchableOpacity style={styles.rightButton} onPress={toggleBonus}>
+            <Text style={styles.buttonTextCharacter}>{t('Bonus')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.rightButton} onPress={toggleReact}>
+            <Text style={styles.buttonTextCharacter}>{t('React')}</Text>
+          </TouchableOpacity>
+          {['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'].map((label, index) => (
+            <TouchableOpacity
+              key={index}
+              style={[
+                styles.rightButton,
+                selectedLevel === index + 1 && styles.levelButtonSelected,
+              ]}
+              onPress={() => toggleRoman(index + 1)}
+            >
+              <Text style={[styles.buttonTextCharacter, selectedLevel === index + 1 && styles.activeLevelButtonSelectedText]}>{label}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
 
-      {selectedRomanNumeral && <AbilitiesWindow abilities={abilitiesData[selectedRomanNumeral] || []} />}
+        {selectedLevel && (
+         <View style={styles.CharacterSpellListContainer}>
+           <ScrollView >
+            {spellsByLevel[selectedLevel]?.map((spell) => (
+              <View key={spell.id} style={styles.CharacterSpellCard}>
+                <Text style={styles.CharacterSpellName}>{spell.name}</Text>
+                <Text style={styles.CharacterSpellDetails}>{t('Casting Time')}: {spell.castingTime}</Text>
+                <Text style={styles.CharacterSpellDetails}>{t('Range')}: {spell.range}</Text>
+                <Text style={styles.CharacterSpellDetails}>{t('Duration')}: {spell.duration}</Text>
+                <Text style={styles.CharacterSpellDetails}>{t('School')}: {spell.school}</Text>
+                <Text style={styles.CharacterSpellDetails}>{t('Description')}: {spell.description}</Text>
+              </View>
+            )) || <Text style={styles.CharacterNoSpellsText}>{t('No spells available for this level.')}</Text>}
+           </ScrollView>
+         </View>
+        )}
 
-      {actionVisible && <ActionWindow />}
-      {bonusVisible && <BonusWindow />}
-      {reactVisible && <ReactWindow />}
+        {selectedRomanNumeral && <AbilitiesWindow abilities={abilitiesData[selectedRomanNumeral] || []} />}
+        {actionVisible && <ActionWindow />}
+        {bonusVisible && <BonusWindow />}
+        {reactVisible && <ReactWindow />}
 
         <View style={styles.diceTurnContainer}>
           <TouchableOpacity style={styles.TurnDiceButton}>

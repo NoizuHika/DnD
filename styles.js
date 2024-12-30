@@ -1095,7 +1095,7 @@ const styles = StyleSheet.create({
   },
   rightButton: {
     padding: 10,
-    paddingBottom: 22,
+    paddingVertical: 15.3,
     backgroundColor: 'rgba(0, 0, 0, 1.0)',
     borderColor: '#7F7F7F',
     borderWidth: 1,
@@ -1143,8 +1143,9 @@ const styles = StyleSheet.create({
   diceTurnContainer: {
     position: 'absolute',
     bottom: 10,
-    left: '40%',
-    width: '100%',
+    right: '1%',
+    width: 'auto',
+    display: 'flex',
     alignItems: 'center',
   },
   TurnDiceButton: {
@@ -3016,6 +3017,9 @@ const styles = StyleSheet.create({
   spellContainer: {
     width: '80%',
     marginTop: 20,
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
   },
   spellItem: {
     backgroundColor: '#333',
@@ -3027,10 +3031,58 @@ const styles = StyleSheet.create({
   },
   spellName: {
     fontSize: 18,
+    fontWeight: 'bold',
     color: '#d6d6d6',
   },
   spellDetails: {
+    fontSize: 14,
     color: '#a1a1a1',
+  },
+  spellDescription: {
+    fontSize: 14,
+    color: '#fff',
+    marginTop: 5,
+  },
+  levelButtonSelected: {
+    backgroundColor: 'yellow',
+  },
+  activeLevelButtonSelectedText: {
+    color: 'black',
+  },
+  CharacterSpellListContainer: {
+    position: 'absolute',
+    top: '25%',
+    width: '65%',
+    height: '75%',
+    backgroundColor: '#000',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#7F7F7F',
+    padding: 10,
+    overflow: 'hidden',
+  },
+  CharacterSpellCard: {
+    width: '100%',
+    backgroundColor: '#1E1E1E',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  CharacterSpellName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#FFD700',
+    marginBottom: 5,
+  },
+  CharacterSpellDetails: {
+    fontSize: 14,
+    color: '#D3D3D3',
+    marginBottom: 2,
+  },
+  CharacterNoSpellsText: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
   },
   noResultsText: {
     textAlign: 'center',
