@@ -63,7 +63,7 @@ const RzutKostka_Bonus_SpellStat = ({ route, navigation }) => {
       <View style={styles.diceContainer}>
         <TouchableOpacity style={styles.diceContainer} onPress={handleRollDice}>
           <Animated.Image
-            source={require('./assets/icons/d20.png')}
+            source={theme.icons.d20}
             style={[styles.diceKostka, { transform: [{ rotate: spin }] }]}
           />
           {diceValue !== null && <Text style={[styles.diceValue, { color: theme.textColor }]}>{diceValue}</Text>}

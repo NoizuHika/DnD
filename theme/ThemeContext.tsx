@@ -26,6 +26,7 @@ const themes = {
       DMToPlayer: require('../assets/icons/DMToPlayer.png'),
       magicitem: require('../assets/icons/wizard.png'),
       creator: require('../assets/icons/creator.png'),
+      d20: require('../assets/icons/d20w.png'),
       },
       fontColor: '#d6d6d6',
       textColor: '#d6d6d6',
@@ -40,7 +41,7 @@ const themes = {
   },
   theme2: {
     backgroundButton: require('../assets/font/font1.png'),
-    background: require('../assets/font/background2.webp'),
+    background: require('../assets/font/background1.jpg'),
     icons: {
       login: require('../assets/icons/login1.png'),
       register: require('../assets/icons/register1.png'),
@@ -61,6 +62,7 @@ const themes = {
       DMToPlayer: require('../assets/icons/DMToPlayer1.png'),
       magicitem: require('../assets/icons/wizard1.png'),
       creator: require('../assets/icons/creator1.png'),
+      d20: require('../assets/icons/d20.png'),
     },
     fontColor: '#ffd700',
     textColor: '#000000',
