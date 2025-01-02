@@ -222,5 +222,8 @@
   "Armor Class": "Armor Class",
   "Challenge Rating": "Challenge Rating",
   "Enter name": "Enter name",
-  "Details": "Details"
+  "Details": "Details",
+
+  "Roll for": "Roll for",
+  "Roll for spell": "Roll for spell"
 }

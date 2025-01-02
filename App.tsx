@@ -45,6 +45,7 @@ import YourBook from './YourBook';
 import CampaignOne from './CampaignOne';
 import GenericCampaign from './GenericCampaign';
 import RzutKostka_Bonus from './RzutKostka_Bonus';
+import RzutKostka_Bonus_SpellStat from './RzutKostka_Bonus_SpellStat';
 import Inventory from './Inventory';
 import CharacterDetails from './CharacterDetails';
 import Spells from './Spells';
@@ -100,6 +101,7 @@ const App = () => {
         <Stack.Screen name="GenericCampaign" component={GenericCampaign} options={{ headerShown: false }} />
         <Stack.Screen name="CampaignOne" component={CampaignOne} options={{ headerShown: false }} />
         <Stack.Screen name="RzutKostka_Bonus" component={RzutKostka_Bonus} options={{ headerShown: false }} />
+        <Stack.Screen name="RzutKostka_Bonus_SpellStat" component={RzutKostka_Bonus_SpellStat} options={{ headerShown: false }} />
         <Stack.Screen name="Inventory" component={Inventory} options={{ headerShown: false }} />
         <Stack.Screen name="CharacterDetails" component={CharacterDetails} options={{ headerShown: false }} />
         <Stack.Screen name="Spells" component={Spells} options={{ headerShown: false }} />

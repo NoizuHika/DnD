@@ -7,8 +7,8 @@ import { Appearance } from 'react-native';
 
 Appearance.setColorScheme('light');
 
-const RzutKostka_Bonus = ({ route, navigation }) => {
-  const { statValue, statName } = route.params;
+const RzutKostka_Bonus_SpellStat = ({ route, navigation }) => {
+  const { statValue, spell } = route.params;
   const handleGoBack = () => {
     navigation.goBack();
   };
@@ -18,15 +18,6 @@ const RzutKostka_Bonus = ({ route, navigation }) => {
   const [diceValue, setDiceValue] = useState(null);
   const [rotateValue] = useState(new Animated.Value(0));
   const [result, setResult] = useState(null);
-
-  const attributes = {
-    STR: t('Strength'),
-    DEX: t('Dexterity'),
-    CON: t('Constitution'),
-    INT: t('Intelligence'),
-    WIS: t('Wisdom'),
-    CHA: t('Charisma'),
-  };
 
   const handleRollDice = () => {
     setDiceValue(null);
@@ -44,8 +35,12 @@ const RzutKostka_Bonus = ({ route, navigation }) => {
       setTimeout(() => {
         setDiceValue(randomValue);
 
-        const finalStatValue = isNaN(statValue) || statValue === 'None' ? 0 : parseInt(statValue);
-        setResult(randomValue + finalStatValue);
+        const finalStatValue = isNaN(statValue) || statValue === 'None' ? null : parseInt(statValue);
+        if (finalStatValue !== null) {
+          setResult(randomValue + finalStatValue);
+        } else {
+          setResult(null);
+        }
       }, 200);
     });
   };
@@ -60,8 +55,8 @@ const RzutKostka_Bonus = ({ route, navigation }) => {
       <Text style={[styles.appName, { color: theme.fontColor }]}>DMBook</Text>
 
       <View style={styles.diceRollLabelContainer}>
-        <Text style={[styles.diceRollLabelText, { color: theme.textColor }]}>
-          {`${t('Roll for')} ${attributes[statName]}`}
+        <Text style={[styles.diceRollLabelText]}>
+          {spell.name ? `${t('Roll for spell')} \n ${spell.name}` : `${t('Roll for stat')} ${statValue}`}
         </Text>
       </View>
 
@@ -94,4 +89,4 @@ const RzutKostka_Bonus = ({ route, navigation }) => {
   );
 };
 
-export default RzutKostka_Bonus;
+export default RzutKostka_Bonus_SpellStat;

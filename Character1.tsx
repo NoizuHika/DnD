@@ -56,8 +56,8 @@ const Character1 = ({ navigation }) => {
     navigation.navigate('RzutKostka');
   };
 
-  const handleStatPress = (statValue) => {
-    navigation.navigate('RzutKostka_Bonus', { statValue });
+  const handleStatPress = (statName, statValue) => {
+    navigation.navigate('RzutKostka_Bonus', { statName, statValue });
   };
 
   const calculateLargerNumber = (value) => {
@@ -171,7 +171,7 @@ const Character1 = ({ navigation }) => {
     const requiredStat = spell.requiredStat;
     const statValue = calculateLargerNumber(player[requiredStat]);
 
-    navigation.navigate('RzutKostka_Bonus', { spell, statValue });
+    navigation.navigate('RzutKostka_Bonus_SpellStat', { spell, statValue });
   };
 
   const AbilitiesWindow = ({ level, navigation }) => {
@@ -365,37 +365,37 @@ const Character1 = ({ navigation }) => {
 
       <View style={styles.statsContainer}>
       <View style={styles.blackLeftContainer}>
-        <TouchableOpacity onPress={() => handleStatPress(calculateLargerNumber(player.STR))}>
+        <TouchableOpacity onPress={() => handleStatPress('STR', calculateLargerNumber(player.STR))}>
           <View style={styles.statBox}>
             <Text style={styles.largeText}>{calculateLargerNumber(player.STR)}</Text>
             <Text style={styles.statText}>{`STR: ${player.STR}`}</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleStatPress(calculateLargerNumber(player.DEX))}>
+        <TouchableOpacity onPress={() => handleStatPress('DEX', calculateLargerNumber(player.DEX))}>
           <View style={styles.statBox}>
             <Text style={styles.largeText}>{calculateLargerNumber(player.DEX)}</Text>
             <Text style={styles.statText}>{`DEX: ${player.DEX}`}</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleStatPress(calculateLargerNumber(player.CON))}>
+        <TouchableOpacity onPress={() => handleStatPress('CON', calculateLargerNumber(player.CON))}>
           <View style={styles.statBox}>
             <Text style={styles.largeText}>{calculateLargerNumber(player.CON)}</Text>
             <Text style={styles.statText}>{`CON: ${player.CON}`}</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleStatPress(calculateLargerNumber(player.INT))}>
+        <TouchableOpacity onPress={() => handleStatPress('INT', calculateLargerNumber(player.INT))}>
           <View style={styles.statBox}>
             <Text style={styles.largeText}>{calculateLargerNumber(player.INT)}</Text>
             <Text style={styles.statText}>{`INT: ${player.INT}`}</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleStatPress(calculateLargerNumber(player.WIS))}>
+        <TouchableOpacity onPress={() => handleStatPress('WIS', calculateLargerNumber(player.WIS))}>
           <View style={styles.statBox}>
             <Text style={styles.largeText}>{calculateLargerNumber(player.WIS)}</Text>
             <Text style={styles.statText}>{`WIS: ${player.WIS}`}</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleStatPress(calculateLargerNumber(player.CHA))}>
+        <TouchableOpacity onPress={() => handleStatPress('CHA', calculateLargerNumber(player.CHA))}>
           <View style={styles.statBox}>
             <Text style={styles.largeText}>{calculateLargerNumber(player.CHA)}</Text>
             <Text style={styles.statText}>{`CHA: ${player.CHA}`}</Text>

@@ -2923,6 +2923,30 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'black',
   },
+  diceRollLabelContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 5,
+    width: '80%',
+    maxWidth: 350,
+    alignSelf: 'center',
+  },
+  diceRollLabelText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    textAlign: 'center',
+  },
   resetButton: {
     paddingVertical: 10,
     backgroundColor: 'crimson',
@@ -2941,7 +2965,7 @@ const styles = StyleSheet.create({
   resultContainer: {
     marginVertical: 5,
     padding: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     borderRadius: 10,
   },
   resultText: {
@@ -2950,7 +2974,9 @@ const styles = StyleSheet.create({
   },
   resultTextKostka: {
     fontSize: 26,
-    color: '#7F7F7F',
+    color: '#fff',
+    letterSpacing: 1,
+    textAlign: 'center',
   },
   invItemDescription: {
     color: 'blue',
