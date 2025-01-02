@@ -5,10 +5,12 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 
+const spellsData = require('./assets/Library/spells.json');
+
 Appearance.setColorScheme('light');
 
 const RzutKostka_Bonus = ({ route, navigation }) => {
-  const { statValue } = route.params;
+  const { statValue, spell } = route.params;
   const handleGoBack = () => {
     navigation.goBack();
   };
@@ -39,6 +41,15 @@ const RzutKostka_Bonus = ({ route, navigation }) => {
     });
   };
 
+  const handleStatPress = (attribute, value) => {
+    navigation.navigate('RzutKostka_Bonus', { type: 'stat', attribute, value });
+  };
+
+  const handleSpellPress = (spell) => {
+    const statValue = calculateLargerNumber(player[spell.ability]);
+    navigation.navigate('RzutKostka_Bonus', { type: 'spell', spell, statValue });
+  };
+
   const spin = rotateValue.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
@@ -61,7 +72,7 @@ const RzutKostka_Bonus = ({ route, navigation }) => {
       {result !== null && (
         <View style={styles.resultContainer}>
           <Text style={styles.resultTextKostka}>
-            {`${diceValue} ${statValue >= 0 ? '+' : ''}${statValue} = ${result}`}
+            {`${t('Result')}: ${diceValue} ${statValue >= 0 ? '+' : ''}${statValue} = ${result}`}
           </Text>
         </View>
       )}

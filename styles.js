@@ -1143,7 +1143,7 @@ const styles = StyleSheet.create({
   diceTurnContainer: {
     position: 'absolute',
     bottom: 10,
-    right: '1%',
+    right: '0%',
     width: 'auto',
     display: 'flex',
     alignItems: 'center',

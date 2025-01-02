@@ -26,7 +26,6 @@ const Character1 = ({ navigation }) => {
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [spells, setSpells] = useState([]);
 
-
   useEffect(() => {
     fetchData();
   }, []);
@@ -163,23 +162,39 @@ const Character1 = ({ navigation }) => {
     //...
   };
 
-  const AbilitiesWindow = ({ level }) => {
+  const handleSpellPress = (spell) => {
+    if (!spell || !spell.requiredStat) {
+      console.error('Invalid spell data:', spell);
+      return;
+    }
+
+    const requiredStat = spell.requiredStat;
+    const statValue = calculateLargerNumber(player[requiredStat]);
+
+    navigation.navigate('RzutKostka_Bonus', { spell, statValue });
+  };
+
+  const AbilitiesWindow = ({ level, navigation }) => {
     const spells = spellsByLevel[level] || [];
 
     return (
       <View style={styles.abilityWindow}>
-        <ScrollView>
-          {spells.map((spell, index) => (
-            <View key={index} style={styles.spellContainer}>
-              <Text style={styles.spellName}>{spell.name}</Text>
-              <Text style={styles.spellDetails}>
-                {t('Level')}: {spell.level}, {t('Casting Time')}: {spell.castingTime}, {t('Range')}: {spell.range}
-              </Text>
-              <Text style={styles.spellDescription}>{spell.description}</Text>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
+      <ScrollView>
+        {spells.map((spell, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.spellContainer}
+            onPress={() => handleSpellPress(spell)}
+          >
+            <Text style={styles.spellName}>{spell.name}</Text>
+            <Text style={styles.spellDetails}>
+              {t('Level')}: {spell.level}, {t('Casting Time')}: {spell.castingTime}, {t('Range')}: {spell.range}
+            </Text>
+            <Text style={styles.spellDescription}>{spell.description}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
     );
   };
 
@@ -456,7 +471,7 @@ const Character1 = ({ navigation }) => {
               key={index}
               style={[
                 styles.rightButton,
-                selectedLevel === index + 1 && styles.levelButtonSelected,
+                selectedLevel === index + 1 ? styles.levelButtonSelected : {}
               ]}
               onPress={() => toggleRoman(index + 1)}
             >
@@ -466,20 +481,25 @@ const Character1 = ({ navigation }) => {
         </View>
 
         {selectedLevel && (
-         <View style={styles.CharacterSpellListContainer}>
-           <ScrollView >
-            {spellsByLevel[selectedLevel]?.map((spell) => (
-              <View key={spell.id} style={styles.CharacterSpellCard}>
-                <Text style={styles.CharacterSpellName}>{spell.name}</Text>
-                <Text style={styles.CharacterSpellDetails}>{t('Casting Time')}: {spell.castingTime}</Text>
-                <Text style={styles.CharacterSpellDetails}>{t('Range')}: {spell.range}</Text>
-                <Text style={styles.CharacterSpellDetails}>{t('Duration')}: {spell.duration}</Text>
-                <Text style={styles.CharacterSpellDetails}>{t('School')}: {spell.school}</Text>
-                <Text style={styles.CharacterSpellDetails}>{t('Description')}: {spell.description}</Text>
-              </View>
-            )) || <Text style={styles.CharacterNoSpellsText}>{t('No spells available for this level.')}</Text>}
-           </ScrollView>
-         </View>
+          <View style={styles.CharacterSpellListContainer}>
+            <ScrollView>
+              {spellsByLevel[selectedLevel]?.map((spell) => (
+                <TouchableOpacity
+                  key={spell.id}
+                  style={styles.CharacterSpellCard}
+                  onPress={() => handleSpellPress(spell)}
+                >
+                  <Text style={styles.CharacterSpellName}>{spell.name}</Text>
+                  <Text style={styles.CharacterSpellDetails}>{t('Casting Time')}: {spell.castingTime}</Text>
+                  <Text style={styles.CharacterSpellDetails}>{t('Range')}: {spell.range}</Text>
+                  <Text style={styles.CharacterSpellDetails}>{t('Duration')}: {spell.duration}</Text>
+                  <Text style={styles.CharacterSpellDetails}>{t('School')}: {spell.school}</Text>
+                  <Text style={styles.CharacterSpellDetails}>{t('Stat')}: {spell.requiredStat}</Text>
+                  <Text style={styles.CharacterSpellDetails}>{t('Description')}: {spell.description}</Text>
+                </TouchableOpacity>
+              )) || <Text style={styles.CharacterNoSpellsText}>{t('No spells available for this level.')}</Text>}
+            </ScrollView>
+          </View>
         )}
 
         {selectedRomanNumeral && <AbilitiesWindow abilities={abilitiesData[selectedRomanNumeral] || []} />}
