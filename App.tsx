@@ -17,6 +17,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { UserProvider } from './UserData';
 import { ThemeProvider } from './theme/ThemeContext';
+import { AuthProvider } from './AuthContext'
 
 
 import HomeScreen from './HomeScreen';
@@ -73,6 +74,7 @@ const App = () => {
   <I18nextProvider i18n={i18n}>
    <ThemeProvider>
     <UserProvider>
+    <AuthProvider>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
@@ -123,6 +125,7 @@ const App = () => {
         <Stack.Screen name="EncounterRunStart" component={EncounterRunStart} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
+    </AuthProvider>
     </UserProvider>
    </ThemeProvider>
   </I18nextProvider>
@@ -130,3 +133,4 @@ const App = () => {
 };
 
 export default App;
+r

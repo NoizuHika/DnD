@@ -6,6 +6,7 @@ import { UserData } from './UserData';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { useAuth } from './AuthContext';
 
 Appearance.setColorScheme('light');
 
@@ -18,6 +19,7 @@ const LogInScreen = () => {
   const { loginUser } = useContext(UserData);
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const {setToken} = useAuth();
 
   const handleRegistrationPress = () => {
     navigation.navigate('Registration');
@@ -41,9 +43,10 @@ const LogInScreen = () => {
     navigation.navigate('KontoApple');
   };
 
-  const handleKontynuacja = () => {
-      const user = loginUser(login, password);
-      if (user) {
+  const handleKontynuacja = async () => {
+      const loggedIn = await loginUser(login, password, setToken);
+      if (loggedIn) {
+            const { setToken } = useAuth();
             navigation.navigate('SelectionRole');
       } else {
         alert(t('Invalid login or password'));

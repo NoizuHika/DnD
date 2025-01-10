@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { useAuth } from './AuthContext';
 
 Appearance.setColorScheme('light');
 
@@ -13,6 +14,9 @@ Appearance.setColorScheme('light');
     { code: 'ua', label: 'Українська', flag: require('./assets/flags/Ukraine.png') },
     { code: 'ru', label: 'Русский', flag: require('./assets/flags/russia.png') }
   ];
+
+  const {token} = useAuth();
+  console.log('Token',token);
 
   const themes = [
     { name: 'theme1', label: 'Dark', preview: require('./assets/font/theme1.png') },
@@ -78,7 +82,7 @@ const DMPage = ({ navigation }) => {
           <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
             <Image source={theme.icons.yourcamp} style={styles.icons} />
             <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
-            {t('Your campaigns')}</Text>
+            {t('Your campaigns')} {token}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>
