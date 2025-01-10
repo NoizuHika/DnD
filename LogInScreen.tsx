@@ -46,8 +46,8 @@ const LogInScreen = () => {
   const handleKontynuacja = async () => {
       const loggedIn = await loginUser(login, password, setToken);
       if (loggedIn) {
-            const { setToken } = useAuth();
             navigation.navigate('SelectionRole');
+            const { setToken } = useAuth();
       } else {
         alert(t('Invalid login or password'));
       }

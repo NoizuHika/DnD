@@ -20,18 +20,16 @@ const Registration = () => {
 
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
-  const { registerUser, clearUsers } = useContext(UserData);
+  const { registerUser } = useContext(UserData);
 
   const handleGoBack = () => {
     navigation.goBack();
   };
 
-  const handleRegister = () => {
-    if (password === confirmPassword && captchaToken) {
-      registerUser({ email, login, password });
+  const handleRegister = async () => {
+    if (password === confirmPassword) {
+      const response = await registerUser( login, password, email );
       navigation.navigate('RegistrationOkEmail');
-    } else if (!captchaToken) {
-      Alert.alert(t('Captcha is required'));
     } else {
       Alert.alert(t('Passwords do not match'));
     }
@@ -99,9 +97,7 @@ const Registration = () => {
         />
       </View>
 
-      <TouchableOpacity onPress={clearUsers}>
-        <Text>Clear Users</Text>
-      </TouchableOpacity>
+
       <View style={{ height: 100}}>
           <WebView
            style={{ height: 150}}

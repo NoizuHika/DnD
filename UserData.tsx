@@ -11,28 +11,32 @@ export const UserProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
 
   const registerUser = async (login, password, email) => {
-      try {
-          const formData = new FormData();
-          formData.append('username', login);
-          formData.append('password', password);
-          formData.append('email', email);
+    try {
+      const payload = {
+        username: login,
+        email: email,
+        password: password,
+      };
+      const response = await fetch('http://192.168.56.1:8000/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
 
-          const response = await fetch('http://192.168.56.1:8000/register', {
-            method: 'POST',
-            body: formData,
-          });
+      if (!response.ok) {
+        throw new Error(`Registration failed: ${response.statusText}`);
+      }
 
-          if (!response.ok) {
-            throw new Error(`Login failed: ${response.statusText}`);
-          }
-
-          const data = await response.json();
-          return data;
+      const data = await response.json();
+      return data;
     } catch (error) {
-      console.error('Error during login:', error);
+      console.error('Error during registration:', error);
       return null;
     }
   };
+
 
 
     const loginUser = async (login, password, setToken) => {
@@ -54,7 +58,6 @@ export const UserProvider = ({ children }) => {
         const data = await response.json();
         console.log(data.access_token)
         setToken(data.access_token);
-
         return true;
     }
     catch (error) {
@@ -66,7 +69,7 @@ export const UserProvider = ({ children }) => {
 
 
   return (
-    <UserData.Provider value={{ users, loginUser }}>
+    <UserData.Provider value={{ users, loginUser, registerUser }}>
       {children}
     </UserData.Provider>
   );

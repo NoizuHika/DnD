@@ -17,7 +17,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { UserProvider } from './UserData';
 import { ThemeProvider } from './theme/ThemeContext';
-import { AuthProvider } from './AuthContext'
+import { AuthProvider } from './AuthContext';
 
 
 import HomeScreen from './HomeScreen';
@@ -133,4 +133,3 @@ const App = () => {
 };
 
 export default App;
-r

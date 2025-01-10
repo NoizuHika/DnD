@@ -15,9 +15,6 @@ Appearance.setColorScheme('light');
     { code: 'ru', label: 'Русский', flag: require('./assets/flags/russia.png') }
   ];
 
-  const {token} = useAuth();
-  console.log('Token',token);
-
   const themes = [
     { name: 'theme1', label: 'Dark', preview: require('./assets/font/theme1.png') },
     { name: 'theme2', label: 'Light', preview: require('./assets/font/theme2.png') }
@@ -29,6 +26,8 @@ const DMPage = ({ navigation }) => {
   const [settingsModalVisible, setSettingsModalVisible] = useState(false);
   const { t, i18n } = useTranslation();
   const [currentLang, setCurrentLang] = useState(i18n.language);
+
+  const {token} = useAuth();
 
   const handleLoginPress = () => {
     navigation.navigate('LogIn');
@@ -82,7 +81,7 @@ const DMPage = ({ navigation }) => {
           <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
             <Image source={theme.icons.yourcamp} style={styles.icons} />
             <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
-            {t('Your campaigns')} {token}</Text>
+            {t('Your campaigns')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>
