@@ -311,6 +311,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     textAlignVertical: 'top',
   },
+  modalInputEncounter: {
+    width: '100%',
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    marginBottom: 15,
+    padding: 5,
+  },
   modalInputMonCre: {
     backgroundColor: '#f0f0f0',
     borderRadius: 8,
@@ -710,6 +717,28 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
   },
+  cancelButtonEncounter: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 5,
+  },
+  cancelButtonTextEncounter: {
+    color: 'white',
+    textAlign: 'center',
+  },
+  confirmButtonEncounter: {
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 5,
+  },
+  confirmButtonTextEncounter: {
+    color: 'white',
+    textAlign: 'center',
+  },
   cancelButton: {
     marginTop: 10,
     alignItems: 'center',
@@ -753,6 +782,18 @@ const styles = StyleSheet.create({
   },
   textArea: {
     height: 100,
+  },
+  addButtonEncounter: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: 'green',
+    padding: 10,
+    borderRadius: 5,
+  },
+  addButtonTextEncounter: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   addButton: {
     borderColor: '#7F7F7F',
@@ -1398,6 +1439,13 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: 'center',
   },
+  modalContentEncounter: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
   modalContentSpells: {
     width: '80%',
     padding: 20,
@@ -1750,6 +1798,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
     fontSize: 14,
+  },
+  modalTitleEncounterName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
   },
   modalTitleInv: {
     color: 'black',
@@ -2222,6 +2275,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: 15,
   },
+  modalActionsEncounter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
   modalActionsNoteCampaign: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -2301,8 +2359,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
     borderRadius: 4,
     padding: 10,
-    marginTop: 20,
-    marginBottom: 10,
+    marginVertical: 10,
     paddingHorizontal: 30,
     flex: 1,
     alignItems: 'center',
@@ -3174,6 +3231,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     textAlign: 'center',
     padding: 8,
+  },
+  deleteButtonEncounter: {
+    backgroundColor: 'red',
+    borderRadius: 4,
+    padding: 10,
+    flex: 1,
+    alignItems: 'center',
+  },
+  deleteButtonTextEncounter: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   deleteButton: {
     padding: 7,

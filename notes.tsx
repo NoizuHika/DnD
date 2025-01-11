@@ -13,3 +13,6 @@ creatorsMonFeatItemMagic
 
    style registration forgot pass
 
+roll dice style
+
+DM change session
