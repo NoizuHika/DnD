@@ -53,11 +53,12 @@ const RulesGloss = ({ navigation }) => {
   const saveRuleChanges = () => {
     if (!editedRule) return;
 
-    const updatedRules = rulesGloss.map((rule) =>
-      rule.name === editedRule.name ? editedRule : rule
+    setRulesGloss((prevRulesGloss) =>
+      prevRulesGloss.map((rule) =>
+        rule.name === selectedRule.name ? editedRule : rule
+      )
     );
 
-    setRulesGloss(updatedRules);
     setSelectedRule(editedRule);
     setIsEditing(false);
   };

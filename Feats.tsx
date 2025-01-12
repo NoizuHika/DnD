@@ -55,7 +55,7 @@ const Feats = ({ navigation }) => {
 
     setFeats((prevFeats) =>
       prevFeats.map((feat) =>
-        feat.name === editedFeat.name ? editedFeat : feat
+        feat.name === selectedFeat.name ? editedFeat : feat
       )
     );
 
