@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Sharpshooter",
+    "prerequisite": "Dexterity 13+",
+    "prerequisiteDesc": "Dex 13",
+    "source": "PHB14",
+    "description": "You have mastered ranged weapons and can make shots that others find impossible."
+  },
+  {
+    "name": "Great Weapon Master",
+    "prerequisite": "Strength 15+",
+    "prerequisiteDesc": "Str 15",
+    "source": "PHB14",
+    "description": "You’ve learned to put the weight of a weapon behind your strikes."
+  },
+  {
+    "name": "Actor",
+    "prerequisite": " ",
+    "prerequisiteDesc": "",
+    "source": "PHB14",
+    "description": "You’ve learned to put the weight of a weapon behind your strikes."
+  },
+  {
+    "name": "Defensive Duelist",
+    "prerequisite": "Strength 15+",
+    "prerequisiteDesc": "Str 15",
+    "source": "PHB14",
+    "description": "You’ve learned to put the weight of a weapon behind your strikes."
+  },
+  {
+    "name": "War Caster",
+    "prerequisite": "Spellcasting ability",
+    "prerequisiteDesc": "The ability to cast at least one spell",
+    "source": "PHB14",
+    "description": "You have practiced casting spells in the midst of combat."
+  }
+]

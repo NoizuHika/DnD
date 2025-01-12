@@ -153,6 +153,27 @@ const DMPage = ({ navigation }) => {
               {t('Bestiary')}</Text>
             </ImageBackground>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.modalButton} onPress={() => handleLibraryPress('Feats')}>
+            <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
+              <Image source={theme.icons.feats} style={styles.icons} />
+              <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
+              {t('Feats')}</Text>
+            </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalButton} onPress={() => handleLibraryPress('BackgroundLibrary')}>
+            <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
+              <Image source={theme.icons.feats} style={styles.icons} />
+              <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
+              {t('Background Lib')}</Text>
+            </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalButton} onPress={() => handleLibraryPress('RulesGloss')}>
+            <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
+              <Image source={theme.icons.feats} style={styles.icons} />
+              <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
+              {t('Rules Glossary')}</Text>
+            </ImageBackground>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.modalButton} onPress={() => handleLibraryPress('Creator')}>
             <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
               <Image source={theme.icons.creator} style={styles.icons} />

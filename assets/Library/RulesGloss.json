@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Teleportation",
+    "type": "Core",
+    "source": "PHB24",
+    "description": "Something about teleport"
+  },
+  {
+    "name": "Save",
+    "type": "Core",
+    "source": "PHB24",
+    "description": "Something about save"
+  },
+  {
+    "name": "Reaction",
+    "type": "Core",
+    "source": "PHB24",
+    "description": "Something about reaction"
+  }
+]

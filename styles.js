@@ -2429,7 +2429,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     backgroundColor: '#3f3f4d',
-    padding: 4,
+    padding: 1,
     marginBottom: -1,
   },
   tableCell: {
@@ -2438,6 +2438,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#04021f',
     borderBottomWidth: 1,
     textAlign: 'center',
+    paddingVertical: 12,
   },
   tableCellEncounter: {
     flex: 1,
@@ -3213,6 +3214,11 @@ const styles = StyleSheet.create({
     height: 100,
     margin: 10,
     justifyContent: 'flex-end',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#8A2BE2',
+    borderRadius: 15,
+    overflow: 'hidden',
   },
   buttonContainerCamp: {
     flex: 1,

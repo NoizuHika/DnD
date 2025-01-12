@@ -4,62 +4,62 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 
-const featsData = require('./assets/Library/feats.json');
+const RulesGlossData = require('./assets/Library/RulesGloss.json');
 
-const Feats = ({ navigation }) => {
+const RulesGloss = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
 
-  const [feats, setFeats] = useState([]);
+  const [rulesGloss, setRulesGloss] = useState([]);
   const [searchText, setSearchText] = useState('');
-  const [selectedFeat, setSelectedFeat] = useState(null);
+  const [selectedRule, setSelectedRule] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedFeat, setEditedFeat] = useState(null);
+  const [editedRule, setEditedRule] = useState(null);
 
   useEffect(() => {
-    setFeats(featsData);
+    setRulesGloss(RulesGlossData);
   }, []);
 
   const handleGoBack = () => {
     navigation.goBack();
   };
 
-  const filterFeats = () => {
-    return feats.filter((feat) =>
-      feat.name.toLowerCase().includes(searchText.toLowerCase())
+  const filterRules = () => {
+    return rulesGloss.filter((rule) =>
+      rule.name.toLowerCase().includes(searchText.toLowerCase())
     );
   };
 
-  const filteredFeats = filterFeats();
+  const filteredRules = filterRules();
 
-  const handleFeatPress = (feat) => {
-    setSelectedFeat(feat);
+  const handleRulePress = (rule) => {
+    setSelectedRule(rule);
   };
 
-  const closeFeatModal = () => {
-    setSelectedFeat(null);
+  const closeRuleModal = () => {
+    setSelectedRule(null);
     setIsEditing(false);
   };
 
   const handleEditChange = (field, value) => {
-    setEditedFeat((prevFeat) => ({
-      ...prevFeat,
+    setEditedRule((prevRule) => ({
+      ...prevRule,
       [field]: value,
     }));
   };
 
-  const saveFeatChanges = () => {
-    if (!editedFeat) return;
+  const saveRuleChanges = () => {
+    if (!editedRule) return;
 
-    const updatedFeat = { ...editedFeat };
+    const updatedRule = { ...editedRule };
 
-    setFeats((prevFeats) =>
-      prevFeats.map((feat) =>
-        feat.name === updatedFeat.name ? updatedFeat : feat
+    setRulesGloss((prevRules) =>
+      prevRules.map((rule) =>
+        rule.name === updatedRule.name ? updatedRule : rule
       )
     );
 
-    setSelectedFeat(updatedFeat);
+    setSelectedRule(updatedRule);
     setIsEditing(false);
   };
 
@@ -67,7 +67,7 @@ const Feats = ({ navigation }) => {
     <ImageBackground source={theme.background} style={styles.container}>
       <TextInput
         style={styles.searchInput}
-        placeholder={t('Search feats')}
+        placeholder={t('Search rules')}
         placeholderTextColor="#7F7F7F"
         value={searchText}
         onChangeText={setSearchText}
@@ -76,21 +76,21 @@ const Feats = ({ navigation }) => {
       <ScrollView style={styles.tableContainer}>
         <View style={styles.tableHeader}>
           <Text style={[styles.tableHeaderText]}>{t('Name')}</Text>
-          <Text style={[styles.tableHeaderText]}>{t('Prerequisite')}</Text>
+          <Text style={[styles.tableHeaderText]}>{t('Type')}</Text>
           <Text style={[styles.tableHeaderText]}>{t('Source')}</Text>
           <Text style={[styles.tableHeaderText]}>{t('Details')}</Text>
         </View>
-        {filteredFeats.length === 0 ? (
-          <Text style={styles.noResultsText}>{t('No feats found')}</Text>
+        {filteredRules.length === 0 ? (
+          <Text style={styles.noResultsText}>{t('No rules found')}</Text>
         ) : (
-          filteredFeats.map((feat, index) => (
+          filteredRules.map((rule, index) => (
             <View key={index} style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.nameColumn]}>{feat.name}</Text>
-              <Text style={[styles.tableCell]}>{feat.prerequisite || t('None')}</Text>
-              <Text style={[styles.tableCell]}>{feat.source}</Text>
+              <Text style={[styles.tableCell, styles.nameColumn]}>{rule.name}</Text>
+              <Text style={[styles.tableCell]}>{rule.type || t('None')}</Text>
+              <Text style={[styles.tableCell]}>{rule.source}</Text>
               <TouchableOpacity
                 style={[styles.tableCell, styles.actionsColumn]}
-                onPress={() => handleFeatPress(feat)}
+                onPress={() => handleRulePress(rule)}
               >
                 <Text style={styles.actionText}>{t('Details')}</Text>
               </TouchableOpacity>
@@ -99,21 +99,21 @@ const Feats = ({ navigation }) => {
         )}
       </ScrollView>
 
-      {selectedFeat && (
+      {selectedRule && (
         <Modal visible={true} transparent={true} animationType="fade">
           <View style={styles.modalOverlayItems}>
             {!isEditing ? (
               <View style={styles.itemModal}>
-                <Text style={styles.itemTitle}>{selectedFeat.name}</Text>
+                <Text style={styles.itemTitle}>{selectedRule.name}</Text>
                 <Text style={styles.itemDescriptionAttune}>
-                  {t('Prerequisite')}: {selectedFeat.prerequisiteDesc || t('None')}
+                  {t('Type')}: {selectedRule.type || t('None')}
                 </Text>
-                <Text style={styles.itemDescription}>{selectedFeat.description}</Text>
+                <Text style={styles.itemDescription}>{selectedRule.description}</Text>
                 <View style={styles.modalButtons}>
                   <TouchableOpacity onPress={() => setIsEditing(true)} style={styles.editButton}>
                     <Text style={styles.editButtonText}>{t('Edit')}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={closeFeatModal} style={styles.closeButtonItem}>
+                  <TouchableOpacity onPress={closeRuleModal} style={styles.closeButtonItem}>
                     <Text style={styles.closeButtonText}>{t('Close')}</Text>
                   </TouchableOpacity>
                 </View>
@@ -122,28 +122,28 @@ const Feats = ({ navigation }) => {
               <View style={styles.itemModal}>
                 <TextInput
                   style={styles.itemTitle}
-                  value={editedFeat.name}
+                  value={editedRule.name}
                   onChangeText={(value) => handleEditChange('name', value)}
                   placeholder={t('Name')}
                 />
                 <TextInput
                   style={styles.itemDescriptionAttune}
-                  value={editedFeat.prerequisite}
-                  onChangeText={(value) => handleEditChange('prerequisite', value)}
-                  placeholder={t('Prerequisite')}
+                  value={editedRule.type}
+                  onChangeText={(value) => handleEditChange('type', value)}
+                  placeholder={t('Type')}
                 />
                 <TextInput
                   style={styles.itemDescription}
-                  value={editedFeat.description}
+                  value={editedRule.description}
                   onChangeText={(value) => handleEditChange('description', value)}
                   placeholder={t('Description')}
                   multiline
                 />
                 <View style={styles.modalButtons}>
-                  <TouchableOpacity onPress={closeFeatModal} style={styles.closeButtonItem}>
+                  <TouchableOpacity onPress={closeRuleModal} style={styles.closeButtonItem}>
                     <Text style={styles.closeButtonText}>{t('Cancel')}</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity onPress={saveFeatChanges} style={styles.editButton}>
+                  <TouchableOpacity onPress={saveRuleChanges} style={styles.editButton}>
                     <Text style={styles.editButtonText}>{t('Save')}</Text>
                   </TouchableOpacity>
                 </View>
@@ -164,4 +164,4 @@ const Feats = ({ navigation }) => {
   );
 };
 
-export default Feats;
+export default RulesGloss;

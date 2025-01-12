@@ -66,6 +66,7 @@ import Encounters from './Encounters';
 import EncounterEdit from './EncounterEdit';
 import EncounterRun from './EncounterRun';
 import EncounterRunStart from './EncounterRunStart';
+import RulesGloss from './RulesGloss';
 
 const Stack = createStackNavigator();
 
@@ -123,6 +124,7 @@ const App = () => {
         <Stack.Screen name="EncounterEdit" component={EncounterEdit} options={{ headerShown: false }} />
         <Stack.Screen name="EncounterRun" component={EncounterRun} options={{ headerShown: false }} />
         <Stack.Screen name="EncounterRunStart" component={EncounterRunStart} options={{ headerShown: false }} />
+        <Stack.Screen name="RulesGloss" component={RulesGloss} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
     </AuthProvider>
