@@ -34,10 +34,12 @@ const Feats = ({ navigation }) => {
 
   const handleFeatPress = (feat) => {
     setSelectedFeat(feat);
+    setEditedFeat({ ...feat });
   };
 
   const closeFeatModal = () => {
     setSelectedFeat(null);
+    setEditedFeat(null);
     setIsEditing(false);
   };
 
@@ -51,15 +53,13 @@ const Feats = ({ navigation }) => {
   const saveFeatChanges = () => {
     if (!editedFeat) return;
 
-    const updatedFeat = { ...editedFeat };
-
     setFeats((prevFeats) =>
       prevFeats.map((feat) =>
-        feat.name === updatedFeat.name ? updatedFeat : feat
+        feat.name === editedFeat.name ? editedFeat : feat
       )
     );
 
-    setSelectedFeat(updatedFeat);
+    setSelectedFeat(editedFeat);
     setIsEditing(false);
   };
 
@@ -131,6 +131,12 @@ const Feats = ({ navigation }) => {
                   value={editedFeat.prerequisite}
                   onChangeText={(value) => handleEditChange('prerequisite', value)}
                   placeholder={t('Prerequisite')}
+                />
+                <TextInput
+                  style={styles.itemDescriptionAttune}
+                  value={editedFeat.prerequisiteDesc}
+                  onChangeText={(value) => handleEditChange('prerequisiteDesc', value)}
+                  placeholder={t('Prerequisite Description')}
                 />
                 <TextInput
                   style={styles.itemDescription}

@@ -34,10 +34,12 @@ const RulesGloss = ({ navigation }) => {
 
   const handleRulePress = (rule) => {
     setSelectedRule(rule);
+    setEditedRule({ ...rule });
   };
 
   const closeRuleModal = () => {
     setSelectedRule(null);
+    setEditedRule(null);
     setIsEditing(false);
   };
 
@@ -51,15 +53,12 @@ const RulesGloss = ({ navigation }) => {
   const saveRuleChanges = () => {
     if (!editedRule) return;
 
-    const updatedRule = { ...editedRule };
-
-    setRulesGloss((prevRules) =>
-      prevRules.map((rule) =>
-        rule.name === updatedRule.name ? updatedRule : rule
-      )
+    const updatedRules = rulesGloss.map((rule) =>
+      rule.name === editedRule.name ? editedRule : rule
     );
 
-    setSelectedRule(updatedRule);
+    setRulesGloss(updatedRules);
+    setSelectedRule(editedRule);
     setIsEditing(false);
   };
 
