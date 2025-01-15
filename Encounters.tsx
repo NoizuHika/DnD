@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import {
-  ImageBackground, View, Text, TouchableOpacity, ScrollView, Alert, Modal, TextInput
-} from 'react-native';
+import { ImageBackground, View, Text, TouchableOpacity, ScrollView, Alert, Modal, TextInput } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
