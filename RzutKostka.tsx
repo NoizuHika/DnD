@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
@@ -17,7 +18,8 @@ const diceTypes = [
   { sides: 100, image: require('./assets/dice/d100.png') },
 ];
 
-const RzutKostka = ({ navigation }) => {
+const RzutKostka: React.FC = ({ navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme, addDiceResult } = useContext(ThemeContext);
 
@@ -88,21 +90,21 @@ const RzutKostka = ({ navigation }) => {
     return (
       <TouchableOpacity
         key={index}
-        style={[styles.diceContainerRzut, isSelected && styles.selectedDice]}
+        style={[styles.diceContainerRzut, isSelected && styles.selectedDice, { width: 100 * scaleFactor, height: 105 * scaleFactor }]}
         onPress={() => handleDiceSelection(index)}
       >
         {isSelected && (
           <View style={styles.counterContainer}>
-            <TouchableOpacity onPress={() => handleDiceCountChange(index, -1)} style={styles.counterButton}>
-              <Text style={styles.counterText}>-</Text>
+            <TouchableOpacity onPress={() => handleDiceCountChange(index, -1)} style={[styles.counterButton, { height: 20 * scaleFactor, width: 20 * scaleFactor }]}>
+              <Text style={[styles.counterText, { fontSize: fontSize }]}>-</Text>
             </TouchableOpacity>
-            <Text style={styles.counterValue}>{isSelected.count}</Text>
-            <TouchableOpacity onPress={() => handleDiceCountChange(index, 1)} style={styles.counterButton}>
-              <Text style={styles.counterText}>+</Text>
+            <Text style={[styles.counterValue, { fontSize: fontSize }]}>{isSelected.count}</Text>
+            <TouchableOpacity onPress={() => handleDiceCountChange(index, 1)} style={[styles.counterButton, { height: 20 * scaleFactor, width: 20 * scaleFactor }]}>
+              <Text style={[styles.counterText, { fontSize: fontSize }]}>+</Text>
             </TouchableOpacity>
           </View>
         )}
-        <Animated.Image source={dice.image} style={[styles.diceRzut, { transform: [{ rotate: spin }] }]} />
+        <Animated.Image source={dice.image} style={[styles.diceRzut, { transform: [{ rotate: spin }], height: 80 * scaleFactor, width: 80 * scaleFactor }]} />
       </TouchableOpacity>
     );
   };
@@ -110,7 +112,7 @@ const RzutKostka = ({ navigation }) => {
   const renderResults = () => {
     return diceValues.map(({ index, results }) => (
       <View key={index} style={styles.resultContainer}>
-        <Text style={styles.resultText}>
+        <Text style={[styles.resultText, { fontSize: fontSize }]}>
           d{diceTypes[index].sides}: {results.join(', ')}
         </Text>
       </View>
@@ -125,25 +127,26 @@ const RzutKostka = ({ navigation }) => {
       </View>
 
       <View style={styles.buttonContainerRzut}>
-        <TouchableOpacity style={styles.rollButton} onPress={handleRollDice}>
-          <Text style={styles.rollButtonText}>{t('Roll')}</Text>
+        <TouchableOpacity style={[styles.rollButton, { height: 50 * scaleFactor, width: 100 * scaleFactor }]} onPress={handleRollDice}>
+          <Text style={[styles.rollButtonText, { fontSize: fontSize }]}>{t('Roll')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
-          <Text style={styles.resetButtonText}>{t('Reset')}</Text>
+        <TouchableOpacity style={[styles.resetButton, { height: 50 * scaleFactor, width: 100 * scaleFactor }]} onPress={handleReset}>
+          <Text style={[styles.resetButtonText, { fontSize: fontSize }]}>{t('Reset')}</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.resultsContainer}>{renderResults()}</View>
 
+     </ScrollView>
 
-      <View style={styles.GoBack}>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>
-     </ScrollView>
+
     </ImageBackground>
   );
 };

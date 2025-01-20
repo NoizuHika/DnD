@@ -7,10 +7,12 @@ import { UserData } from './UserData';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const Registration = () => {
+const Registration: React.FC = () => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [login, setLogin] = useState('');
@@ -50,12 +52,14 @@ const Registration = () => {
       resizeMode="cover"
     >
 
-      <Text style={[styles.appName, { color: theme.fontColor }]}>DMBook</Text>
+      <Text style={[styles.appName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>DMBook</Text>
+
+    <View style={[styles.GeneralContainerBackground, { marginTop: 50 * scaleFactor }]}>
 
       <View style={styles.emailContainer}>
-        <Text style={styles.label}>{t('Email')}</Text>
+        <Text style={[styles.label, { fontSize: fontSize * 1 }]}>{t('Email')}</Text>
         <TextInput
-          style={styles.emailInput}
+          style={[styles.emailInput, { fontSize: fontSize * 1 }]}
           value={email}
           onChangeText={setEmail}
           placeholder={t('Email')}
@@ -65,9 +69,9 @@ const Registration = () => {
       </View>
 
       <View style={styles.loginContainer}>
-        <Text style={styles.label}>{t('Login_nick')}</Text>
+        <Text style={[styles.label, { fontSize: fontSize * 1 }]}>{t('Login_nick')}</Text>
         <TextInput
-          style={styles.loginInput}
+          style={[styles.loginInput, { fontSize: fontSize * 1 }]}
           placeholder={t('Login_nick')}
           value={login}
           onChangeText={setLogin}
@@ -76,9 +80,9 @@ const Registration = () => {
       </View>
 
       <View style={[styles.passContainer]}>
-        <Text style={styles.label}>{t('Pass')}</Text>
+        <Text style={[styles.label, { fontSize: fontSize * 1 }]}>{t('Pass')}</Text>
         <TextInput
-          style={styles.passInput}
+          style={[styles.passInput, { fontSize: fontSize * 1 }]}
           value={password}
           onChangeText={setPassword}
           placeholder={t('Pass')}
@@ -87,9 +91,9 @@ const Registration = () => {
       </View>
 
       <View style={styles.passContainer}>
-        <Text style={styles.label}>{t('Confirm_pass')}</Text>
+        <Text style={[styles.label, { fontSize: fontSize * 1 }]}>{t('Confirm_pass')}</Text>
         <TextInput
-          style={styles.confirmPassInput}
+          style={[styles.confirmPassInput, { fontSize: fontSize * 1 }]}
           value={confirmPassword}
           placeholder={t('Confirm_pass')}
           onChangeText={setConfirmPassword}
@@ -97,22 +101,23 @@ const Registration = () => {
         />
       </View>
 
+    </View>
 
-      <View style={{ height: 100}}>
+      <View style={{ height: 100 * scaleFactor }}>
           <WebView
-           style={{ height: 150}}
+           style={{ height: 150 * scaleFactor }}
             source={require('./assets/captcha.html')}
             onMessage={onCaptchaMessage}
           />
           </View>
-      <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
-        <Text style={styles.registerButtonText}>{t('Sign_up')}</Text>
+      <TouchableOpacity style={[styles.registerButton, { height: 50 * scaleFactor }]} onPress={handleRegister}>
+        <Text style={[styles.registerButtonText, { fontSize: fontSize * 1.2 }]}>{t('Sign_up')}</Text>
       </TouchableOpacity>
 
-      <View style={styles.GoBack}>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>

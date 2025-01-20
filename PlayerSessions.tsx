@@ -6,10 +6,12 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const PlayerSessions = () => {
+const PlayerSessions: React.FC = () => {
+    const { fontSize, scaleFactor } = useContext(SettingsContext);
     const [sessions, setSessions] = useState([]);
     const navigation = useNavigation();
     const { t } = useTranslation();
@@ -43,7 +45,7 @@ const PlayerSessions = () => {
 
         <View style={styles.scrollContainer}>
 
-            <Text style={[styles.headerTextCamp, { color: theme.fontColor }]}>{t('Your Sessions')}</Text>
+            <Text style={[styles.headerTextCamp, { color: theme.fontColor, fontSize: fontSize }]}>{t('Your Sessions')}</Text>
 
                   <FlatList
                     data={sessions}
@@ -60,10 +62,10 @@ const PlayerSessions = () => {
         </View>
 
 
-      <View style={styles.GoBack}>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>

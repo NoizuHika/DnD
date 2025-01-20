@@ -387,11 +387,12 @@ const Bestiary = ({ navigation }) => {
 
                     <View style={styles.infoColumn}>
                       <View style={styles.statsRow}>
-                        <View style={styles.statCircle}>
+                        <View style={styles.statLeft}>
                           <Text style={styles.statValue}>{t('HP')}</Text>
                           <Text style={styles.statValue}>{selectedFeat?.hp}</Text>
                         </View>
-                        <View style={styles.statCircle}>
+                        <View style={styles.dividerStats} />
+                        <View style={styles.statRight}>
                           <Text style={styles.statValue}>{t('AC')}</Text>
                           <Text style={styles.statValue}>{selectedFeat?.ac}</Text>
                         </View>

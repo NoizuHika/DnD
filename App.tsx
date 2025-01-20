@@ -18,6 +18,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { UserProvider } from './UserData';
 import { ThemeProvider } from './theme/ThemeContext';
 import { AuthProvider } from './AuthContext';
+import { SettingsProvider } from './SettingsContext';
 
 
 import HomeScreen from './HomeScreen';
@@ -70,17 +71,20 @@ import RulesGloss from './RulesGloss';
 import BackLibrary from './BackLibrary';
 import FeatsCreator from './FeatsCreator';
 import BackLibCreator from './BackLibCreator';
+import SetupHome from './SetupHome';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return (
   <I18nextProvider i18n={i18n}>
+  <SettingsProvider>
    <ThemeProvider>
     <UserProvider>
     <AuthProvider>
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="SetupHome">
+        <Stack.Screen name="SetupHome" component={SetupHome} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LogIn" component={LogInScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Registration" component={Registration} options={{ headerShown: false }} />
@@ -136,6 +140,7 @@ const App = () => {
     </AuthProvider>
     </UserProvider>
    </ThemeProvider>
+  </SettingsProvider>
   </I18nextProvider>
   );
 };

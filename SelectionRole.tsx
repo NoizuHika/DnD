@@ -5,10 +5,12 @@ import { ThemeContext } from './theme/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const SelectionRole = () => {
+const SelectionRole: React.FC = () => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { theme } = useContext(ThemeContext);
   const { t, i18n } = useTranslation();
   const navigation = useNavigation();
@@ -59,18 +61,18 @@ const SelectionRole = () => {
       resizeMode="cover">
 
     <View style={styles.container}>
-      <Text style={styles.titleSelect}>{t('Who are you today')}?</Text>
+      <Text style={[styles.titleSelect, { fontSize: fontSize * 1.2 }]}>{t('Who are you today')}?</Text>
       <View style={styles.selectionContainer}>
         <Animated.View style={[styles.optionContainer, playerAnimatedStyle]}>
-          <TouchableOpacity style={styles.option} onPress={() => handlePress('Player')}>
+          <TouchableOpacity style={[styles.option, { height: 50 * scaleFactor, width: 250 * scaleFactor }]} onPress={() => handlePress('Player')}>
             <Image source={require('./assets/adventurer.jpeg')} style={styles.playericon} />
-            <Text style={styles.optionText}>{t('Player')}</Text>
+            <Text style={[styles.optionText, { fontSize: fontSize }]}>{t('Player')}</Text>
           </TouchableOpacity>
         </Animated.View>
         <Animated.View style={[styles.optionContainer, dmAnimatedStyle]}>
-          <TouchableOpacity style={styles.option} onPress={() => handlePress('DM')}>
+          <TouchableOpacity style={[styles.option, { height: 50 * scaleFactor, width: 250 * scaleFactor }]} onPress={() => handlePress('DM')}>
             <Image source={require('./assets/dungeon-master.jpeg')} style={styles.dmicon} />
-            <Text style={styles.optionText}>{t('Dungeon Master')}</Text>
+            <Text style={[styles.optionText, { fontSize: fontSize }]}>{t('Dungeon Master')}</Text>
           </TouchableOpacity>
         </Animated.View>
       </View>

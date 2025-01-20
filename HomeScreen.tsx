@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
@@ -19,7 +20,9 @@ const themes = [
   { name: 'theme2', label: 'Light', preview: require('./assets/font/theme2.png') }
 ];
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen: React.FC = ({ navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
+
   const { t, i18n } = useTranslation();
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [isThemeDropdownVisible, setThemeDropdownVisible] = useState(false);
@@ -32,6 +35,10 @@ const HomeScreen = ({ navigation }) => {
     i18n.changeLanguage(code);
     setCurrentLang(code);
     setDropdownVisible(false);
+  };
+
+  const handleGoBack = () => {
+    navigation.goBack();
   };
 
   const handleLoginPress = () => {
@@ -49,24 +56,32 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <ImageBackground source={theme.background} style={styles.container}>
-      <Text style={[styles.appName, { color: theme.fontColor }]}>DMBook</Text>
+      <Text style={[styles.appName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>DMBook</Text>
+
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
+        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
+          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
+          </ImageBackground>
+        </TouchableOpacity>
+      </View>
 
       <View style={styles.buttonContainerUsu}>
-        <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
-          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Image source={theme.icons.login} style={styles.icons} />
-            <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
+        <TouchableOpacity style={[styles.button, { height: 50 * scaleFactor }]} onPress={handleLoginPress}>
+          <ImageBackground source={theme.backgroundButton} style={[styles.buttonBackground, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}>
+            <Image source={theme.icons.login} style={[styles.icons, { height: 40 * scaleFactor, width: 40 * scaleFactor }]} />
+            <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
               {t('Login')}
             </Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.buttonContainerUsu, { bottom: 250 }]}>
-        <TouchableOpacity style={styles.button} onPress={handleRegistrationPress}>
-          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Image source={theme.icons.register} style={styles.icons} />
-            <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
+      <View style={[styles.buttonContainerUsu, { bottom: 250 * scaleFactor }]}>
+        <TouchableOpacity style={[styles.button, { height: 50 * scaleFactor }]} onPress={handleRegistrationPress}>
+          <ImageBackground source={theme.backgroundButton} style={[styles.buttonBackground, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}>
+            <Image source={theme.icons.register} style={[styles.icons, { height: 40 * scaleFactor, width: 40 * scaleFactor }]} />
+            <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
             {t('Registration')}</Text>
           </ImageBackground>
         </TouchableOpacity>
@@ -74,7 +89,7 @@ const HomeScreen = ({ navigation }) => {
 
       <View style={styles.themeContainer}>
         <TouchableOpacity onPress={() => setSettingsModalVisible(true)}>
-          <Image source={theme.icons.settings} style={styles.gearIcon} />
+          <Image source={theme.icons.settings} style={[styles.gearIcon, { height: 50 * scaleFactor, width: 50 * scaleFactor }]} />
         </TouchableOpacity>
       </View>
 
@@ -86,29 +101,29 @@ const HomeScreen = ({ navigation }) => {
       >
         <TouchableWithoutFeedback onPress={() => setSettingsModalVisible(false)}>
           <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>{t('Select Language')}</Text>
+            <View style={[styles.modalContent, { padding: 20 * scaleFactor }]}>
+              <Text style={[styles.modalTitle, { fontSize: fontSize * 1.2 }]}>{t('Select Language')}</Text>
               <View style={styles.dropdown}>
                 {languages.map((lang) => (
                   <TouchableOpacity key={lang.code} onPress={() => changeLanguage(lang.code)} style={styles.flagButton}>
-                    <Image source={lang.flag} style={styles.flag} />
-                    <Text style={styles.languageLabel}>{lang.label}</Text>
+                    <Image source={lang.flag} style={[styles.flag, { height: 30 * scaleFactor, width: 40 * scaleFactor }]} />
+                    <Text style={[styles.languageLabel, { fontSize: fontSize * 1 }]}>{lang.label}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
 
-              <Text style={styles.modalTitle}>{t('Select Theme')}</Text>
+              <Text style={[styles.modalTitle, { fontSize: fontSize * 1.2 }]}>{t('Select Theme')}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '90%' }}>
                 {themes.map((themeItem) => (
                   <TouchableOpacity key={themeItem.name} onPress={() => handleChangeTheme(themeItem.name)} style={styles.themeOption}>
-                    <Image source={themeItem.preview} style={styles.themePreview} />
-                    <Text style={styles.themeLabel}>{themeItem.label}</Text>
+                    <Image source={themeItem.preview} style={[styles.themePreview, { height: 350 * scaleFactor, width: 200 * scaleFactor }]} />
+                    <Text style={[styles.themeLabel, { fontSize: fontSize * 1 }]}>{themeItem.label}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
 
-              <TouchableOpacity style={styles.closeButton} onPress={() => setSettingsModalVisible(false)}>
-                <Text style={{ color: 'white', fontSize: 20 }}>{t('Close')}</Text>
+              <TouchableOpacity style={[styles.closeButton, { height: 60 * scaleFactor }]} onPress={() => setSettingsModalVisible(false)}>
+                <Text style={{ color: 'white', fontSize: fontSize }}>{t('Close')}</Text>
               </TouchableOpacity>
             </View>
           </View>

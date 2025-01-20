@@ -51,7 +51,7 @@ const Creator = ({ navigation }) => {
       <View style={[styles.buttonContainerUsu, { bottom: '70%' }]}>
         <TouchableOpacity style={styles.button} onPress={handleItemCreatorPress}>
           <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
-            <Image source={theme.icons.DMToPlayer} style={styles.icons} />
+            <Image source={theme.icons.items} style={styles.icons} />
             <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, textAlign: theme.textAlign }]}>
               {t('Item Creator')}
             </Text>
@@ -62,7 +62,7 @@ const Creator = ({ navigation }) => {
       <View style={[styles.buttonContainerUsu, { bottom: '60%' }]}>
         <TouchableOpacity style={styles.button} onPress={handleMagicItemCreatorPress}>
           <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
-            <Image source={theme.icons.DMToPlayer} style={styles.icons} />
+            <Image source={theme.icons.magicitem} style={styles.icons} />
             <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, textAlign: theme.textAlign }]}>
               {t('Magic Item Creator')}
             </Text>
@@ -73,7 +73,7 @@ const Creator = ({ navigation }) => {
       <View style={[styles.buttonContainerUsu, { bottom: '50%' }]}>
         <TouchableOpacity style={styles.button} onPress={handleSpellCreatorPress}>
           <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
-            <Image source={theme.icons.DMToPlayer} style={styles.icons} />
+            <Image source={theme.icons.spells} style={styles.icons} />
             <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, textAlign: theme.textAlign }]}>
               {t('Spell Creator')}
             </Text>
@@ -84,7 +84,7 @@ const Creator = ({ navigation }) => {
       <View style={[styles.buttonContainerUsu, { bottom: '40%' }]}>
         <TouchableOpacity style={styles.button} onPress={handleMonsterCreationScreen}>
           <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
-            <Image source={theme.icons.DMToPlayer} style={styles.icons} />
+            <Image source={theme.icons.feats} style={styles.icons} />
             <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, textAlign: theme.textAlign }]}>
               {t('Monster Creator')}
             </Text>
@@ -95,7 +95,7 @@ const Creator = ({ navigation }) => {
       <View style={[styles.buttonContainerUsu, { bottom: '30%' }]}>
         <TouchableOpacity style={styles.button} onPress={handleFeatsCreatorScreen}>
           <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
-            <Image source={theme.icons.DMToPlayer} style={styles.icons} />
+            <Image source={theme.icons.featsFeats} style={styles.icons} />
             <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, textAlign: theme.textAlign }]}>
               {t('Feats Creator')}
             </Text>
@@ -106,7 +106,7 @@ const Creator = ({ navigation }) => {
       <View style={[styles.buttonContainerUsu, { bottom: '20%' }]}>
         <TouchableOpacity style={styles.button} onPress={handleBackLibScreen}>
           <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
-            <Image source={theme.icons.DMToPlayer} style={styles.icons} />
+            <Image source={theme.icons.backLib} style={styles.icons} />
             <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, textAlign: theme.textAlign }]}>
               {t('Back Library Creator')}
             </Text>

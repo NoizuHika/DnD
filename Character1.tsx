@@ -6,12 +6,14 @@ import PlayerCharacter from './PlayerCharacter';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 const spellsData = require('./assets/Library/spells.json');
 
 Appearance.setColorScheme('light');
 
-const Character1 = ({ navigation }) => {
+const Character1: React.FC = ({ navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t, i18n } = useTranslation();
   const [characterData, setCharacterData] = useState(null);
   const [selectedScreen, setSelectedScreen] = useState('Character1');
@@ -186,11 +188,11 @@ const Character1 = ({ navigation }) => {
             style={styles.spellContainer}
             onPress={() => handleSpellPress(spell)}
           >
-            <Text style={styles.spellName}>{spell.name}</Text>
-            <Text style={styles.spellDetails}>
+            <Text style={[styles.spellName, { fontSize: fontSize }]}>{spell.name}</Text>
+            <Text style={[styles.spellDetails, { fontSize: fontSize * 0.8 }]}>
               {t('Level')}: {spell.level}, {t('Casting Time')}: {spell.castingTime}, {t('Range')}: {spell.range}
             </Text>
-            <Text style={styles.spellDescription}>{spell.description}</Text>
+            <Text style={[styles.spellDescription, { fontSize: fontSize * 0.8 }]}>{spell.description}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -210,10 +212,10 @@ const Character1 = ({ navigation }) => {
       <View style={styles.abilityWindow}>
         <View style={styles.skillsContainer}>
           <TouchableOpacity onPress={handleImagePress}>
-            <Image source={require('./assets/skills/firearrow.png')} style={styles.abilityImage} />
+            <Image source={require('./assets/skills/firearrow.png')} style={[styles.abilityImage, { height: 50 * scaleFactor, width: 50 * scaleFactor }]} />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleImagePress}>
-            <Image source={require('./assets/skills/powershot.png')} style={styles.abilityImage} />
+            <Image source={require('./assets/skills/powershot.png')} style={[styles.abilityImage, { height: 50 * scaleFactor, width: 50 * scaleFactor }]} />
           </TouchableOpacity>
         </View>
 
@@ -332,10 +334,10 @@ const Character1 = ({ navigation }) => {
 
   return (
     <ImageBackground source={theme.background} style={styles.container}>
-      <View style={styles.dropdownContainerCharacter}>
+      <View style={[styles.dropdownContainerCharacter, { height: 40 * scaleFactor, width: 200 * scaleFactor }]}>
         <Picker
           selectedValue={selectedScreen}
-          style={styles.pickerChooseChar}
+          style={[styles.pickerChooseChar, { width: 200 * scaleFactor }]}
           onValueChange={(itemValue) => {
             setSelectedScreen(itemValue);
             navigation.navigate(itemValue);
@@ -347,96 +349,98 @@ const Character1 = ({ navigation }) => {
         </Picker>
       </View>
       <View style={styles.imageContainer}>
-        <Image source={require('./assets/assasin.jpeg')} style={styles.image} />
+        <Image source={require('./assets/assasin.jpeg')} style={[styles.image, { height: 100 * scaleFactor, width: 100 * scaleFactor }]} />
       </View>
 
-      <View style={styles.healthContainer}>
-       <Text style={styles.statText}>{t('Health')}: {health}</Text>
-        <View style={styles.healthBar}>
-          <View style={[styles.healthFill, { width: `${health}%` }]} />
-        </View>
-        <TouchableOpacity style={styles.healthButtonChar} onPress={() => handleHealthChange(10)}>
-          <Text style={styles.healthText}>{t('Heal')}</Text>
+      <View style={[styles.healthContainer, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
+        <TouchableOpacity style={[styles.healthButtonChar, { height: 30 * scaleFactor, width: 80 * scaleFactor, right: 15 * scaleFactor }]} onPress={() => handleHealthChange(10)}>
+          <Text style={[styles.healthText, { fontSize: fontSize }]}>{t('Heal')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.damageButtonChar} onPress={() => handleHealthChange(-10)}>
-          <Text style={styles.damageText}>{t('Damage')}</Text>
+        <View style={{ alignItems: 'center' }}>
+            <Text style={[styles.statText, { fontSize: fontSize }]}>{t('Health')}: {health}</Text>
+            <View style={styles.healthBar}>
+              <View style={[styles.healthFill, { width: `${health}%` }]} />
+            </View>
+          </View>
+        <TouchableOpacity style={[styles.damageButtonChar, { height: 30 * scaleFactor, width: 80 * scaleFactor, left: 15 * scaleFactor }]} onPress={() => handleHealthChange(-10)}>
+          <Text style={[styles.damageText, { fontSize: fontSize }]}>{t('Damage')}</Text>
         </TouchableOpacity>
        </View>
 
       <View style={styles.statsContainer}>
       <View style={styles.blackLeftContainer}>
         <TouchableOpacity onPress={() => handleStatPress('STR', calculateLargerNumber(player.STR))}>
-          <View style={styles.statBox}>
-            <Text style={styles.largeText}>{calculateLargerNumber(player.STR)}</Text>
-            <Text style={styles.statText}>{`STR: ${player.STR}`}</Text>
+          <View style={[styles.statBox, { height: 55 * scaleFactor, width: 85 * scaleFactor }]}>
+            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.STR)}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`STR: ${player.STR}`}</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleStatPress('DEX', calculateLargerNumber(player.DEX))}>
-          <View style={styles.statBox}>
-            <Text style={styles.largeText}>{calculateLargerNumber(player.DEX)}</Text>
-            <Text style={styles.statText}>{`DEX: ${player.DEX}`}</Text>
+          <View style={[styles.statBox, { height: 55 * scaleFactor, width: 85 * scaleFactor }]}>
+            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.DEX)}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`DEX: ${player.DEX}`}</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleStatPress('CON', calculateLargerNumber(player.CON))}>
-          <View style={styles.statBox}>
-            <Text style={styles.largeText}>{calculateLargerNumber(player.CON)}</Text>
-            <Text style={styles.statText}>{`CON: ${player.CON}`}</Text>
+          <View style={[styles.statBox, { height: 55 * scaleFactor, width: 85 * scaleFactor }]}>
+            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.CON)}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`CON: ${player.CON}`}</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleStatPress('INT', calculateLargerNumber(player.INT))}>
-          <View style={styles.statBox}>
-            <Text style={styles.largeText}>{calculateLargerNumber(player.INT)}</Text>
-            <Text style={styles.statText}>{`INT: ${player.INT}`}</Text>
+          <View style={[styles.statBox, { height: 55 * scaleFactor, width: 85 * scaleFactor }]}>
+            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.INT)}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`INT: ${player.INT}`}</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleStatPress('WIS', calculateLargerNumber(player.WIS))}>
-          <View style={styles.statBox}>
-            <Text style={styles.largeText}>{calculateLargerNumber(player.WIS)}</Text>
-            <Text style={styles.statText}>{`WIS: ${player.WIS}`}</Text>
+          <View style={[styles.statBox, { height: 55 * scaleFactor, width: 85 * scaleFactor }]}>
+            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.WIS)}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`WIS: ${player.WIS}`}</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleStatPress('CHA', calculateLargerNumber(player.CHA))}>
-          <View style={styles.statBox}>
-            <Text style={styles.largeText}>{calculateLargerNumber(player.CHA)}</Text>
-            <Text style={styles.statText}>{`CHA: ${player.CHA}`}</Text>
+          <View style={[styles.statBox, { height: 55 * scaleFactor, width: 85 * scaleFactor }]}>
+            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.CHA)}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`CHA: ${player.CHA}`}</Text>
           </View>
         </TouchableOpacity>
 
-      <View style={styles.leftContainer}>
-        <View style={styles.circleBox}>
-          <Text style={styles.circleText}>{player.AC}</Text>
-          <Text style={styles.circleLabel}>{t('AC')}</Text>
+      <View style={styles.blackLeftContainer}>
+        <View style={[styles.circleBox, { height: 82 * scaleFactor, width: 82 * scaleFactor }]}>
+          <Text style={[styles.circleText, { fontSize: fontSize }]}>{player.AC}</Text>
+          <Text style={[styles.circleLabel, { fontSize: fontSize * 0.8 }]}>{t('AC')}</Text>
         </View>
-        <View style={styles.circleBox}>
-          <Text style={styles.circleText}>{player.INIT}</Text>
-          <Text style={styles.circleLabel}>{t('Initiative')}</Text>
+        <View style={[styles.circleBox, { height: 82 * scaleFactor, width: 82 * scaleFactor }]}>
+          <Text style={[styles.circleText, { fontSize: fontSize }]}>{player.INIT}</Text>
+          <Text style={[styles.circleLabel, { fontSize: fontSize * 0.8 }]}>{t('Initiative')}</Text>
         </View>
-        <View style={styles.circleBox}>
-          <Text style={styles.circleText}>{player.Proficiency}</Text>
-          <Text style={styles.circleLabel}>{t('Proficiency')}</Text>
+        <View style={[styles.circleBox, { height: 82 * scaleFactor, width: 82 * scaleFactor }]}>
+          <Text style={[styles.circleText, { fontSize: fontSize }]}>{player.Proficiency}</Text>
+          <Text style={[styles.circleLabel, { fontSize: fontSize * 0.8 }]}>{t('Proficiency')}</Text>
         </View>
       </View>
 
-        <TouchableOpacity style={styles.EditBox}>
-          <Text style={styles.EditText}>{t('Edit Character')}</Text>
+        <TouchableOpacity style={[styles.EditBox, { width: 85 * scaleFactor }]}>
+          <Text style={[styles.EditText, { fontSize: fontSize * 0.8 }]}>{t('Edit Character')}</Text>
         </TouchableOpacity>
       </View>
       </View>
 
 
-      <TouchableOpacity style={styles.Skills} onPress={toggleSkills}>
-        <Text style={styles.SkillsText}>{t('Skills')}</Text>
+      <TouchableOpacity style={[styles.Skills, { height: 70 * scaleFactor, width: 70 * scaleFactor }]} onPress={toggleSkills}>
+        <Text style={[styles.SkillsText, { fontSize: fontSize }]}>{t('Skills')}</Text>
       </TouchableOpacity>
 
       {skillsVisible && (
         <View style={styles.skillsWindow}>
           <View style={styles.skillRow}>
-            <Text style={[styles.headerText, {right: '70%' }]}>{t('Prof')}.</Text>
-            <Text style={[styles.headerText, {right: '150%' }]}>{t('Mod')}.</Text>
-            <Text style={[styles.headerText, {right: '60%' }]}>{t('Skill')}</Text>
-            <Text style={[styles.headerText, {left: '320%' }]}>{t('Bonus')}</Text>
+            <Text style={[styles.headerText, { fontSize: fontSize, right: '70%' }]}>{t('Prof')}.</Text>
+            <Text style={[styles.headerText, { fontSize: fontSize, right: '150%' }]}>{t('Mod')}.</Text>
+            <Text style={[styles.headerText, { fontSize: fontSize, right: '60%' }]}>{t('Skill')}</Text>
+            <Text style={[styles.headerText, { fontSize: fontSize, left: '320%' }]}>{t('Bonus')}</Text>
           </View>
-          <ScrollView>
+          <ScrollView style={{ height: 300 * scaleFactor * 1.4 }}>
             {skills.map((skill, index) => (
               <View key={index} style={styles.skillRow}>
                 <View
@@ -445,10 +449,10 @@ const Character1 = ({ navigation }) => {
                     { backgroundColor: getProficiencyColor(skill.bonus) },
                   ]}
                 />
-                <Text style={styles.skillMod}>{skill.mod}</Text>
-                <Text style={styles.skillName}>{skill.skill}</Text>
-                <View style={styles.bonusBox}>
-                  <Text style={styles.skillBonus}>{skill.bonus >= 0 ? `+${skill.bonus}` : skill.bonus}</Text>
+                <Text style={[styles.skillMod, { fontSize: fontSize }]}>{skill.mod}</Text>
+                   <Text style={[styles.skillName, { fontSize: fontSize }]}>{skill.skill}</Text>
+                 <View style={styles.bonusBox}>
+                   <Text style={[styles.skillBonus, { fontSize: fontSize }]}>{skill.bonus >= 0 ? `+${skill.bonus}` : skill.bonus}</Text>
                 </View>
               </View>
             ))}
@@ -457,25 +461,25 @@ const Character1 = ({ navigation }) => {
       )}
 
         <View style={styles.rightContainer}>
-          <TouchableOpacity style={styles.rightButton} onPress={toggleAction}>
-            <Text style={styles.buttonTextCharacter}>{t('Action')}</Text>
+          <TouchableOpacity style={[styles.rightButton, { height: 40 * scaleFactor, width: 80 * scaleFactor }]} onPress={toggleAction}>
+            <Text style={[styles.buttonTextCharacter, { fontSize: fontSize }]}>{t('Action')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.rightButton} onPress={toggleBonus}>
-            <Text style={styles.buttonTextCharacter}>{t('Bonus')}</Text>
+          <TouchableOpacity style={[styles.rightButton, { height: 40 * scaleFactor, width: 80 * scaleFactor }]} onPress={toggleBonus}>
+            <Text style={[styles.buttonTextCharacter, { fontSize: fontSize }]}>{t('Bonus')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.rightButton} onPress={toggleReact}>
-            <Text style={styles.buttonTextCharacter}>{t('React')}</Text>
+          <TouchableOpacity style={[styles.rightButton, { height: 40 * scaleFactor, width: 80 * scaleFactor }]} onPress={toggleReact}>
+            <Text style={[styles.buttonTextCharacter, { fontSize: fontSize }]}>{t('React')}</Text>
           </TouchableOpacity>
           {['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'].map((label, index) => (
             <TouchableOpacity
               key={index}
               style={[
-                styles.rightButton,
+                styles.rightButton, { height: 40 * scaleFactor, width: 80 * scaleFactor },
                 selectedLevel === index + 1 ? styles.levelButtonSelected : {}
               ]}
               onPress={() => toggleRoman(index + 1)}
             >
-              <Text style={[styles.buttonTextCharacter, selectedLevel === index + 1 && styles.activeLevelButtonSelectedText]}>{label}</Text>
+              <Text style={[styles.buttonTextCharacter, { fontSize: fontSize } , selectedLevel === index + 1 && styles.activeLevelButtonSelectedText]}>{label}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -489,15 +493,15 @@ const Character1 = ({ navigation }) => {
                   style={styles.CharacterSpellCard}
                   onPress={() => handleSpellPress(spell)}
                 >
-                  <Text style={styles.CharacterSpellName}>{spell.name}</Text>
-                  <Text style={styles.CharacterSpellDetails}>{t('Casting Time')}: {spell.castingTime}</Text>
-                  <Text style={styles.CharacterSpellDetails}>{t('Range')}: {spell.range}</Text>
-                  <Text style={styles.CharacterSpellDetails}>{t('Duration')}: {spell.duration}</Text>
-                  <Text style={styles.CharacterSpellDetails}>{t('School')}: {spell.school}</Text>
-                  <Text style={styles.CharacterSpellDetails}>{t('Stat')}: {spell.requiredStat}</Text>
-                  <Text style={styles.CharacterSpellDetails}>{t('Description')}: {spell.description}</Text>
+                  <Text style={[styles.CharacterSpellName, { fontSize: fontSize }]}>{spell.name}</Text>
+                  <Text style={[styles.CharacterSpellDetails, { fontSize: fontSize * 0.8 }]}>{t('Casting Time')}: {spell.castingTime}</Text>
+                  <Text style={[styles.CharacterSpellDetails, { fontSize: fontSize * 0.8 }]}>{t('Range')}: {spell.range}</Text>
+                  <Text style={[styles.CharacterSpellDetails, { fontSize: fontSize * 0.8 }]}>{t('Duration')}: {spell.duration}</Text>
+                  <Text style={[styles.CharacterSpellDetails, { fontSize: fontSize * 0.8 }]}>{t('School')}: {spell.school}</Text>
+                  <Text style={[styles.CharacterSpellDetails, { fontSize: fontSize * 0.8 }]}>{t('Stat')}: {spell.requiredStat}</Text>
+                  <Text style={[styles.CharacterSpellDetails, { fontSize: fontSize * 0.8 }]}>{t('Description')}: {spell.description}</Text>
                 </TouchableOpacity>
-              )) || <Text style={styles.CharacterNoSpellsText}>{t('No spells available for this level.')}</Text>}
+              )) || <Text style={[styles.CharacterNoSpellsText, { fontSize: fontSize }]}>{t('No spells available for this level.')}</Text>}
             </ScrollView>
           </View>
         )}
@@ -508,18 +512,18 @@ const Character1 = ({ navigation }) => {
         {reactVisible && <ReactWindow />}
 
         <View style={styles.diceTurnContainer}>
-          <TouchableOpacity style={styles.TurnDiceButton}>
-            <Text style={styles.rightTurnDiceText}>{t('New Turn')}</Text>
+          <TouchableOpacity style={[styles.TurnDiceButton, { height: 80 * scaleFactor, width: 80 * scaleFactor }]}>
+            <Text style={[styles.rightTurnDiceText, { fontSize: fontSize }]}>{t('New Turn')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.TurnDiceButton} onPress={() => {handleRollDice()}}>
-            <Text style={styles.rightTurnDiceText}>{t('Roll Dice')}</Text>
+          <TouchableOpacity style={[styles.TurnDiceButton, { height: 80 * scaleFactor, width: 80 * scaleFactor }]} onPress={() => {handleRollDice()}}>
+            <Text style={[styles.rightTurnDiceText, { fontSize: fontSize }]}>{t('Roll Dice')}</Text>
           </TouchableOpacity>
         </View>
 
-      <View style={styles.GoBack}>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>

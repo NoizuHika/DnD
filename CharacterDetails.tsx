@@ -6,10 +6,12 @@ import PlayerCharacter from './PlayerCharacter';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const CharacterDetail = ({ navigation }) => {
+const CharacterDetail: React.FC = ({ navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t, i18n } = useTranslation();
   const [characterData, setCharacterData] = useState(null);
   const [selectedScreen, setSelectedScreen] = useState('CharacterDetail');
@@ -25,12 +27,12 @@ const CharacterDetail = ({ navigation }) => {
       style={styles.container}
     >
 
-    <Text style={[styles.appName, { color: theme.fontColor }]}>{t('CharacterDetails')}</Text>
+    <Text style={[styles.appName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>{t('CharacterDetails')}</Text>
 
-      <View style={styles.dropdownContainerCharacter}>
+      <View style={[styles.dropdownContainerCharacter, { height: 50 * scaleFactor }]}>
         <Picker
           selectedValue={selectedScreen}
-          style={styles.pickerChooseChar}
+          style={[styles.pickerChooseChar, { width: 200 * scaleFactor }]}
           onValueChange={(itemValue) => {
             setSelectedScreen(itemValue);
             navigation.navigate(itemValue);
@@ -42,10 +44,10 @@ const CharacterDetail = ({ navigation }) => {
         </Picker>
       </View>
 
-      <View style={styles.GoBack}>
-        <TouchableOpacity style={styles.button} onPress={() => {handleGoBack()}} >
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>

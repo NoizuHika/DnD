@@ -8,6 +8,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+    overflow: 'hidden',
+    position: 'relative',
   },
   containerCreator: {
     flex: 1,
@@ -155,6 +157,8 @@ const styles = StyleSheet.create({
   appName: {
     position: 'absolute',
     top: '16%',
+    left: '50%',
+    transform: [{ translateX: -50 }],
     fontSize: 30,
     textShadowColor: 'rgba(0, 0, 0, 0.7)',
     textShadowOffset: { width: 2, height: 2 },
@@ -171,14 +175,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
   },
-
   buttonMonstrum: {
     alignItems: 'center',
     width: '30%',
   },
   buttonContainerUsu: {
     position: 'absolute',
-    width: '60%',
     borderColor: 'rgba(60, 60, 60, 0.5)',
     borderRadius: 10,
     borderWidth: 2,
@@ -277,6 +279,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     width: 40,
     height: 40,
+    resizeMode: 'contain',
   },
   modalContainer: {
     flex: 1,
@@ -361,7 +364,6 @@ const styles = StyleSheet.create({
   scrollContainerRzut: {
     alignItems: 'center',
     paddingTop: '40%',
-    paddingHorizontal: 35,
     paddingBottom: 40,
   },
   sessionContainer: {
@@ -644,9 +646,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   pickerChooseChar: {
-    width: '101%',
     color: '#d6d6d6',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   pickerMonCre: {
     color: 'black',
@@ -706,7 +706,6 @@ const styles = StyleSheet.create({
   },
   addButtonText: {
     color: 'white',
-    fontSize: 16,
   },
   autoAddButtonText: {
     color: 'white',
@@ -931,7 +930,6 @@ const styles = StyleSheet.create({
     left: 0,
   },
   statBox: {
-    padding: 10,
     backgroundColor: 'rgba(0, 0, 0, 1.0)',
     borderColor: '#7F7F7F',
     borderWidth: 1,
@@ -969,8 +967,6 @@ const styles = StyleSheet.create({
     top: '10%',
     justifyContent: 'center',
     alignItems: 'center',
-    width: 100,
-    height: 100,
     borderColor: '#7F7F7F',
     borderWidth: 1.5,
     borderRadius: 10,
@@ -1016,14 +1012,9 @@ const styles = StyleSheet.create({
   healthButtonChar: {
     backgroundColor: 'rgba(0, 0, 0, 1)',
     color: 'green',
-    padding: 10,
-    right: 95,
-    bottom: 60,
     borderColor: '#7F7F7F',
     borderWidth: 1.5,
     borderRadius: 10,
-    width: 85,
-    height: 50,
     alignItems: 'center',
   },
   damageButton: {
@@ -1040,20 +1031,13 @@ const styles = StyleSheet.create({
   },
   damageButtonChar: {
     backgroundColor: 'rgba(0, 0, 0, 1)',
-    padding: 10,
-    left: 95,
-    bottom: 110,
     borderColor: '#7F7F7F',
     borderWidth: 1.5,
     borderRadius: 10,
-    width: 85,
-    height: 50,
     alignItems: 'center',
   },
   EditBox: {
-    marginTop: 25,
     padding: 10,
-    width: 70,
     backgroundColor: 'rgba(0, 0, 0, 1.0)',
     borderColor: '#7F7F7F',
     borderWidth: 1,
@@ -1063,11 +1047,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     top: 0,
-    padding: 25,
     backgroundColor: 'rgba(0, 0, 0, 1)',
     borderColor: '#7F7F7F',
     borderWidth: 1,
     alignItems: 'center',
+    textAlign: 'center',
+    justifyContent: 'center',
   },
   SkillsText: {
     fontSize: 20,
@@ -1129,18 +1114,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: '10%',
     right: 0,
-    height: '71%',
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     borderColor: '#7F7F7F',
     borderWidth: 2,
   },
   rightButton: {
-    padding: 10,
-    paddingVertical: 15.3,
     backgroundColor: 'rgba(0, 0, 0, 1.0)',
     borderColor: '#7F7F7F',
     borderWidth: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   abilityWindow: {
     position: 'absolute',
@@ -1763,6 +1746,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginHorizontal: 5,
     backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   selectedCategoryButton: {
     backgroundColor: 'rgba(160, 160, 160, 0.9)',
@@ -1808,6 +1793,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 24,
     marginBottom: 20,
+    textAlign: 'center',
   },
   modalTitleFeats: {
     fontSize: 24,
@@ -2229,6 +2215,24 @@ const styles = StyleSheet.create({
     backgroundColor: '#292929',
     flexWrap: 'wrap',
   },
+  statLeft: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    paddingLeft: 30,
+  },
+  statRight: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    paddingRight: 30,
+  },
+  dividerStats: {
+    height: '100%',
+    width: 1,
+    backgroundColor: '#ccc',
+    marginHorizontal: 10,
+  },
   statCircle: {
     width: 50,
     height: 50,
@@ -2377,9 +2381,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderRadius: 10,
     backgroundColor: 'black',
-    width: '40%',
   },
   tableContainer: {
+    flex: 1,
     width: '90%',
   },
   tableContainerEncounter: {
@@ -2440,6 +2444,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: 12,
   },
+  tableCellFixInventory: {
+    flex: 1,
+    color: '#d6d6d6',
+    borderBottomColor: '#04021f',
+    borderBottomWidth: 1,
+    textAlign: 'center',
+    textAlignVertical: 'center',
+  },
   tableCellEncounter: {
     flex: 1,
     color: '#d6d6d6',
@@ -2465,15 +2477,17 @@ const styles = StyleSheet.create({
   },
   removeButtonText: {
     color: 'red',
-    textAlign: 'right',
+    textAlign: 'center',
   },
   removeButtonTextInvent: {
     color: 'white',
-    textAlign: 'right',
+    textAlign: 'center',
+    marginHorizontal: 3,
   },
   descriptionButtonText: {
     color: '#fff',
-    fontSize: 14,
+    textAlign: 'center',
+    marginHorizontal: 3,
   },
   summaryContainer: {
     marginLeft: 15,
@@ -2626,6 +2640,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.7)',
     marginVertical: '55%',
   },
+  GeneralContainerBackground: {
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    width: '100%',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
   titleLogin: {
     fontSize: 22,
     fontWeight: 'bold',
@@ -2712,7 +2732,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
-    width: '50%',
+    width: '100%',
   },
   separator: {
     position: 'absolute',
@@ -2874,7 +2894,6 @@ const styles = StyleSheet.create({
   registerButton: {
     backgroundColor: 'transparent',
     borderRadius: 10,
-    paddingVertical: 15,
     paddingHorizontal: 50,
     alignItems: 'center',
   },
@@ -2912,10 +2931,8 @@ const styles = StyleSheet.create({
   diceContainerRzut: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 90,
-    height: 90,
     marginHorizontal: 5,
-    margin: 10,
+    margin: 5,
     backgroundColor: 'rgba(255,255,255,0.6)',
   },
   selectedDice: {
@@ -2975,7 +2992,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: 'goldenrod',
     paddingVertical: 10,
-    paddingHorizontal: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   rollButtonText: {
     fontSize: 20,
@@ -3006,12 +3024,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   resetButton: {
-    paddingVertical: 10,
     backgroundColor: 'crimson',
     borderRadius: 8,
     marginHorizontal: 10,
     marginTop: 20,
-    paddingHorizontal: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   resetButtonText: {
     fontSize: 20,
@@ -3028,7 +3046,7 @@ const styles = StyleSheet.create({
   },
   resultText: {
     fontSize: 18,
-    color: 'black',
+    color: 'white',
   },
   resultTextKostka: {
     fontSize: 26,

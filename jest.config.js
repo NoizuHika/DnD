@@ -1,9 +1,12 @@
 module.exports = {
   preset: 'react-native',
-  testEnvironment: 'node',
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
-  testPathIgnorePatterns: ['/node_modules/', '/build/'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(react-native|@react-native|my-project|react-navigation)/)',
+  ],
+  moduleNameMapper: {
+    '\\.webp$': '<rootDir>/__mocks__/fileMock.js',
+  },
 };
