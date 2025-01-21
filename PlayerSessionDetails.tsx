@@ -6,10 +6,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const PlayerSessionDetails = ({ navigation }) => {
+const PlayerSessionDetails: React.FC = ({ navigation }) => {
+    const { fontSize, scaleFactor } = useContext(SettingsContext);
     const route = useRoute();
     const { session } = route.params || {};
     const { t } = useTranslation();
@@ -260,7 +262,7 @@ return (
 
      <View style={styles.CampaignOneContainerMainA}>
       <View style={styles.CampaignOneContainerMain}>
-        <Text style={[styles.CampName, { color: theme.fontColor }]}>LOREM PSILUM</Text>
+        <Text style={[styles.CampName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>LOREM PSILUM</Text>
 
       </View>
 
@@ -270,14 +272,14 @@ return (
     <View style={styles.playersSessionDetailStatsContainer}>
       {players.map((player) => (
         <View key={player.id} style={styles.playerSessionDetailStatsRow}>
-          <Text style={[styles.playerSessionDetailStatHP, styles.statWithBorder]}>{t('HP')}: {player.hp}</Text>
-          <Text style={styles.playerSessionDetailStatAC}>{t('AC')}: {player.ac}</Text>
+          <Text style={[styles.playerSessionDetailStatHP, styles.statWithBorder, { fontSize: fontSize }]}>{t('HP')}: {player.hp}</Text>
+          <Text style={[styles.playerSessionDetailStatAC, { fontSize: fontSize }]}>{t('AC')}: {player.ac}</Text>
         </View>
       ))}
     </View>
 
     <TouchableOpacity style={styles.rollSessionDetailButton} onPress={() => handleRoll()}>
-      <Text style={styles.rollSessionDetailButtonText}>{t('Roll')}</Text>
+      <Text style={[styles.rollSessionDetailButtonText, { fontSize: fontSize * 1.4 }]}>{t('Roll')}</Text>
     </TouchableOpacity>
 
           <ScrollView>
@@ -290,13 +292,13 @@ return (
           <View key={index} style={styles.noteHeader}>
             <TouchableOpacity onPress={() => handleOpenNote(note, index)}>
               <View style={styles.noteActions}>
-                <Text style={styles.noteTitle}>{note.title}</Text>
+                <Text style={[styles.noteTitle, { fontSize: fontSize }]}>{note.title}</Text>
               </View>
             </TouchableOpacity>
             {noteVisibility[index] && (
               <>
-                <Text style={styles.noteContent}>{note.content}</Text>
-                <Image source={note.image} style={styles.noteImage} />
+                <Text style={[styles.noteContent, { fontSize: fontSize }]}>{note.content}</Text>
+                <Image source={note.image} style={[styles.noteImage, { width: 200 * scaleFactor, height: 200 * scaleFactor }]} />
               </>
             )}
           </View>
@@ -311,24 +313,24 @@ return (
          >
            <View style={styles.modalNoteCampaignContainer}>
              <View style={styles.modalNoteCampaignContent}>
-               <Text style={styles.modalNoteCampaignTitle}>{selectedNote?.title}</Text>
-               <Text style={styles.modalNoteCampaignText}>{selectedNote?.content}</Text>
-               <Image source={selectedNote?.image} style={styles.modalImageNoteCampaign} />
+               <Text style={[styles.modalNoteCampaignTitle, { fontSize: fontSize * 1.2 }]}>{selectedNote?.title}</Text>
+               <Text style={[styles.modalNoteCampaignText, { fontSize: fontSize }]}>{selectedNote?.content}</Text>
+               <Image source={selectedNote?.image} style={[styles.modalImageNoteCampaign, { width: 200 * scaleFactor, height: 200 * scaleFactor }]} />
                <View style={styles.modalActionsNoteCampaign}>
                  <TouchableOpacity style={styles.editButtonCamp} onPress={() => handleEditNote(editingNoteIndex)}>
-                   <Text style={styles.editTextCamp}>{t('Edit')}</Text>
+                   <Text style={[styles.editTextCamp, { fontSize: fontSize }]}>{t('Edit')}</Text>
                  </TouchableOpacity>
                  <TouchableOpacity style={styles.shareButtonCamp} onPress={() => handleShareNote(selectedNote)}>
-                   <Text style={styles.shareText}>{t('Share')}</Text>
+                   <Text style={[styles.shareText, { fontSize: fontSize }]}>{t('Share')}</Text>
                  </TouchableOpacity>
                  <TouchableOpacity style={styles.deleteButtonCamp} onPress={() => handleDeleteNote(editingNoteIndex)}>
-                   <Text style={styles.deleteTextCamp}>{t('Delete')}</Text>
+                   <Text style={[styles.deleteTextCamp, { fontSize: fontSize }]}>{t('Delete')}</Text>
                  </TouchableOpacity>
                </View>
              </View>
            </View>
                  <TouchableOpacity onPress={handleCloseNote}>
-                   <Text style={styles.closeNoteButtonCampaign}>{t('Close')}</Text>
+                   <Text style={[styles.closeNoteButtonCampaign, { fontSize: fontSize }]}>{t('Close')}</Text>
                  </TouchableOpacity>
          </Modal>
         )}
@@ -337,7 +339,7 @@ return (
             style={styles.addButtonCamp}
             onPress={handleAddNote}
           >
-            <Text style={styles.addButtonTextCamp}>{t('+ Add Note')}</Text>
+            <Text style={[styles.addButtonTextCamp, { fontSize: fontSize }]}>{t('+ Add Note')}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -354,14 +356,14 @@ return (
           >
           <View style={styles.newNoteContainer}>
             <TextInput
-              style={styles.inputCampNote}
+              style={[styles.inputCampNote, { fontSize: fontSize }]}
               placeholder={t('Enter note title')}
               placeholderTextColor="#d6d6d6"
               value={newNoteTitle}
               onChangeText={setNewNoteTitle}
             />
             <TextInput
-              style={[styles.inputCampNote, styles.contentInput]}
+              style={[styles.inputCampNote, styles.contentInput, { fontSize: fontSize }]}
               placeholder={t('Enter note content')}
               placeholderTextColor="#d6d6d6"
               multiline
@@ -372,18 +374,18 @@ return (
               style={styles.imagePicker}
               onPress={pickImage}
             >
-              <Text style={styles.imagePickerText}>
+              <Text style={[styles.imagePickerText, { fontSize: fontSize }]}>
                 {t('Pick an image')}
               </Text>
             </TouchableOpacity>
             {newNoteImage && (
-              <Image source={{ uri: newNoteImage }} style={styles.newNoteImage} />
+              <Image source={{ uri: newNoteImage }} style={[styles.newNoteImage, { width: 200 * scaleFactor, height: 200 * scaleFactor }]} />
             )}
             <TouchableOpacity
               style={styles.saveButton}
               onPress={editingNoteIndex !== null ? handleSaveEditNote : handleSaveNote}
             >
-              <Text style={styles.saveText}>
+              <Text style={[styles.saveText, { fontSize: fontSize }]}>
                 {editingNoteIndex !== null ? t('Save') : t('Add Note')}
               </Text>
             </TouchableOpacity>
@@ -392,24 +394,24 @@ return (
                 style={styles.deleteButtonCampNote}
                 onPress={() => handleDeleteNote(editingNoteIndex)}
               >
-                <Text style={styles.deleteTextCampNote}>{t('Delete Note')}</Text>
+                <Text style={[styles.deleteTextCampNote, { fontSize: fontSize }]}>{t('Delete Note')}</Text>
               </TouchableOpacity>
             )}
           </View>
             <TouchableOpacity onPress={handleCloseNote}>
-              <Text style={styles.closeNoteButtonCampaign}>{t('Close')}</Text>
+              <Text style={[styles.closeNoteButtonCampaign, { fontSize: fontSize }]}>{t('Close')}</Text>
             </TouchableOpacity>
         </Modal>
         )}
 
         <View style={styles.rightCampaignContainer}>
           <View style={styles.playerSessionDetailAvatarContainer}>
-            <Image source={players[0].image} style={styles.playerSessionDetailAvatar} />
-            <Text style={styles.playerSessionDetailName}>{players[0].name}</Text>
+            <Image source={players[0].image} style={[styles.playerSessionDetailAvatar, { width: 100 * scaleFactor, height: 100 * scaleFactor }]} />
+            <Text style={[styles.playerSessionDetailName, { fontSize: fontSize }]}>{players[0].name}</Text>
           </View>
           <ScrollView style={styles.rightCampaignContainerScrollArea} ref={scrollViewRef}>
           {diceResults.map((result, index) => (
-            <Text key={index} style={styles.diceResult}>
+            <Text key={index} style={[styles.diceResult, { fontSize: fontSize }]}>
               {t('Dice roll result')}: Dice {result}
             </Text>
           ))}
@@ -423,10 +425,10 @@ return (
 
      </View>
 
-      <View style={styles.GoBack}>
-        <TouchableOpacity style={styles.button} onPress={() => {handleGoBack()}} >
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>

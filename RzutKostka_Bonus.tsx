@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const RzutKostka_Bonus = ({ route, navigation }) => {
+const RzutKostka_Bonus: React.FC = ({ route, navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { statValue, statName } = route.params;
   const handleGoBack = () => {
     navigation.goBack();
@@ -57,10 +59,10 @@ const RzutKostka_Bonus = ({ route, navigation }) => {
 
   return (
     <ImageBackground source={theme.background} style={styles.container}>
-      <Text style={[styles.appName, { color: theme.fontColor }]}>DMBook</Text>
+      <Text style={[styles.appName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>DMBook</Text>
 
       <View style={styles.diceRollLabelContainer}>
-        <Text style={[styles.diceRollLabelText, { color: theme.textColor }]}>
+        <Text style={[styles.diceRollLabelText, { color: theme.textColor, fontSize: fontSize * 1.2 }]}>
           {`${t('Roll for')} ${attributes[statName]}`}
         </Text>
       </View>
@@ -68,25 +70,25 @@ const RzutKostka_Bonus = ({ route, navigation }) => {
       <View style={styles.diceContainer}>
         <TouchableOpacity style={styles.diceContainer} onPress={handleRollDice}>
           <Animated.Image
-            source={require('./assets/icons/d20.png')}
-            style={[styles.diceKostka, { transform: [{ rotate: spin }] }]}
+            source={theme.icons.d20}
+            style={[styles.diceKostka, { transform: [{ rotate: spin }], width: 200 * scaleFactor, height: 200 * scaleFactor }]}
           />
-          {diceValue !== null && <Text style={[styles.diceValue, { color: theme.textColor }]}>{diceValue}</Text>}
+          {diceValue !== null && <Text style={[styles.diceValue, { color: theme.textColor, fontSize: fontSize * 1.5 }]}>{diceValue}</Text>}
         </TouchableOpacity>
       </View>
 
       {result !== null && (
         <View style={styles.resultContainer}>
-          <Text style={styles.resultTextKostka}>
+          <Text style={[styles.resultTextKostka, { fontSize: fontSize * 1.2 }]}>
             {`${t('Result')}: ${diceValue} ${statValue >= 0 ? '+' : ''}${statValue} = ${result}`}
           </Text>
         </View>
       )}
 
-      <View style={styles.GoBack}>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>

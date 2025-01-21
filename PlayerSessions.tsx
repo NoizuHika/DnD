@@ -52,10 +52,10 @@ const PlayerSessions: React.FC = () => {
                     keyExtractor={(item) => item}
                     renderItem={({ item }) => (
                         <TouchableOpacity
-                            style={styles.inputCampNote}
+                            style={[styles.inputCampNote, { padding: 10 * scaleFactor, marginVertical: 5 * scaleFactor }]}
                             onPress={() => openSessionDetails(item)}
                         >
-                            <Text style={styles.sessionName}>{item}</Text>
+                            <Text style={[styles.sessionName, { fontSize: fontSize }]}>{item}</Text>
                         </TouchableOpacity>
                     )}
             />
