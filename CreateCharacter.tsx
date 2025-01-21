@@ -5,10 +5,12 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const CreateCharacter = ({ navigation }) => {
+const CreateCharacter: React.FC = ({ navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const handleGoBack = () => {
     navigation.goBack();
   };
@@ -101,7 +103,6 @@ const CreateCharacter = ({ navigation }) => {
     'Halfling-W-Sorcerer': require('./assets/Halfling-W-Sorcerer.jpg'),
     'Human-M-Mage': require('./assets/Human-M-Mage.jpg'),
     'Human-W-Mage': require('./assets/Human-W-Mage.jpg'),
-    // so on pzdc rabota na 5 hours
   };
 
   const classInfo = {
@@ -321,7 +322,6 @@ const CreateCharacter = ({ navigation }) => {
         image: require('./assets/Human-W-Mage.jpg'),
         description: 'Описание класса Human-W-Mage',
       },
-    // Vot tut priam pzdc. Moze i mozna inaczej, ale aktualnie eto prosto pzdc
   };
 
 
@@ -373,40 +373,40 @@ const CreateCharacter = ({ navigation }) => {
          style={styles.container}
        >
 
-      <View style={styles.RaceGenderPosCont}>
-            <Text style={styles.RaceGenderPosContTitle}>{t('Race')}</Text>
+      <View style={[styles.RaceGenderPosCont, { transform: [{ scale: 1 * scaleFactor }] }]}>
+            <Text style={[styles.RaceGenderPosContTitle, { fontSize: fontSize * 1.2 }]}>{t('Race')}</Text>
             <Picker
                 selectedValue={selectedRace}
-                style={styles.pickerCharacter}
+                style={[styles.pickerCharacter, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}
                 onValueChange={(itemValue) => setSelectedRace(itemValue)}>
                 {races.map((race, index) => (
                   <Picker.Item key={index} label={race.name} value={race.name} />
                 ))}
             </Picker>
 
-            <Text style={styles.RaceGenderPosContTitle}>{t('Gender')}</Text>
+            <Text style={[styles.RaceGenderPosContTitle, { fontSize: fontSize * 1.2 }]}>{t('Gender')}</Text>
               <Picker
                  selectedValue={selectedGender}
-                 style={styles.pickerCharacter}
+                 style={[styles.pickerCharacter, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}
                  onValueChange={(itemValue) => setSelectedGender(itemValue)}>
                  <Picker.Item label="-" value="-" />
                  <Picker.Item label={t('Male')} value="M" />
                  <Picker.Item label={t('Female')} value="W" />
               </Picker>
 
-              <Text style={styles.RaceGenderPosContTitle}>{t('Class')}</Text>
+              <Text style={[styles.RaceGenderPosContTitle, { fontSize: fontSize * 1.2 }]}>{t('Class')}</Text>
                 <Picker
                   selectedValue={selectedPosition}
-                  style={styles.pickerCharacter}
+                  style={[styles.pickerCharacter, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}
                   onValueChange={(itemValue) => setSelectedPosition(itemValue)}>
                   {positions.map((position, index) => (
                      <Picker.Item key={index} label={position.name} value={position.name} />
                   ))}
              </Picker>
 
-          <Text style={styles.RaceGenderPosContTitle}>{t('Nickname')}</Text>
+          <Text style={[styles.RaceGenderPosContTitle, { fontSize: fontSize * 1.2 }]}>{t('Nickname')}</Text>
           <TextInput
-            style={styles.textInput}
+            style={[styles.textInput, { height: 45 * scaleFactor, fontSize: fontSize }]}
             value={nickname}
             onChangeText={setNickname}
             placeholder={t('Enter_nickname')}
@@ -418,22 +418,22 @@ const CreateCharacter = ({ navigation }) => {
           {selectedRace && selectedGender && selectedPosition && (
             <Image
               source={positionsImages[`${selectedRace}-${selectedGender}-${selectedPosition}`]}
-              style={styles.selectedImageCharacter}
+              style={[styles.selectedImageCharacter, { width: 200 * scaleFactor, height: 200 * scaleFactor }]}
             />
           )}
         </View>
 
-      <View style={styles.GoBack}>
-        <TouchableOpacity style={styles.button} onPress={() => {handleGoBack()}} >
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
+        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>
 
-        <View style={styles.ConButtonCharacter}>
-          <TouchableOpacity style={styles.button} onPress={handleContinue}>
-            <Text style={styles.ConButtonText}>{t('Continue')}</Text>
+        <View style={[styles.ConButtonCharacter, { bottom: 10 * scaleFactor }]}>
+          <TouchableOpacity style={[styles.button, { height: 25 * scaleFactor, width: 200 * scaleFactor }]} onPress={handleContinue}>
+            <Text style={[styles.ConButtonText, { fontSize: fontSize }]}>{t('Continue')}</Text>
           </TouchableOpacity>
         </View>
 

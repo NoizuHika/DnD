@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { SettingsContext } from './SettingsContext'; // Замените на реальный путь к вашему контексту
+import { ThemeContext } from './theme/ThemeContext';
 
 const HiddenText = ({ title, content }) => {
   const [isVisible, setIsVisible] = useState(false);
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
+  const { theme } = useContext(ThemeContext);
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
   };
 
   return (
-    <View style={styles.hiddenTextContainer}>
+    <View style={[styles.hiddenTextContainer, { backgroundColor: theme.background }]}>
       <TouchableOpacity onPress={toggleVisibility}>
-        <Text style={styles.hiddenTextTitle}>{title}</Text>
+        <Text style={[styles.hiddenTextTitle, { fontSize: fontSize * 1, color: theme.textColor }]}>{title}</Text>
       </TouchableOpacity>
       {isVisible && (
         <View style={styles.hiddenTextContent}>
@@ -23,7 +27,7 @@ const HiddenText = ({ title, content }) => {
               return <HiddenText key={index} title={subTitle} content={subContent} />;
             }
 
-            return <Text key={index} style={styles.content}>{subBlock}</Text>;
+            return <Text key={index} style={[styles.content, { fontSize: fontSize, color: theme.textColor }]}>{subBlock}</Text>;
           })}
         </View>
       )}
@@ -33,20 +37,18 @@ const HiddenText = ({ title, content }) => {
 
 const styles = StyleSheet.create({
   hiddenTextContainer: {
-    marginBottom: 10,
+    marginBottom: 8,
   },
   hiddenTextTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   hiddenTextContent: {
     marginLeft: 10,
     marginTop: 5,
   },
   content: {
-    color: '#ffffff',
-    fontSize: 16,
+    lineHeight: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
 });
 

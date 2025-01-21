@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const CreateCharacter5 = ({ navigation, route }) => {
+const CreateCharacter5: React.FC = ({ navigation, route }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { selectedClassInfo } = route.params;
   const [gold, setGold] = useState({ copper: '0', silver: '0', gold: '0', platinum: '0' });
   const { t, i18n } = useTranslation();
@@ -71,24 +73,24 @@ const CreateCharacter5 = ({ navigation, route }) => {
       style={styles.container}
     >
       <View style={styles.content}>
-        <Text style={[styles.title, { color: theme.fontColor }]}>{t('Choose Starting Equipment or Gold')}</Text>
-        <Text style={styles.subtitle}>{t('Starting Equipment')}:</Text>
+        <Text style={[styles.title, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>{t('Choose Starting Equipment or Gold')}</Text>
+        <Text style={[styles.subtitle, { fontSize: fontSize * 1.2 }]}>{t('Starting Equipment')}:</Text>
 
         {equipment && (
           <FlatList
             data={equipment.items}
-            renderItem={({ item }) => <Text style={styles.item}>{item.name}</Text>}
+            renderItem={({ item }) => <Text style={[styles.item, { fontSize: fontSize }]}>{item.name}</Text>}
             keyExtractor={(item, index) => index.toString()}
           />
         )}
 
-        <Text style={styles.subtitle}>{t('Or choose starting gold')}:</Text>
+        <Text style={[styles.subtitle, { fontSize: fontSize * 1.2 }]}>{t('Or choose starting gold')}:</Text>
         <View style={styles.goldInputContainer}>
           {['copper', 'silver', 'gold', 'platinum'].map((field) => (
             <View key={field} style={styles.goldInputWrapper}>
-              <Text style={styles.subtitle}>{field.charAt(0).toUpperCase() + field.slice(1)}: </Text>
+              <Text style={[styles.subtitle, { fontSize: fontSize }]}>{field.charAt(0).toUpperCase() + field.slice(1)}: </Text>
               <TextInput
-                style={styles.goldInput}
+                style={[styles.goldInput, { height: 40 * scaleFactor, fontSize: fontSize }]}
                 keyboardType="numeric"
                 onFocus={() => handleFocus(field)}
                 onBlur={() => handleBlur(field)}
@@ -98,20 +100,20 @@ const CreateCharacter5 = ({ navigation, route }) => {
             </View>
           ))}
         </View>
-        <Text style={styles.totalGold}>{t('Total Gold')}: {formattedTotalGold}</Text>
+        <Text style={[styles.totalGold, { fontSize: fontSize * 1.2 }]}>{t('Total Gold')}: {formattedTotalGold}</Text>
       </View>
 
-      <View style={styles.GoBack}>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>
 
-        <View style={styles.ConButtonNotes}>
-          <TouchableOpacity style={styles.button} onPress={handleContinue}>
-            <Text style={styles.ConButtonText}>{t('Continue')}</Text>
+        <View style={[styles.ConButtonCharacter, { bottom: 10 * scaleFactor }]}>
+          <TouchableOpacity style={[styles.button, { height: 25 * scaleFactor, width: 200 * scaleFactor }]} onPress={handleContinue}>
+            <Text style={[styles.ConButtonText, { fontSize: fontSize }]}>{t('Continue')}</Text>
           </TouchableOpacity>
         </View>
     </ImageBackground>

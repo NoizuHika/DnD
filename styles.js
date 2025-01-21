@@ -173,6 +173,8 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
+    textAlign: 'center',
+    justifyContent: 'center',
     width: '100%',
   },
   buttonMonstrum: {
@@ -1265,7 +1267,6 @@ const styles = StyleSheet.create({
   RaceGenderTitle: {
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     color: '#f0f0f0',
-    fontSize: 20,
     fontWeight: 'bold',
   },
   selectedClassInfo: {
@@ -1289,7 +1290,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   selectedImageContainer: {
-    marginTop: 70,
+    marginTop: 20,
     position: 'center',
   },
   selectedImageCharacter: {
@@ -1457,7 +1458,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#d6d6d6',
     marginTop: 20,
-    marginBottom: 5,
   },
   blockContent: {
     width: '90%',

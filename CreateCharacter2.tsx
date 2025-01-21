@@ -6,10 +6,12 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const CreateCharacter2 = ({ navigation, route }) => {
+const CreateCharacter2: React.FC = ({ navigation, route }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const handleGoBack = () => {
     navigation.goBack();
   };
@@ -50,7 +52,7 @@ const CreateCharacter2 = ({ navigation, route }) => {
      return <HiddenText key={index} title={line} content={selectedClassInfo[block]} />;
    }
 
-   return <Text key={index} style={styles.RaceGenderTitle}>{block}</Text>;
+   return <Text key={index} style={[styles.RaceGenderTitle, { fontSize: fontSize * 1.1 }]}>{block}</Text>;
     });
   };
 
@@ -65,29 +67,30 @@ const CreateCharacter2 = ({ navigation, route }) => {
         <View style={styles.selectedImageContainer}>
           <Image
             source={selectedClassInfo.image}
-            style={styles.selectedImage}
+            style={[styles.selectedImage, { width: 400 * scaleFactor, height: 400 * scaleFactor }]}
           />
           <View style={styles.nicknameContainer}>
-            <Text style={styles.nicknameText}>{nickname}</Text>
+            <Text style={[styles.nicknameText, { fontSize: fontSize * 1.2 }]}>{nickname}</Text>
           </View>
           {renderDescription(selectedClassInfo.description)}
         </View>
 
-      <View style={styles.GoBack}>
+      </ScrollView>
+
+        <View style={[styles.ConButtonCharacter, { bottom: 10 * scaleFactor }]}>
+          <TouchableOpacity style={[styles.button, { height: 25 * scaleFactor, width: 200 * scaleFactor }]} onPress={handleContinue}>
+            <Text style={[styles.ConButtonText, { fontSize: fontSize }]}>{t('Continue')}</Text>
+          </TouchableOpacity>
+        </View>
+
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>
 
-        <View style={styles.ConButton}>
-          <TouchableOpacity style={styles.button} onPress={handleContinue}>
-            <Text style={styles.ConButtonText}>{t('Continue')}</Text>
-          </TouchableOpacity>
-        </View>
-
-      </ScrollView>
     </ImageBackground>
   );
 };

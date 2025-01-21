@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
@@ -18,7 +19,8 @@ const initialAttributes = {
 
 const maxPoints = 27;
 
-const CreateCharacter3 = ({ navigation, route }) => {
+const CreateCharacter3: React.FC = ({ navigation, route }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const handleGoBack = () => {
     navigation.goBack();
   };
@@ -29,7 +31,7 @@ const CreateCharacter3 = ({ navigation, route }) => {
   const { selectedClassInfo, nickname } = route.params;
 
   const handleContinue = () => {
-    navigation.navigate('CreateCharacter4', { selectedClassInfo, nickname });
+    navigation.navigate('CreateCharacter4', { selectedClassInfo, nickname, attributes });
   };
 
   const [attributes, setAttributes] = useState(initialAttributes);
@@ -100,25 +102,17 @@ const CreateCharacter3 = ({ navigation, route }) => {
            style={styles.container}
          >
 
-        <Text style={[styles.remainingPointsText, { color: getRemainingPointsColor() }]}>
+        <Text style={[styles.remainingPointsText, { color: getRemainingPointsColor(), fontSize: fontSize * 1.2 }]}>
           {t('Points_Remaining')}: {remainingPoints}/{maxPoints}
         </Text>
 
         {Object.keys(attributes).map((attribute) => (
           <TouchableOpacity key={attribute} onPress={() => handleAttributeSelect(attribute)}>
             <View style={styles.attributeContainer}>
-              <Text style={styles.attributeText}>{attribute}: {attributes[attribute]}</Text>
+              <Text style={[styles.attributeText, { fontSize: fontSize * 1.4}]}>{attribute}: {attributes[attribute]}</Text>
             </View>
           </TouchableOpacity>
         ))}
-
-      <View style={styles.GoBack}>
-        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
-          </ImageBackground>
-        </TouchableOpacity>
-      </View>
 
         {selectedAttribute && (
           <Modal
@@ -138,7 +132,7 @@ const CreateCharacter3 = ({ navigation, route }) => {
                       key={option.value}
                       onPress={() => handleValueChange(option.value)}
                     >
-                      <Text style={styles.modalOption}>{option.label}</Text>
+                      <Text style={[styles.modalOption, { fontSize: fontSize * 1.4}]}>{option.label}</Text>
                     </TouchableOpacity>
                   ))}
                 </View>
@@ -147,11 +141,19 @@ const CreateCharacter3 = ({ navigation, route }) => {
           </Modal>
         )}
 
-        <View style={styles.ConButton}>
-          <TouchableOpacity style={styles.button} onPress={handleContinue}>
-            <Text style={styles.ConButtonText}>{t('Continue')}</Text>
+        <View style={[styles.ConButtonCharacter, { bottom: 10 * scaleFactor }]}>
+          <TouchableOpacity style={[styles.button, { height: 25 * scaleFactor, width: 200 * scaleFactor }]} onPress={handleContinue}>
+            <Text style={[styles.ConButtonText, { fontSize: fontSize }]}>{t('Continue')}</Text>
           </TouchableOpacity>
         </View>
+
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
+        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
+          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
+          </ImageBackground>
+        </TouchableOpacity>
+      </View>
 
     </ImageBackground>
   );
