@@ -153,11 +153,11 @@ const Inventory: React.FC = ({ navigation }) => {
       {/* items list */}
       <ScrollView style={styles.tableContainer}>
         <View style={styles.tableHeader}>
-          <Text style={[styles.tableHeaderText, styles.nameColumn, { fontSize: fontSize }]}>{t('Name')}</Text>
-          <Text style={[styles.tableHeaderText, styles.weightColumn, { fontSize: fontSize }]}>{t('Weight')}</Text>
-          <Text style={[styles.tableHeaderText, styles.quantityColumn, { fontSize: fontSize }]}>{t('Quantity')}</Text>
-          <Text style={[styles.tableHeaderText, styles.costColumn, { fontSize: fontSize }]}>{t('Cost')}</Text>
-          <Text style={[styles.tableHeaderText, styles.actionsColumn, { fontSize: fontSize }]}>{t('Actions')}</Text>
+          <Text style={[styles.tableHeaderText, styles.nameColumn, { fontSize: fontSize * 0.9 }]}>{t('Name')}</Text>
+          <Text style={[styles.tableHeaderText, styles.weightColumn, { fontSize: fontSize * 0.9 }]}>{t('Weight')}</Text>
+          <Text style={[styles.tableHeaderText, styles.quantityColumn, { fontSize: fontSize * 0.9 }]}>{t('Quantity')}</Text>
+          <Text style={[styles.tableHeaderText, styles.costColumn, { fontSize: fontSize * 0.9 }]}>{t('Cost')}</Text>
+          <Text style={[styles.tableHeaderText, styles.actionsColumn, { fontSize: fontSize * 0.9 }]}>{t('Actions')}</Text>
         </View>
         {filteredItems.map((item, index) => (
           <View key={index} style={styles.tableRow}>
@@ -166,7 +166,7 @@ const Inventory: React.FC = ({ navigation }) => {
             <Text style={[styles.tableCellFixInventory, styles.quantityColumn, { fontSize: fontSize * 0.8, paddingVertical: 6 * scaleFactor }]}>{item.quantity}</Text>
             <Text style={[styles.tableCellFixInventory, styles.costColumn, { fontSize: fontSize * 0.8, paddingVertical: 6 * scaleFactor }]}>{item.cost}</Text>
             <TouchableOpacity style={styles.removeButton} onPress={() => handleRemoveItem(index)}>
-              <Text style={[styles.removeButtonTextInvent, { fontSize: fontSize }]}>{t('Remove')}</Text>
+              <Text style={[styles.removeButtonTextInvent, { fontSize: fontSize * 0.8 }]}>{t('Remove')}</Text>
             </TouchableOpacity>
                <TouchableOpacity key={index} style={styles.descriptionButton} onPress={() => handleItemPress(item)}>
                     <Text style={[styles.descriptionButtonText, { fontSize: fontSize }]}>{t('Description')}</Text>

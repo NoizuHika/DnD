@@ -17,31 +17,32 @@ const Items = ({ navigation }) => {
   const [items, setItems] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [selectedType, setSelectedType] = useState('Type');
+  const [selectedSubtype, setSelectedSubtype] = useState('Subtype');
   const [selectedRarity, setSelectedRarity] = useState('Rarity');
-  const [selectedPriceRange, setSelectedPriceRange] = useState('Price');
   const [selectedItem, setSelectedItem] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedItem, setEditedItem] = useState(null);
 
-  const priceRanges = [
-    { label: t('Price'), value: 'Price' },
-    { label: `${t('Price')} 0 - 50`, value: '0-50' },
-    { label: `${t('Price')} 51 - 500`, value: '51-500' },
-    { label: `${t('Price')} 501 - 5000`, value: '501-5000' },
-    { label: `${t('Price')} 5001 - 10000`, value: '5001-10000' },
-  ];
-
-  const categories = ['Type', 'Weapon', 'Armor', 'Ammunition', 'Tools', 'Potions', 'Scrolls', 'Adventuring Gear', 'Other'];
+  const categories = ['Type', 'Weapon', 'Armor', 'Adventuring Gear', 'Consumable', 'Magic', 'Other'];
   const rarities = ['Rarity', 'Common', 'Uncommon', 'Rare', 'Very Rare', 'Legendary'];
 
-
-  const handleGoBack = () => {
-    navigation.goBack();
+  const handleSubtypePicker = (type) => {
+    if (type === 'Weapon') return ['Sword', 'Dagger', 'Hammer', 'Polearm'];
+    if (type === 'Armor') return ['Plate Armor', 'Shield', 'Leather Armor'];
+    if (type === 'Adventuring Gear') return ['Magic Container', 'Tool', 'Instrument'];
+    if (type === 'Consumable') return ['Potion', 'Elixir'];
+    if (type === 'Magic') return ['Wand', 'Scroll', 'Staff'];
+    if (type === 'Other') return ['Treasure', 'Alchemical Item'];
+    return [];
   };
 
   useEffect(() => {
     setItems(sampleItems);
   }, []);
+
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
 
   const filterItems = () => {
     if (!items || !Array.isArray(items)) return [];
@@ -55,19 +56,15 @@ const Items = ({ navigation }) => {
     }
 
     if (selectedType && selectedType !== 'Type') {
-      filtered = filtered.filter((item) => Array.isArray(item.type) && item.type.includes(selectedType));
+      filtered = filtered.filter((item) => item.type.includes(selectedType));
+    }
+
+    if (selectedSubtype && selectedSubtype !== 'Subtype') {
+      filtered = filtered.filter((item) => item.subtype.includes(selectedSubtype));
     }
 
     if (selectedRarity && selectedRarity !== 'Rarity') {
-      filtered = filtered.filter((item) => Array.isArray(item.rarity) && item.rarity.includes(selectedRarity));
-    }
-
-    if (selectedPriceRange !== 'Price') {
-      const range = selectedPriceRange.split('-').map(Number);
-      if (range.length === 2) {
-        const [min, max] = range;
-        filtered = filtered.filter((item) => item.price >= min && item.price <= max);
-      }
+      filtered = filtered.filter((item) => item.rarity.includes(selectedRarity));
     }
 
     return filtered;
@@ -76,9 +73,6 @@ const Items = ({ navigation }) => {
   const filteredItems = filterItems();
 
   const handleItemPress = (item) => {
-    if (typeof item.type === 'string') {
-      item.type = item.type.split(',').map((v) => v.trim());
-    }
     setSelectedItem(item);
     setEditedItem({ ...item });
   };
@@ -94,7 +88,9 @@ const Items = ({ navigation }) => {
 
   const saveItemChanges = () => {
     const updatedItems = items.map((item) =>
-      item.name === selectedItem.name ? { ...editedItem } : item
+      item.name === selectedItem.name
+        ? { ...editedItem, subtype: [editedItem.subtype] }
+        : item
     );
     setItems(updatedItems);
     closeItemModal();
@@ -114,55 +110,66 @@ const Items = ({ navigation }) => {
         <Picker
           selectedValue={selectedType}
           style={styles.pickerItems}
-          onValueChange={(itemValue) => setSelectedType(itemValue)}
+          onValueChange={(value) => {
+            setSelectedType(value);
+            setSelectedSubtype('Subtype');
+          }}
         >
           {categories.map((category) => (
             <Picker.Item key={category} label={t(category)} value={category} />
           ))}
         </Picker>
+
+        {selectedType !== 'Type' && (
+          <Picker
+            selectedValue={selectedSubtype}
+            style={styles.pickerItems}
+            onValueChange={(value) => setSelectedSubtype(value)}
+          >
+            <Picker.Item label={t('Subtype')} value="Subtype" />
+            {handleSubtypePicker(selectedType).map((subtype) => (
+              <Picker.Item key={subtype} label={t(subtype)} value={subtype} />
+            ))}
+          </Picker>
+        )}
+
         <Picker
           selectedValue={selectedRarity}
           style={styles.pickerItems}
-          onValueChange={(itemValue) => setSelectedRarity(itemValue)}
+          onValueChange={(value) => setSelectedRarity(value)}
         >
           {rarities.map((rarity) => (
             <Picker.Item key={rarity} label={t(rarity)} value={rarity} />
-          ))}
-        </Picker>
-        <Picker
-          selectedValue={selectedPriceRange}
-          style={styles.pickerItems}
-          onValueChange={(itemValue) => setSelectedPriceRange(itemValue)}
-        >
-          {priceRanges.map(({ label, value }) => (
-            <Picker.Item key={label} label={label} value={value} />
           ))}
         </Picker>
       </View>
 
       <ScrollView style={styles.tableContainer}>
         <View style={styles.tableHeader}>
-          <Text style={[styles.tableHeaderText]}>{t('Name')}</Text>
-          <Text style={[styles.tableHeaderText]}>{t('Rarity')}</Text>
-          <Text style={[styles.tableHeaderText]}>{t('Price')}</Text>
-          <Text style={[styles.tableHeaderText]}>{t('Actions')}</Text>
+          <Text style={styles.tableHeaderText}>{t('Name')}</Text>
+          <Text style={styles.tableHeaderText}>{t('Rarity')}</Text>
+          <Text style={styles.tableHeaderText}>{t('Type')}</Text>
+          <Text style={styles.tableHeaderText}>{t('Subtype')}</Text>
+          <Text style={styles.tableHeaderText}>{t('Actions')}</Text>
         </View>
         {filteredItems.length === 0 ? (
           <Text style={styles.noResultsText}>{t('No items found')}</Text>
         ) : (
-        filteredItems.map((item, index) => (
-          <View key={index} style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.nameColumn]}>{item.name}</Text>
-            <Text style={[styles.tableCell, styles.rarityColumn]}>{item.rarity.join(', ')}</Text>
-            <Text style={[styles.tableCell, styles.priceColumn]}>{item.price}</Text>
-            <TouchableOpacity
-              style={[styles.tableCell, styles.actionsColumn]}
-              onPress={() => handleItemPress(item)}
-            >
-              <Text style={styles.actionText}>{t('Details')}</Text>
-            </TouchableOpacity>
-          </View>
-        )))}
+          filteredItems.map((item, index) => (
+            <View key={index} style={styles.tableRow}>
+              <Text style={styles.tableCell}>{item.name}</Text>
+              <Text style={styles.tableCell}>{item.rarity}</Text>
+              <Text style={styles.tableCell}>{item.type}</Text>
+              <Text style={styles.tableCell}>{item.subtype.join(', ')}</Text>
+              <TouchableOpacity
+                style={styles.tableCell}
+                onPress={() => handleItemPress(item)}
+              >
+                <Text style={styles.actionText}>{t('Details')}</Text>
+              </TouchableOpacity>
+            </View>
+          ))
+        )}
       </ScrollView>
 
       {selectedItem && (
@@ -172,9 +179,13 @@ const Items = ({ navigation }) => {
               <View style={styles.itemModal}>
                 <Text style={styles.itemTitle}>{selectedItem.name}</Text>
                 <View style={styles.itemsDetails}>
-                  <Text style={styles.itemCategory}>{selectedItem.type.join(', ')}</Text>
+                  <Text style={styles.itemCategory}>{t('Type')}: {selectedItem.type}</Text>
+                  <Text style={styles.itemCategory}>{t('Subtype')}: {selectedItem.subtype}</Text>
+                  <Text style={styles.itemCategory}>{t('Rarity')}: {selectedItem.rarity}</Text>
+                </View>
+                <View style={styles.itemsDetails}>
+                  <Text style={styles.itemCategory}>{t('Price')}: {selectedItem.price} gp</Text>
                   <Text style={styles.itemCategory}>{t('Weight')}: {selectedItem.weight} lb</Text>
-                  <Text style={styles.itemCategory}>{t('Cost')}: {selectedItem.price} gp</Text>
                 </View>
                 <Text style={styles.itemDescription}>{selectedItem.description}</Text>
                 <View style={styles.modalButtons}>
@@ -198,35 +209,61 @@ const Items = ({ navigation }) => {
                   placeholder={t('Name')}
                 />
                 <View style={styles.itemsDetails}>
-                <Picker
-                  selectedValue={editedItem.type}
-                  onValueChange={(itemValue) => handleEditChange('type', itemValue)}
-                  style={styles.pickerItems}
-                >
-                  {categories.slice(1).map((category) => (
-                    <Picker.Item key={category} label={t(category)} value={category} />
-                  ))}
-                </Picker>
-                <View style={styles.IteminputContainer}>
-                <Text style={styles.itemCategory}>{t('Weight')}: </Text>
-                <TextInput
-                  style={styles.itemCategory}
-                  value={String(editedItem.weight)}
-                  onChangeText={(value) => handleEditChange('weight', parseFloat(value) || 0)}
-                  placeholder={t('Weight')}
-                  keyboardType="numeric"
-                />
+                  <Picker
+                    selectedValue={editedItem.type}
+                    onValueChange={(value) => {
+                      handleEditChange('type', value);
+                      handleEditChange('subtype', 'Subtype');
+                    }}
+                    style={styles.pickerItems}
+                  >
+                    {categories.map((category) => (
+                      <Picker.Item key={category} label={t(category)} value={category} />
+                    ))}
+                  </Picker>
+
+                  {editedItem.type !== 'Type' && (
+                    <Picker
+                      selectedValue={editedItem.subtype}
+                      onValueChange={(value) => handleEditChange('subtype', value)}
+                      style={styles.pickerItems}
+                    >
+                      <Picker.Item label={t('Subtype')} value="Subtype" />
+                      {handleSubtypePicker(editedItem.type).map((subtype) => (
+                        <Picker.Item key={subtype} label={t(subtype)} value={subtype} />
+                      ))}
+                    </Picker>
+                  )}
+
+                  <Picker
+                    selectedValue={editedItem.rarity}
+                    onValueChange={(value) => handleEditChange('rarity', value)}
+                    style={styles.pickerItems}
+                  >
+                    {rarities.map((rarity) => (
+                      <Picker.Item key={rarity} label={t(rarity)} value={rarity} />
+                    ))}
+                  </Picker>
+
                 </View>
-                <View style={styles.IteminputContainer}>
-                <Text style={styles.itemCategory}>{t('Price')}: </Text>
-                <TextInput
-                  style={styles.itemCategory}
-                  value={String(editedItem.price)}
-                  onChangeText={(value) => handleEditChange('price', parseFloat(value) || 0)}
-                  placeholder={t('Price')}
-                  keyboardType="numeric"
-                />
-                </View>
+                <View style={styles.itemsDetails}>
+
+                  <TextInput
+                    style={styles.itemCategory}
+                    value={String(editedItem.price)}
+                    onChangeText={(value) => handleEditChange('price', parseFloat(value) || 0)}
+                    placeholder={t('Price')}
+                    keyboardType="numeric"
+                  />
+
+                  <TextInput
+                    style={styles.itemCategory}
+                    value={String(editedItem.weight)}
+                    onChangeText={(value) => handleEditChange('weight', parseFloat(value) || 0)}
+                    placeholder={t('Weight')}
+                    keyboardType="numeric"
+                  />
+
                 </View>
                 <TextInput
                   style={styles.itemDescription}

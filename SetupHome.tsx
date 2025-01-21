@@ -12,10 +12,10 @@ const SetupHome: React.FC = () => {
       setFontSize(12);
       setScaleFactor(0.8);
     } else if (size === 'medium') {
-      setFontSize(20);
+      setFontSize(15);
       setScaleFactor(1.0);
     } else if (size === 'large') {
-      setFontSize(24);
+      setFontSize(18);
       setScaleFactor(1.2);
     }
     navigation.navigate('Home');
