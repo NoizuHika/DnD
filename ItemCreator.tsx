@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ScrollView, Modal, Button, ImageBackground } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
@@ -14,19 +15,49 @@ const ItemCreator = ({ navigation }) => {
     description: '',
   });
 
+  const [selectedType, setSelectedType] = useState('Type');
+  const [selectedSubtype, setSelectedSubtype] = useState('Subtype');
+  const [selectedRarity, setSelectedRarity] = useState('Rarity');
+
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
+
+  const categories = ['Type', 'Weapon', 'Armor', 'Tools', 'Potions', 'Scrolls', 'Adventuring Gear', 'Other'];
+  const rarities = ['Rarity', 'Common', 'Uncommon', 'Rare', 'Very Rare', 'Legendary'];
+
+  const handleSubtypePicker = (type) => {
+    if (type === 'Weapon') return ['Sword', 'Dagger', 'Hammer', 'Polearm'];
+    if (type === 'Armor') return ['Plate Armor', 'Shield', 'Leather Armor'];
+    if (type === 'Adventuring Gear') return ['Magic Container', 'Tool', 'Instrument'];
+    if (type === 'Consumable') return ['Potion', 'Elixir'];
+    if (type === 'Magic') return ['Wand', 'Scroll', 'Staff'];
+    if (type === 'Other') return ['Treasure', 'Alchemical Item'];
+    return [];
+  };
 
   const handleGoBack = () => {
     navigation.goBack();
   };
 
+  const validateNumberInput = (text) => {
+    return text.replace(/[^0-9]/g, '');
+  };
+
   const handleInputChange = (field, value) => {
+    if (['gold', 'silver', 'copper', 'weight'].includes(field)) {
+      value = validateNumberInput(value);
+    }
     setItem({ ...item, [field]: value });
   };
 
   const saveItem = () => {
-    console.log('Item saved:', item);
+    const newItem = {
+      ...item,
+      type: selectedType,
+      subtype: selectedSubtype,
+      rarity: selectedRarity,
+    };
+    console.log('Item saved:', newItem);
   };
 
   return (
@@ -99,6 +130,57 @@ const ItemCreator = ({ navigation }) => {
             />
           </View>
 
+        <View style={styles.rowCreateItemContainer}>
+         <View style={styles.column}>
+         <View style={styles.centeredBlock}>
+           <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Type')}</Text>
+           <Picker
+             selectedValue={selectedType}
+             style={styles.pickerMagicItemCre}
+             onValueChange={(value) => {
+               setSelectedType(value);
+               setSelectedSubtype('Subtype');
+             }}
+           >
+             {categories.map((category) => (
+               <Picker.Item key={category} label={t(category)} value={category} />
+             ))}
+           </Picker>
+         </View>
+         </View>
+
+         <View style={styles.column}>
+         {selectedType !== 'Type' && (
+           <View style={styles.centeredBlock}>
+             <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Subtype')}</Text>
+             <Picker
+               selectedValue={selectedSubtype}
+               style={styles.pickerMagicItemCre}
+               onValueChange={(value) => setSelectedSubtype(value)}
+             >
+               <Picker.Item label={t('Subtype')} value="Subtype" />
+               {handleSubtypePicker(selectedType).map((subtype) => (
+                 <Picker.Item key={subtype} label={t(subtype)} value={subtype} />
+               ))}
+             </Picker>
+           </View>
+         )}
+         </View>
+         </View>
+
+         <View style={styles.centeredBlock}>
+           <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Rarity')}</Text>
+           <Picker
+             selectedValue={selectedRarity}
+             style={styles.pickerMagicItemCre}
+             onValueChange={(value) => setSelectedRarity(value)}
+           >
+             {rarities.map((rarity) => (
+               <Picker.Item key={rarity} label={t(rarity)} value={rarity} />
+             ))}
+           </Picker>
+         </View>
+
           <View style={styles.centeredBlock}>
             <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Description')}</Text>
             <TextInput
@@ -109,6 +191,7 @@ const ItemCreator = ({ navigation }) => {
               onChangeText={(text) => handleInputChange('description', text)}
             />
           </View>
+
         </ScrollView>
 
         <View style={styles.saveButton}>
