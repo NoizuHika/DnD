@@ -1,11 +1,15 @@
 import React, { useContext } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { ImageBackground, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import { ThemeContext } from './theme/ThemeContext';
 import { SettingsContext } from './SettingsContext';
 
 const SetupHome: React.FC = () => {
   const { setFontSize, setScaleFactor } = useContext(SettingsContext);
   const navigation = useNavigation();
+  const { t, i18n } = useTranslation();
+  const { theme } = useContext(ThemeContext);
 
   const handleSelect = (size: 'small' | 'medium' | 'large') => {
     if (size === 'small') {
@@ -22,18 +26,20 @@ const SetupHome: React.FC = () => {
   };
 
   return (
+   <ImageBackground source={theme.background} style={styles.container}>
     <View style={styles.container}>
-      <Text style={styles.title}>Выберите размер интерфейса:</Text>
+      <Text style={[styles.title, { color: theme.fontColor }]}>{t('Select the interface size')}:</Text>
       <TouchableOpacity style={styles.button} onPress={() => handleSelect('small')}>
-        <Text style={styles.buttonText}>Маленький</Text>
+        <Text style={styles.buttonText}>{t('Small')}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => handleSelect('medium')}>
-        <Text style={styles.buttonText}>Средний</Text>
+        <Text style={styles.buttonText}>{t('Medium')}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={() => handleSelect('large')}>
-        <Text style={styles.buttonText}>Большой</Text>
+        <Text style={styles.buttonText}>{t('Big')}</Text>
       </TouchableOpacity>
     </View>
+   </ImageBackground>
   );
 };
 
@@ -44,11 +50,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
     marginBottom: 20,
   },
   button: {
+    alignItems: 'center',
     backgroundColor: '#007BFF',
+    width: 200,
     padding: 15,
     marginVertical: 10,
     borderRadius: 5,

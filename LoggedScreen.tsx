@@ -58,6 +58,7 @@ const LoggedScreen: React.FC = ({ navigation }) => {
          style={styles.container}
        >
       <Text style={[styles.appName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>DMBook</Text>
+      <Text style={[styles.appName, { marginTop: 45, color: theme.fontColor, fontSize: fontSize * 1 }]}>{t('Player')}</Text>
 
        <View style={[styles.buttonContainerUsu, { bottom: '60%' }]}>
           <TouchableOpacity style={[styles.button, { height: 50 * scaleFactor, width: 250 * scaleFactor }]} onPress={() => { handlePlayerSessionPress() }}>
