@@ -12,19 +12,18 @@ const Encounters: React.FC = ({ navigation, route }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
-
-  const [encounters, setEncounters] = useState([
-    { id: 1, name: 'Forest Encounter', campaign: 'Campaign 1', level: 1 },
-    { id: 2, name: 'Cave Encounter', campaign: 'Campaign 1', level: 3 },
-    { id: 3, name: 'Town Encounter', campaign: 'Campaign 1', level: 5 },
-  ]);
+  const { campaign } = route.params;
+  const [encounters, setEncounters] = useState([]);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [newEncounter, setNewEncounter] = useState({
-    name: '',
-    campaign: '',
-    level: '',
-  });
+      title: '',
+      campaignTitle: campaign.title,
+      campaignID: campaign.id
+    });
+  useEffect(() => {
+      setEncounters(campaign.encounters)
+    }, []);
 
   const updateEncounters = (updatedEncounters) => {
     setEncounters(updatedEncounters);
@@ -40,7 +39,7 @@ const Encounters: React.FC = ({ navigation, route }) => {
   }, [route.params?.updatedEncounter]);
 
   const handleAddEncounter = () => {
-    if (!newEncounter.name || !newEncounter.campaign || !newEncounter.level) {
+    if (!newEncounter.name) {
       Alert.alert(t('Error'), t('Please fill all fields'));
       return;
     }
@@ -168,6 +167,7 @@ const Encounters: React.FC = ({ navigation, route }) => {
                 setNewEncounter((prev) => ({ ...prev, level: numericValue }));
               }}
             />
+
             <View style={styles.modalActionsEncounter}>
               <TouchableOpacity
                 style={styles.cancelButtonEncounter}

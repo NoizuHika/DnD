@@ -25,7 +25,7 @@ const schoolColors = {
 const Spells = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
-
+  const { ipv4 } = useContext(UserData);
   const [spells, setSpells] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('All');
@@ -35,17 +35,37 @@ const Spells = ({ navigation }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedSpell, setEditedSpell] = useState(null);
 
-  const levels = Array.from({ length: 10 }, (_, i) => i);
-  const effects = ['Attack', 'Defense', 'Support'];
-  const schools = Object.keys(schoolColors);
+  const levels = ["Cantrip", "1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th", "9th"];
+    const [schools,setSchools] = useState([])
 
   const handleGoBack = () => {
     navigation.goBack();
   };
 
   useEffect(() => {
-    setSpells(spellsData);
+      fetchData();
   }, []);
+
+  const fetchData = async () => {
+      try {
+          const [spellsResponse, schoolsResponse] = await Promise.all([
+            fetch(`http://${ipv4}:8000/spells/all`),
+            fetch(`http://${ipv4}:8000/schools/all`),
+          ]);
+
+          if (!spellsResponse.ok || !schoolsResponse.ok) {
+            throw new Error('Failed to fetch data');
+          }
+
+          const spellsData = await spellsResponse.json();
+          const schoolsData = await schoolsResponse.json();
+
+          setSpells(spellsData);
+          setSchools(schoolsData);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
 
   useEffect(() => {
     if (selectedSpell) {
@@ -65,7 +85,7 @@ const Spells = ({ navigation }) => {
     }
 
     if (selectedLevel !== 'All') {
-      filtered = filtered.filter((spell) => spell.level === parseInt(selectedLevel, 10));
+      filtered = filtered.filter((spell) => spell.level === selectedLevel);
     }
 
     if (selectedEffect !== 'All') {
@@ -143,16 +163,6 @@ const Spells = ({ navigation }) => {
           ))}
         </Picker>
         <Picker
-          selectedValue={selectedEffect}
-          style={styles.pickerItems}
-          onValueChange={(value) => setSelectedEffect(value)}
-        >
-          <Picker.Item style={styles.pickerItems} label={t('All Types')} value="All" />
-          {effects.map((effect) => (
-            <Picker.Item key={effect} label={t(effect)} value={effect} />
-          ))}
-        </Picker>
-        <Picker
           selectedValue={selectedSchool}
           style={styles.pickerItems}
           onValueChange={(value) => setSelectedSchool(value)}
@@ -161,8 +171,8 @@ const Spells = ({ navigation }) => {
           {schools.map((school) => (
             <Picker.Item
               key={school}
-              label={t(school)}
-              value={school}
+              label={t(school.name)}
+              value={school.name}
               color={schoolColors[school]}
             />
           ))}

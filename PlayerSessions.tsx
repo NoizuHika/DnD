@@ -7,6 +7,8 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
+import { UserData } from './UserData';
+import { useAuth } from './AuthContext';
 
 Appearance.setColorScheme('light');
 
@@ -16,25 +18,39 @@ const PlayerSessions: React.FC = () => {
     const navigation = useNavigation();
     const { t } = useTranslation();
     const { theme } = useContext(ThemeContext);
+    const { ipv4 } = useContext(UserData);
+    const { token } = useAuth();
 
     useEffect(() => {
-        const loadSessions = async () => {
-            try {
-                // Fetch campaigns from AsyncStorage
-                const storedCampaigns = await AsyncStorage.getItem('campaigns');
-                if (storedCampaigns) {
-                    setSessions(JSON.parse(storedCampaigns));
-                }
-            } catch (error) {
-                console.error('Failed to load sessions:', error);
-            }
-        };
-        loadSessions();
+                 fetchData();
     }, []);
+    const fetchData = async () => {
+          try {
+              console.log('Token:', token.toString());
+              const sessionsResponse = await fetch(`http://${ipv4}:8000/user/characters/sessions`, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'accept': 'application/json'
+                  },
+                  body: JSON.stringify({ token: token.toString() }),
+              });
+
+              if (!sessionsResponse.ok) {
+                  throw new Error('Failed to fetch data');
+              }
+              const data = await sessionsResponse.json();
+              setResult(data.result)
+
+
+          } catch (error) {
+              console.error('Error fetching data:', error);
+          }
+    };
 
 
     const openSessionDetails = (session) => {
-        navigation.navigate('PlayerSessionDetails', { session });
+        navigation.navigate('PlayerSessionDetails', {campaign: sResult[1], player:sResult[0],session:sResult[1].sessions[sResult[1].sessions.length - 1] });
     };
 
     return (
@@ -48,14 +64,14 @@ const PlayerSessions: React.FC = () => {
             <Text style={[styles.headerTextCamp, { color: theme.fontColor, fontSize: fontSize }]}>{t('Your Sessions')}</Text>
 
                   <FlatList
-                    data={sessions}
+                    data={result}
                     keyExtractor={(item) => item}
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             style={[styles.inputCampNote, { padding: 10 * scaleFactor, marginVertical: 5 * scaleFactor }]}
                             onPress={() => openSessionDetails(item)}
                         >
-                            <Text style={[styles.sessionName, { fontSize: fontSize }]}>{item}</Text>
+                            <Text style={[styles.sessionName, { fontSize: fontSize }]}>{item[1].title}</Text>
                         </TouchableOpacity>
                     )}
             />

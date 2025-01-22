@@ -5,6 +5,8 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
+import { UserData } from './UserData';
+import { useAuth } from './AuthContext';
 
 Appearance.setColorScheme('light');
 
@@ -22,10 +24,12 @@ const RzutKostka: React.FC = ({ navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme, addDiceResult } = useContext(ThemeContext);
+  const { player={}, session={} } = route.params;
 
   const [selectedDice, setSelectedDice] = useState([]);
   const [diceValues, setDiceValues] = useState([]);
   const [rotateValues] = useState(diceTypes.map(() => new Animated.Value(0)));
+  const { ipv4 } = useContext(UserData);
 
   const handleDiceSelection = (index) => {
     const alreadySelected = selectedDice.find((dice) => dice.index === index);
@@ -59,6 +63,7 @@ const RzutKostka: React.FC = ({ navigation }) => {
       });
     });
 
+    fetchData(resultsSummary);
     setDiceValues(newDiceValues);
     addDiceResult(resultsSummary.join(' | Dice '));
   };
@@ -107,6 +112,29 @@ const RzutKostka: React.FC = ({ navigation }) => {
         <Animated.Image source={dice.image} style={[styles.diceRzut, { transform: [{ rotate: spin }], height: 80 * scaleFactor, width: 80 * scaleFactor }]} />
       </TouchableOpacity>
     );
+  };
+  const fetchData = async (resultsSummary) => {
+            try {
+                const sessionResponse = await fetch(`http://${ipv4}:8000/sessions/addToLogs`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'accept': 'application/json'
+                            },
+                            body: JSON.stringify({ token: token.toString(),log:resultsSummary.toString(),sessionID:session.id }),
+                        });
+
+
+                if (!sessionResponse.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+
+                    const answer = await sessionResponse.json();
+                    console.log(answer)
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
   };
 
   const renderResults = () => {

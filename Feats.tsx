@@ -3,12 +3,14 @@ import { ImageBackground, View, Text, TouchableOpacity, ScrollView, TextInput, M
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { UserData } from './UserData';
 
 const featsData = require('./assets/Library/feats.json');
 
 const Feats = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
+  const { ipv4 } = useContext(UserData);
 
   const [feats, setFeats] = useState([]);
   const [searchText, setSearchText] = useState('');
@@ -17,8 +19,27 @@ const Feats = ({ navigation }) => {
   const [editedFeat, setEditedFeat] = useState(null);
 
   useEffect(() => {
-    setFeats(featsData);
+    fetchData();
   }, []);
+
+  const fetchData = async () => {
+    try {
+        const [featsResponse] = await Promise.all([
+          fetch(`http://${ipv4}:8000/feats/all`),
+        ]);
+
+        if (!featsResponse.ok) {
+          throw new Error('Failed to fetch data');
+        }
+
+        const feats = await featsResponse.json();
+
+        setFeats(feats);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -86,7 +107,7 @@ const Feats = ({ navigation }) => {
           filteredFeats.map((feat, index) => (
             <View key={index} style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.nameColumn]}>{feat.name}</Text>
-              <Text style={[styles.tableCell]}>{feat.prerequisite || t('None')}</Text>
+              <Text style={[styles.tableCell]}>{feat.requirements || t('None')}</Text>
               <Text style={[styles.tableCell]}>{feat.source}</Text>
               <TouchableOpacity
                 style={[styles.tableCell, styles.actionsColumn]}
@@ -106,7 +127,7 @@ const Feats = ({ navigation }) => {
               <View style={styles.itemModal}>
                 <Text style={styles.itemTitle}>{selectedFeat.name}</Text>
                 <Text style={styles.itemDescriptionAttune}>
-                  {t('Prerequisite')}: {selectedFeat.prerequisiteDesc || t('None')}
+                  {t('Prerequisite')}: {selectedFeat.requirements || t('None')}
                 </Text>
                 <Text style={styles.itemDescription}>{selectedFeat.description}</Text>
                 <View style={styles.modalButtons}>
@@ -128,7 +149,7 @@ const Feats = ({ navigation }) => {
                 />
                 <TextInput
                   style={styles.itemDescriptionAttune}
-                  value={editedFeat.prerequisite}
+                  value={editedFeat.requirements}
                   onChangeText={(value) => handleEditChange('prerequisite', value)}
                   placeholder={t('Prerequisite')}
                 />

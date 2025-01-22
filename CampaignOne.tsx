@@ -5,31 +5,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
-import { SettingsContext } from './SettingsContext';
 
+import { SettingsContext } from './SettingsContext';
+import { UserData } from './UserData';
 Appearance.setColorScheme('light');
 
 const CampaignOne: React.FC = ({ navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
+  const { campaign } = route.params;
   const { t, i18n } = useTranslation();
-  const { theme, diceResults } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
+  const { ipv4 } = useContext(UserData)
 
-  const [sessions, setSessions] = useState([
-    { name: "Session 1" },
-    { name: "Session 2" },
-  ]);
-  const [notes, setNotes] = useState([
-    {
-      title: "Notatka1",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc commodo at risus quis sagittis. Sed feugiat in turpis nec rutrum. Fusce non elit justo. Maecenas ac tempor tortor. Sed tincidunt pretium blandit. Nunc lobortis euismod sem in tincidunt. Pellentesque iaculis eget eros vel faucibus. Mauris posuere aliquet ipsum, at vestibulum tortor. Aliquam tempus fermentum feugiat.",
-      image: require('./assets/Dwarf-M-Inventor.jpg')
-    },
-    {
-      title: "Notatka2",
-      content: "Praesent eu enim et justo consectetur porta. Aliquam erat volutpat. Nulla hendrerit elementum purus, eget cursus turpis laoreet nec. Duis blandit auctor massa id luctus. Praesent faucibus sapien arcu, et mattis felis tristique id. Pellentesque molestie purus ligula, a feugiat velit consequat sed. Integer nisi tellus, dictum sit amet porta nec, laoreet eu nisi. Morbi euismod sem tristique euismod vehicula. Nullam ipsum erat, mollis ut metus quis, ullamcorper euismod ligula. Phasellus egestas arcu vitae ornare porttitor. Fusce bibendum erat ac arcu sodales, eu tristique massa rhoncus. Nullam luctus, risus ut ornare viverra, ipsum velit sagittis augue, eget condimentum enim augue sed libero. Curabitur blandit nulla turpis, in sodales risus consectetur vel.",
-      image: require('./assets/Dwarf-W-Inventor.jpg')
-    },
-  ]);
+  const [sessions, setSessions] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [newSessionName, setNewSessionName] = useState('');
   const [newSessionContent, setNewSessionContent] = useState('');
   const [newNoteTitle, setNewNoteTitle] = useState('');
@@ -42,11 +31,8 @@ const CampaignOne: React.FC = ({ navigation }) => {
   const [addingNewNote, setAddingNewNote] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
-
-  const [players, setPlayers] = useState([
-    { id: 1, name: "Player 1", image: require('./assets/assasin.jpeg'), coins: 0, level: 1, hp: 100 },
-    { id: 2, name: "Player 2", image: require('./assets/archer.jpeg'), coins: 0, level: 1, hp: 100 },
-  ]);
+  const [actualCampaign,setActualCampaign] = useState([]);
+  const [players, setPlayers] = useState([]);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [noteVisibility, setNoteVisibility] = useState(new Array(notes.length).fill(false));
   const [modalVisible, setModalVisible] = useState(false);
@@ -54,10 +40,50 @@ const CampaignOne: React.FC = ({ navigation }) => {
   const scrollViewRef = useRef(null);
 
   useEffect(() => {
-    if (scrollViewRef.current) {
+      setPlayers(campaign.characters);
+      setSessions(campaign.sessions);
+  }, []);
+
+  useEffect(() => {
+    if (scrollViewRef.current && campaign.sessions[activeSessionIndex]?.logs?.length > 0) {
       scrollViewRef.current.scrollToEnd({ animated: true });
     }
-  }, [diceResults]);
+  }, [campaign.sessions[activeSessionIndex]?.logs]);
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (actualCampaign) {
+        fetchData();
+      } else {
+        console.warn('Cannot fetch data: actualCampaign is empty');
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [actualCampaign]);
+
+  const fetchData = async () => {
+        try {
+            const sessionsResponse = await fetch(`http://${ipv4}:8000/user/campaign/${campaign.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                }
+            });
+
+            if (!sessionsResponse.ok) {
+                throw new Error('Failed to fetch data');
+            }
+
+             const data = await sessionsResponse.json();
+                    setActualCampaign(data)
+
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
   const handleSelectPlayer = (player) => {
     if (selectedPlayers.includes(player.id)) {
@@ -102,34 +128,6 @@ const CampaignOne: React.FC = ({ navigation }) => {
     setPlayers([...players, newPlayer]);
   };
 
-  useEffect(() => {
-    const loadSessions = async () => {
-      try {
-        const savedSessions = await AsyncStorage.getItem('sessions');
-        if (savedSessions !== null) {
-          setSessions(JSON.parse(savedSessions));
-        }
-      } catch (error) {
-        console.error('Failed to load sessions', error);
-      }
-    };
-    loadSessions();
-  }, []);
-
-  useEffect(() => {
-    const loadNotes = async () => {
-      try {
-        const savedNotes = await AsyncStorage.getItem('notes');
-        if (savedNotes !== null) {
-          setNotes(JSON.parse(savedNotes));
-        }
-      } catch (error) {
-        console.error('Failed to load notes', error);
-      }
-    };
-    loadNotes();
-  }, []);
-
   const saveSessions = async (updatedSessions) => {
     try {
       await AsyncStorage.setItem('sessions', JSON.stringify(updatedSessions));
@@ -168,13 +166,13 @@ const CampaignOne: React.FC = ({ navigation }) => {
   const handleEditSession = (index) => {
     setEditingSession(index);
     setNewSessionName(sessions[index].name);
-    setNewSessionContent(sessions[index].content);
+    setNewSessionContent(sessions[index].description);
   };
 
   const handleSaveEdit = () => {
     if (editingSession !== null) {
       const updatedSessions = [...sessions];
-      updatedSessions[editingSession] = { name: newSessionName, content: newSessionContent };
+      updatedSessions[editingSession] = { name: newSessionName, description: newSessionContent };
       saveSessions(updatedSessions);
       setEditingSession(null);
       setNewSessionName('');
@@ -219,7 +217,7 @@ const CampaignOne: React.FC = ({ navigation }) => {
     if (newNoteTitle && newNoteContent) {
       const newNote = {
         title: newNoteTitle,
-        content: newNoteContent,
+        description: newNoteContent,
         image: newNoteImage ? { uri: newNoteImage } : require('./assets/Human-W-Mage.jpg'),
         diceResults: diceResults,
       };
@@ -230,7 +228,7 @@ const CampaignOne: React.FC = ({ navigation }) => {
       setNewNoteImage(null);
       setAddingNewNote(false);
     } else {
-      Alert.alert(t('Please enter both title and content for the note.'));
+      Alert.alert(t('Please enter both title and description for the note.'));
     }
   };
 
@@ -238,7 +236,7 @@ const CampaignOne: React.FC = ({ navigation }) => {
     handleCloseNote();
     setEditingNoteIndex(index);
     setNewNoteTitle(notes[index].title);
-    setNewNoteContent(notes[index].content);
+    setNewNoteContent(notes[index].description);
     setNewNoteImage(notes[index].image.uri || null);
     setAddingNewNote(!addingNewNote);
     setModalVisible(true);
@@ -249,7 +247,7 @@ const CampaignOne: React.FC = ({ navigation }) => {
       const updatedNotes = [...notes];
       updatedNotes[editingNoteIndex] = {
         title: newNoteTitle,
-        content: newNoteContent,
+        description: newNoteContent,
         image: newNoteImage ? { uri: newNoteImage } : require('./assets/Human-W-Mage.jpg')
       };
       setNotes(updatedNotes);
@@ -284,7 +282,7 @@ const CampaignOne: React.FC = ({ navigation }) => {
   };
 
   const handleGoToEncounter = () => {
-    navigation.navigate('Encounters');
+    navigation.navigate('Encounters',{campaign:campaign});
   };
 
   const handleOpenNote = (note, index) => {
@@ -306,7 +304,7 @@ const CampaignOne: React.FC = ({ navigation }) => {
     >
      <View style={styles.CampaignOneContainerMainA}>
       <View style={styles.sessionsList}>
-        <Text style={[styles.CampName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>LOREM PSILUM</Text>
+        <Text style={[styles.CampName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>{campaign.title}</Text>
 
         <ScrollView horizontal>
           {sessions.map((session, index) => (
@@ -328,7 +326,7 @@ const CampaignOne: React.FC = ({ navigation }) => {
           <View style={styles.sessionContainer}>
             <View style={styles.sessionHeader}>
            <ScrollView style={styles.sessionContentScrollContainer}>
-            <Text style={[styles.sessionContent, { fontSize: fontSize }]}>{sessions[activeSessionIndex]?.content}</Text>
+            <Text style={styles.sessionContent, { fontSize: fontSize }]}>{sessions[activeSessionIndex]?.description}</Text>
            </ScrollView>
             </View>
              <View style={styles.rowContainerRight}>
@@ -350,7 +348,7 @@ const CampaignOne: React.FC = ({ navigation }) => {
               style={[styles.inputContent, styles.textArea, { fontSize: fontSize }]}
               value={newSessionContent}
               onChangeText={setNewSessionContent}
-              placeholder={t('Enter session content')}
+              placeholder={t('Enter session description')}
               placeholderTextColor="#d6d6d6"
               multiline
             />
@@ -366,7 +364,7 @@ const CampaignOne: React.FC = ({ navigation }) => {
               style={[styles.inputContent, styles.textArea, { fontSize: fontSize }]}
               value={newSessionContent}
               onChangeText={setNewSessionContent}
-              placeholder={t('Enter session content')}
+              placeholder={t('Enter session description')}
               placeholderTextColor="#d6d6d6"
               multiline
             />
@@ -385,7 +383,7 @@ const CampaignOne: React.FC = ({ navigation }) => {
 
       {!addingNewSession && (
       <View style={styles.noteContent}>
-        {notes.map((note, index) => (
+        {sessions[activeSessionIndex]?.notes?.map((note, index) => (
           <View key={index} style={styles.noteHeader}>
             <TouchableOpacity onPress={() => handleOpenNote(note, index)}>
               <View style={styles.noteActions}>
@@ -394,8 +392,10 @@ const CampaignOne: React.FC = ({ navigation }) => {
             </TouchableOpacity>
             {noteVisibility[index] && (
               <>
-                <Text style={[styles.noteContent, { fontSize: fontSize }]}>{note.content}</Text>
+
+                <Text style={[styles.noteContent, { fontSize: fontSize }]}>{note.description}</Text>
                 <Image source={note.image} style={[styles.noteImage, { width: 200 * scaleFactor, height: 200 * scaleFactor }]} />
+
               </>
             )}
           </View>
@@ -411,7 +411,7 @@ const CampaignOne: React.FC = ({ navigation }) => {
            <View style={styles.modalNoteCampaignContainer}>
              <View style={styles.modalNoteCampaignContent}>
                <Text style={[styles.modalNoteCampaignTitle, { fontSize: fontSize * 1.2 }]}>{selectedNote?.title}</Text>
-               <Text style={[styles.modalNoteCampaignText, { fontSize: fontSize }]}>{selectedNote?.content}</Text>
+               <Text style={[styles.modalNoteCampaignText, { fontSize: fontSize }]}>{selectedNote?.description}</Text>
                <Image source={selectedNote?.image} style={[styles.modalImageNoteCampaign, { width: 200 * scaleFactor, height: 200 * scaleFactor }]} />
                <View style={styles.modalActionsNoteCampaign}>
                  <TouchableOpacity style={styles.editButtonCamp} onPress={() => handleEditNote(editingNoteIndex)}>
@@ -461,7 +461,7 @@ const CampaignOne: React.FC = ({ navigation }) => {
             />
             <TextInput
               style={[styles.inputCampNote, styles.contentInput, { fontSize: fontSize }]}
-              placeholder={t('Enter note content')}
+              placeholder={t('Enter note description')}
               placeholderTextColor="#d6d6d6"
               multiline
               value={newNoteContent}
@@ -503,15 +503,11 @@ const CampaignOne: React.FC = ({ navigation }) => {
 
         <View style={styles.rightCampaignContainer}>
           <ScrollView style={styles.rightCampaignContainerScrollArea} ref={scrollViewRef}>
-          {diceResults.map((result, index) => (
+          {sessions[activeSessionIndex]?.logs?.map((result, index) => (
             <Text key={index} style={[styles.diceResult, { fontSize: fontSize }]}>
-              {t('Dice roll result')}: Dice {result}
+              {t('Dice roll result')}: {result}
             </Text>
           ))}
-               <Text style={styles.modalNoteCampaignText}>gracz wyrzucil 2</Text>
-               <Text style={styles.modalNoteCampaignText}>Monster dolącza do walki</Text>
-               <Text style={styles.modalNoteCampaignText}>Gracz1 i Gracz2 rozpoczęli walkę z Wilkiem</Text>
-               <Text style={styles.modalNoteCampaignText}>Gracz2 wyrzucil 20</Text>
           </ScrollView>
           <TouchableOpacity style={styles.encounterButtonCampaignOne} onPress={handleGoToEncounter}>
             <Text style={[styles.encounterButtonTextCampaignOne, { fontSize: fontSize }]}>{t('Start Encounter')}</Text>
@@ -532,7 +528,13 @@ const CampaignOne: React.FC = ({ navigation }) => {
               ]}
               onPress={() => handleSelectPlayer(player)}
             >
-              <Image source={player.image} style={styles.playerImage} />
+              {player.image ? (
+                  <Image source={{ uri: player.image }} style={styles.playerImage} />
+                ) : (
+                  <View style={[styles.playerImage, styles.placeholder]}>
+                    <Text style={styles.placeholderText}>No Image</Text>
+                  </View>
+                )}
             </TouchableOpacity>
           ))}
           <TouchableOpacity style={styles.playerAvatar} onPress={handleAddPlayer}>

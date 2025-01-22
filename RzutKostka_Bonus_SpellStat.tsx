@@ -16,10 +16,13 @@ const RzutKostka_Bonus_SpellStat: React.FC = ({ route, navigation }) => {
   };
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
-
+  const { token } = useAuth();
+  const { player,session ={} } = route.params;
   const [diceValue, setDiceValue] = useState(null);
   const [rotateValue] = useState(new Animated.Value(0));
   const [result, setResult] = useState(null);
+  const { ipv4 } = useContext(UserData);
+  const [answer, setAnswer] = useState(null);
 
   const handleRollDice = () => {
     setDiceValue(null);
@@ -40,12 +43,40 @@ const RzutKostka_Bonus_SpellStat: React.FC = ({ route, navigation }) => {
         const finalStatValue = isNaN(statValue) || statValue === 'None' ? null : parseInt(statValue);
         if (finalStatValue !== null) {
           setResult(randomValue + finalStatValue);
+          if (session !== null && session !== undefined && Object.keys(session).length > 0) {
+              setAnswer(`${player.name} roll for ${spell.name} ${result}`)
+              fetchData();
+            }
         } else {
           setResult(null);
         }
       }, 200);
     });
   };
+
+  const fetchData = async () => {
+    try {
+        console.log(answer)
+        const sessionResponse = await fetch(`http://${ipv4}:8000/sessions/addToLogs`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'accept': 'application/json'
+                    },
+                    body: JSON.stringify({ token: token.toString(),log:`${answer}`,sessionID:session.id }),
+                });
+
+
+        if (!sessionResponse.ok) {
+            throw new Error('Failed to fetch data');
+        }
+
+            const ans = await sessionResponse.json();
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+};
 
   const spin = rotateValue.interpolate({
     inputRange: [0, 1],

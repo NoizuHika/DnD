@@ -15,9 +15,11 @@ Appearance.setColorScheme('light');
 const Character1: React.FC = ({ navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t, i18n } = useTranslation();
-  const [characterData, setCharacterData] = useState(null);
+  const { characterData } =  route.params;
+  const { session = {} } = route.params;
+  const [character, setCharacter] = useState(characterData);
   const [selectedScreen, setSelectedScreen] = useState('Character1');
-  const [health, setHealth] = useState(100);
+  const [health, setHealth] = useState(character.actualHP);
   const [skillsVisible, setSkillsVisible] = useState(false);
   const [actionVisible, setActionVisible] = useState(false);
   const [bonusVisible, setBonusVisible] = useState(false);
@@ -26,40 +28,18 @@ const Character1: React.FC = ({ navigation }) => {
   const [selectedRomanNumeral, setSelectedRomanNumeral] = useState(null);
   const { theme } = useContext(ThemeContext);
   const [selectedLevel, setSelectedLevel] = useState(null);
-  const [spells, setSpells] = useState([]);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    setSpells(spellsData);
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch('http://10.0.2.2:8000/characters/1');
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-      const data = await response.json();
-      setCharacterData(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      // Handle error fetching data
-    }
-  };
+  const [spells, setSpells] = useState(character.spellbook || []);
 
   const handleGoBack = () => {
     navigation.navigate('Characters');
   };
 
   const handleRollDice = () => {
-    navigation.navigate('RzutKostka');
+    navigation.navigate('RzutKostka',{player:characterData,session:session});
   };
 
   const handleStatPress = (statName, statValue) => {
-    navigation.navigate('RzutKostka_Bonus', { statName, statValue });
+    navigation.navigate('RzutKostka_Bonus', { statName, statValue, player:characterData,session:session });
   };
 
   const calculateLargerNumber = (value) => {
@@ -71,13 +51,13 @@ const Character1: React.FC = ({ navigation }) => {
     setHealth(prevHealth => Math.max(0, Math.min(100, prevHealth + amount)));
   };
 
-  if (!characterData) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text>{t('Loading...')}</Text>
-      </View>
-    );
-  }
+  if (!character) {
+      return (
+        <View style={styles.loadingContainer}>
+          <Text>{t('Loading...')}</Text>
+        </View>
+      );
+    }
 
   const toggleSkills = () => {
     setSkillsVisible(!skillsVisible);
@@ -173,8 +153,8 @@ const Character1: React.FC = ({ navigation }) => {
     const requiredStat = spell.requiredStat;
     const statValue = calculateLargerNumber(player[requiredStat]);
 
-    navigation.navigate('RzutKostka_Bonus_SpellStat', { spell, statValue });
-  };
+    navigation.navigate('RzutKostka_Bonus_SpellStat', { spell, statValue,player:characterData,session:session });
+    };
 
   const AbilitiesWindow = ({ level, navigation }) => {
     const spells = spellsByLevel[level] || [];
@@ -289,15 +269,15 @@ const Character1: React.FC = ({ navigation }) => {
   };
 
   const player = new PlayerCharacter(
-    characterData.strScore,
-    characterData.dexScore,
-    characterData.conScore,
-    characterData.intScore,
-    characterData.wisScore,
-    characterData.chaScore,
-    characterData.armorClass,
-    calculateLargerNumber(characterData.dexScore)
-  );
+      character.strScore,
+      character.dexScore,
+      character.conScore,
+      character.intScore,
+      character.wisScore,
+      character.chaScore,
+      character.armorClass,
+      calculateLargerNumber(character.dexScore)
+    );
 
   const skills = [
     { mod: 'DEX', skill: 'Acrobatics', bonus: 3 },
@@ -340,7 +320,7 @@ const Character1: React.FC = ({ navigation }) => {
           style={[styles.pickerChooseChar, { width: 200 * scaleFactor }]}
           onValueChange={(itemValue) => {
             setSelectedScreen(itemValue);
-            navigation.navigate(itemValue);
+            navigation.navigate(itemValue,{ characterData : character });
           }}
         >
           <Picker.Item label={t('Main Scene')} value="Character1" />
@@ -349,8 +329,8 @@ const Character1: React.FC = ({ navigation }) => {
         </Picker>
       </View>
       <View style={styles.imageContainer}>
-        <Image source={require('./assets/assasin.jpeg')} style={[styles.image, { height: 100 * scaleFactor, width: 100 * scaleFactor }]} />
-      </View>
+        <Image source={{uri: character.image }} style={styles.image} />
+    </View>
 
       <View style={[styles.healthContainer, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
         <TouchableOpacity style={[styles.healthButtonChar, { height: 30 * scaleFactor, width: 80 * scaleFactor, right: 15 * scaleFactor }]} onPress={() => handleHealthChange(10)}>

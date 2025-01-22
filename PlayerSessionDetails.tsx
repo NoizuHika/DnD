@@ -7,32 +7,21 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
+import { UserProvider } from './UserData';
 
 Appearance.setColorScheme('light');
 
 const PlayerSessionDetails: React.FC = ({ navigation }) => {
-    const { fontSize, scaleFactor } = useContext(SettingsContext);
-    const route = useRoute();
-    const { session } = route.params || {};
-    const { t } = useTranslation();
-    const { theme, diceResults } = useContext(ThemeContext);
-
-  const [sessions, setSessions] = useState([
-    { name: "Session 1" },
-    { name: "Session 2" },
-  ]);
-  const [notes, setNotes] = useState([
-    {
-      title: "Notatka1",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc commodo at risus quis sagittis. Sed feugiat in turpis nec rutrum. Fusce non elit justo. Maecenas ac tempor tortor. Sed tincidunt pretium blandit. Nunc lobortis euismod sem in tincidunt. Pellentesque iaculis eget eros vel faucibus. Mauris posuere aliquet ipsum, at vestibulum tortor. Aliquam tempus fermentum feugiat.",
-      image: require('./assets/Dwarf-M-Inventor.jpg')
-    },
-    {
-      title: "Notatka2",
-      content: "Praesent eu enim et justo consectetur porta. Aliquam erat volutpat. Nulla hendrerit elementum purus, eget cursus turpis laoreet nec. Duis blandit auctor massa id luctus. Praesent faucibus sapien arcu, et mattis felis tristique id. Pellentesque molestie purus ligula, a feugiat velit consequat sed. Integer nisi tellus, dictum sit amet porta nec, laoreet eu nisi. Morbi euismod sem tristique euismod vehicula. Nullam ipsum erat, mollis ut metus quis, ullamcorper euismod ligula. Phasellus egestas arcu vitae ornare porttitor. Fusce bibendum erat ac arcu sodales, eu tristique massa rhoncus. Nullam luctus, risus ut ornare viverra, ipsum velit sagittis augue, eget condimentum enim augue sed libero. Curabitur blandit nulla turpis, in sodales risus consectetur vel.",
-      image: require('./assets/Dwarf-W-Inventor.jpg')
-    },
-  ]);
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
+  const route = useRoute();
+  const { session } = route.params || {};
+  const { ipv4 } = useContext(userData);
+  const { t } = useTranslation();
+  const { theme, diceResults } = useContext(ThemeContext);
+  const { campaign,player} = route.params;
+  const { session } = route.params || {};
+  const [playerActual, setPlayerActual] = useState(player);
+  const [notes, setNotes] = useState(player.sharedNotes);
   const [newSessionName, setNewSessionName] = useState('');
   const [newSessionContent, setNewSessionContent] = useState('');
   const [newNoteTitle, setNewNoteTitle] = useState('');
@@ -45,21 +34,57 @@ const PlayerSessionDetails: React.FC = ({ navigation }) => {
   const [addingNewNote, setAddingNewNote] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
-
-  const [players, setPlayers] = useState([
-    { id: 1, name: "Player 1", image: require('./assets/assasin.jpeg'), coins: 0, level: 1, hp: 100, ac: 12 },
-  ]);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [noteVisibility, setNoteVisibility] = useState(new Array(notes.length).fill(false));
   const [modalVisible, setModalVisible] = useState(false);
+  const [actualSession,setActualSession]= useState(session);
 
   const scrollViewRef = useRef(null);
 
   useEffect(() => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollToEnd({ animated: true });
-    }
-  }, [diceResults]);
+    if (scrollViewRef.current && actualSession?.logs?.length > 0) {
+          scrollViewRef.current.scrollToEnd({ animated: true });
+        }
+  }, [actualSession?.logs]);
+
+  useEffect(() => {
+      const intervalId = setInterval(() => {
+        if (playerActual && actualSession) {
+          fetchData();
+        } else {
+          console.warn('Cannot fetch data: playerActual or actualSession is empty');
+        }
+      }, 1000);
+
+      return () => clearInterval(intervalId);
+  }, [playerActual, actualSession]);
+
+  const fetchData = async () => {
+        try {
+            const sessionsResponse = await fetch(`http://${ipv4}:8000/user/characters/session`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    character_id: playerActual?.id ? parseInt(playerActual?.id) : null,
+                    session_id: actualSession?.id ? parseInt(actualSession?.id) : null
+                }),
+            });
+
+            if (!sessionsResponse.ok) {
+                throw new Error('Failed to fetch data');
+            }
+
+             const data = await sessionsResponse.json();
+                    setPlayerActual(data.character);
+                    setActualSession(data.session);
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+  };
 
   const handleSelectPlayer = (player) => {
     if (selectedPlayers.includes(player.id)) {
@@ -134,6 +159,10 @@ const PlayerSessionDetails: React.FC = ({ navigation }) => {
 
   const handleRoll = () => {
     navigation.navigate('RzutKostka');
+  };
+
+  const handlePressPortrait = () => {
+        navigation.navigate('Character1',{characterData:playerActual,session:actualSession});
   };
 
   const handleSaveEdit = () => {
@@ -262,7 +291,7 @@ return (
 
      <View style={styles.CampaignOneContainerMainA}>
       <View style={styles.CampaignOneContainerMain}>
-        <Text style={[styles.CampName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>LOREM PSILUM</Text>
+        <Text style={[styles.CampName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>{campaign.title}</Text>
 
       </View>
 
@@ -272,8 +301,8 @@ return (
     <View style={styles.playersSessionDetailStatsContainer}>
       {players.map((player) => (
         <View key={player.id} style={styles.playerSessionDetailStatsRow}>
-          <Text style={[styles.playerSessionDetailStatHP, styles.statWithBorder, { fontSize: fontSize }]}>{t('HP')}: {player.hp}</Text>
-          <Text style={[styles.playerSessionDetailStatAC, { fontSize: fontSize }]}>{t('AC')}: {player.ac}</Text>
+          <Text style={[styles.playerSessionDetailStatHP, styles.statWithBorder, { fontSize: fontSize }]}>{t('HP')}: {playerActual.actualHP}</Text>
+          <Text style={[styles.playerSessionDetailStatAC, { fontSize: fontSize }]}>{t('AC')}: {playerActual.armorClass}</Text>
         </View>
       ))}
     </View>
@@ -407,18 +436,21 @@ return (
         <View style={styles.rightCampaignContainer}>
           <View style={styles.playerSessionDetailAvatarContainer}>
             <Image source={players[0].image} style={[styles.playerSessionDetailAvatar, { width: 100 * scaleFactor, height: 100 * scaleFactor }]} />
-            <Text style={[styles.playerSessionDetailName, { fontSize: fontSize }]}>{players[0].name}</Text>
+            <Text style={[styles.playerSessionDetailName, { fontSize: fontSize }]}>{playerActual.name}</Text>
           </View>
           <ScrollView style={styles.rightCampaignContainerScrollArea} ref={scrollViewRef}>
-          {diceResults.map((result, index) => (
-            <Text key={index} style={[styles.diceResult, { fontSize: fontSize }]}>
-              {t('Dice roll result')}: Dice {result}
-            </Text>
-          ))}
-               <Text style={styles.modalNoteCampaignText}>gracz wyrzucil 2</Text>
-               <Text style={styles.modalNoteCampaignText}>Wilk dolącza do walki</Text>
-               <Text style={styles.modalNoteCampaignText}>Gracz1 i Gracz2 rozpoczęli walkę z Wilkiem</Text>
-               <Text style={styles.modalNoteCampaignText}>Gracz2 wyrzucil 20</Text>
+          {actualSession?.logs?.length > 0 ? (
+            <>
+              {actualSession.logs.map((logs, index) => (
+                <Text key={index} style={[styles.diceResult, { fontSize: fontSize }]}>
+                    {logs}
+                </Text>
+               ))}
+               <Text style={styles.diceResult}>{"\n\n"}</Text>
+             </>
+               ) : (
+             <Text style={styles.emptyResultText}>No logs available</Text>
+           )}
           </ScrollView>
         </View>
       </View>

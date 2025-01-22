@@ -5,10 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { UserData } from './UserData';
 
 Appearance.setColorScheme('light');
 
-const feats = require('./assets/Library/bestiary.json');
+
 
 const Bestiary = ({ navigation }) => {
   const { t } = useTranslation();
@@ -22,9 +23,39 @@ const Bestiary = ({ navigation }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedFeat, setEditedFeat] = useState(null);
 
-  const crOptions = ["1/4", "1", "2", "3", "5", "10", "20", "24"];
-  const typeOptions = ['Large Ooze', 'Large Beast', 'Small Humanoid', 'Medium Beast'];
-  const environmentOptions = ["Forest", "Grassland", "Hill", "Underdark", "Arctic", "Desert"];
+  const { ipv4 } = useContext(UserData)
+  const crOptions = ["0", "1/8", "1/4", "1/2", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
+                      "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
+                      "23", "24", "25", "26", "27", "28", "29", "30"];
+  const [typeOptions,setTypeOptions] = useState([])
+  const [environmentOptions,setEnvironmentOptions] = useState([])
+
+  useEffect(() => {
+        fetchData();
+      }, []);
+
+  const fetchData = async () => {
+        try {
+            const [bestiariesResponse, environmentsResponse, monsterTypeResponse] = await Promise.all([
+              fetch(`http://${ipv4}:8000/bestiaries/all`),
+              fetch(`http://${ipv4}:8000/environments/all`),
+              fetch(`http://${ipv4}:8000/monster_types/all`)
+            ]);
+
+            if (!bestiariesResponse.ok || !environmentsResponse.ok || !monsterTypeResponse.ok) {
+              throw new Error('Failed to fetch data');
+            }
+
+            const feats = await bestiariesResponse.json();
+            const environmentData = await environmentsResponse.json();
+            const typeData = await monsterTypeResponse.json();
+            setFeats(feats);
+            setEnvironmentOptions(environmentOptions);
+            setTypeOptions(typeData);
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -40,11 +71,12 @@ const Bestiary = ({ navigation }) => {
     }
 
     if (selectedCR !== 'All') {
-      filtered = filtered.filter((feat) => feat.cr === selectedCR);
+
+      filtered = filtered.filter((feat) => feat.challengeRating.split(" ")[0] === selectedCR);
     }
 
     if (selectedType !== 'All') {
-      filtered = filtered.filter((feat) => feat.type === selectedType);
+      filtered = filtered.filter((feat) => feat.monsterType === selectedType);
     }
 
     if (selectedEnvironment !== 'All') {
@@ -129,8 +161,8 @@ const Bestiary = ({ navigation }) => {
           onValueChange={(value) => setSelectedType(value)}
         >
           <Picker.Item label={t('Type')} value={'All'} />
-          {typeOptions.map((type) => (
-            <Picker.Item key={type} label={t(type)} value={type} />
+          {typeOptions.map((monsterType) => (
+            <Picker.Item key={monsterType.id} label={t(monsterType.name)} value={monsterType.name} />
           ))}
         </Picker>
 
@@ -150,10 +182,10 @@ const Bestiary = ({ navigation }) => {
           style={styles.pickerItems}
           onValueChange={(value) => setSelectedEnvironment(value)}
         >
-          <Picker.Item label={t('Environment')} value={'All'} />
-          {environmentOptions.map((env) => (
-            <Picker.Item key={env} label={t(env)} value={env} />
-          ))}
+         <Picker.Item label={t('Environment')} value={'All'} />
+           {environmentOptions.map((env) => (
+             <Picker.Item key={env.id} label={t(env.name)} value={env.name} />
+         ))}
         </Picker>
       </View>
 
@@ -169,21 +201,21 @@ const Bestiary = ({ navigation }) => {
           <Text style={styles.noResultsText}>{t('No feats found')}</Text>
         ) : (
           filteredFeats.map((feat, index) => (
-            <View key={index} style={styles.tableRow}>
-              <Text style={styles.tableCell}>{feat.name}</Text>
-              <Text style={styles.tableCell}>{feat.type}</Text>
-              <Text style={styles.tableCell}>{feat.cr}</Text>
-              <Text style={styles.tableCell}>{feat.source}</Text>
-              <TouchableOpacity
-                style={[styles.tableCell, styles.actionsColumn]}
-                onPress={() => handleFeatPress(feat)}
-              >
-                <Text style={styles.actionText}>{t('Details')}</Text>
-              </TouchableOpacity>
-            </View>
-          ))
-        )}
-      </ScrollView>
+          <View key={index} style={styles.tableRow}>
+            <Text style={styles.tableCell}>{feat.name}</Text>
+            <Text style={styles.tableCell}>{feat.monsterType}</Text>
+            <Text style={styles.tableCell}>{feat.challengeRating}</Text>
+            <Text style={styles.tableCell}>{feat.source}</Text>
+            <TouchableOpacity
+              style={[styles.tableCell, styles.actionsColumn]}
+              onPress={() => handleFeatPress(feat)}
+            >
+              <Text style={styles.actionText}>{t('Details')}</Text>
+            </TouchableOpacity>
+          </View>
+        ))
+      )}
+    </ScrollView>
 
       <Modal visible={!!selectedFeat} transparent={true} animationType="slide" onRequestClose={closeFeatModal}>
         <View style={styles.modalOverlay}>
@@ -200,13 +232,13 @@ const Bestiary = ({ navigation }) => {
                   </View>
                   <View style={styles.additionalInfoTitleA}>
                     <View style={styles.rowContainer}>
-                    <Text style={styles.modalSubTitleFeats}>{t('CR')}: </Text>
-                    <TextInput
-                      style={styles.modalSubTitleFeats}
-                      value={editedFeat?.cr?.toString() || ''}
-                      onChangeText={(value) => handleEditChange('cr', value)}
-                      keyboardType="numeric"
-                    />
+                        <Text style={styles.modalSubTitleFeats}>{t('CR')}: </Text>
+                        <TextInput
+                          style={styles.modalSubTitleFeats}
+                          value={editedFeat?.challengeRating?.toString() || ''}
+                          onChangeText={(value) => handleEditChange('cr', value)}
+                          keyboardType="numeric"
+                        />
                   </View>
                   </View>
                   <View style={styles.additionalInfoTitleA}>
@@ -214,7 +246,7 @@ const Bestiary = ({ navigation }) => {
                     <Text style={styles.modalSubTitleFeats}>{t('Initiative')}: </Text>
                     <TextInput
                       style={styles.modalSubTitleFeats}
-                      value={editedFeat?.initiative?.toString() || ''}
+                      value={editedFeat?.initiative?.toString() || '5'}
                       onChangeText={(value) => handleEditChange('initiative', value)}
                       keyboardType="numeric"
                     />
@@ -232,7 +264,7 @@ const Bestiary = ({ navigation }) => {
                       <View style={styles.statCircleA}>
                         <TextInput
                           style={styles.statValue}
-                          value={editedFeat?.hp?.toString() || ''}
+                          value={editedFeat?.averageHitPoints?.toString() + ' (' + editedFeat?.averageHitPoints?.toString() + ' ' + editedFeat?.hitPointDiceCount?.toString() + ' ' + editedFeat?.hitPointDiceType?.toString() + ' + ' + editedFeat?.hitPointModifier?.toString() + ')'  || ''}
                           onChangeText={(value) => handleEditChange('hp', value)}
                           keyboardType="numeric"
                         />
@@ -241,7 +273,7 @@ const Bestiary = ({ navigation }) => {
                       <View style={styles.statCircleA}>
                         <TextInput
                           style={styles.statValue}
-                          value={editedFeat?.ac?.toString() || ''}
+                          value={editedFeat?.armorClass || ''}
                           onChangeText={(value) => handleEditChange('ac', value)}
                           keyboardType="numeric"
                         />
@@ -252,7 +284,7 @@ const Bestiary = ({ navigation }) => {
                       <Text style={styles.featStatSmall}>{t('Type')}: </Text>
                       <TextInput
                         style={styles.featStatSmall}
-                        value={editedFeat?.type || ''}
+                        value={editedFeat?.monsterType || ''}
                         onChangeText={(value) => handleEditChange('type', value)}
                       />
                     </View>
@@ -283,10 +315,10 @@ const Bestiary = ({ navigation }) => {
 
                 <View style={styles.statsContainerFeatsC}>
                   <View style={styles.statsContainerFeatsD}>
-                    {['str', 'dex', 'con', 'int', 'wis', 'cha'].map((stat) => (
+                    {['strScore', 'dexScore', 'conScore', 'intScore', 'wisScore', 'chaScore'].map((stat) => (
                       <View key={stat} style={styles.statBlock}>
                         <View style={styles.rowContainer}>
-                          <Text style={styles.statLabel}>{stat.toUpperCase()}: </Text>
+                          <Text style={styles.statLabel}>{stat.slice(0, 3).toUpperCase()}: </Text>
                           <TextInput
                             style={styles.statLabel}
                             value={editedFeat?.[stat]?.toString() || ''}
@@ -311,7 +343,7 @@ const Bestiary = ({ navigation }) => {
                   <Text style={styles.actionDescription}>{t('Senses')}: </Text>
                   <TextInput
                     style={styles.actionDescription}
-                    value={editedFeat?.senses || ''}
+                    value={editedFeat?.passivePerception || ''}
                     onChangeText={(value) => handleEditChange('senses', value)}
                   />
                 </View>
@@ -319,7 +351,7 @@ const Bestiary = ({ navigation }) => {
                   <Text style={styles.actionDescription}>{t('Languages')}: </Text>
                   <TextInput
                     style={styles.actionDescription}
-                    value={editedFeat?.languages || ''}
+                    value={editedFeat?.languageNoteOverride || ''}
                     onChangeText={(value) => handleEditChange('languages', value)}
                   />
                 </View>
@@ -367,17 +399,17 @@ const Bestiary = ({ navigation }) => {
               </ScrollView>
             ) : (
               <ScrollView>
-                  <View style={styles.featsContainerColumn}>
-                <View style={styles.additionalInfoTitle}>
-                  <Text style={styles.modalSubTitleFeats}>{selectedFeat?.name}</Text>
-                  </View>
-                <View style={styles.additionalInfoTitle}>
-                  <Text style={styles.modalSubTitleFeats}>{t('CR')}: {selectedFeat?.cr}</Text>
-                  </View>
-                <View style={styles.additionalInfoTitle}>
-                  <Text style={styles.modalSubTitleFeats}>{t('Initiative')}: {selectedFeat?.initiative}</Text>
-                  </View>
-                  </View>
+                <View style={styles.featsContainerColumn}>
+              <View style={styles.additionalInfoTitle}>
+                <Text style={styles.modalSubTitleFeats}>{selectedFeat?.name}</Text>
+                </View>
+              <View style={styles.additionalInfoTitle}>
+                <Text style={styles.modalSubTitleFeats}>{t('CR')}: {selectedFeat?.challengeRating}</Text>
+                </View>
+              <View style={styles.additionalInfoTitle}>
+                <Text style={styles.modalSubTitleFeats}>{t('Initiative')}: {selectedFeat?.initiative}</Text>
+                </View>
+                </View>
 
 
                   <View style={styles.rowContainer}>
@@ -387,18 +419,17 @@ const Bestiary = ({ navigation }) => {
 
                     <View style={styles.infoColumn}>
                       <View style={styles.statsRow}>
-                        <View style={styles.statLeft}>
+                        <View style={styles.statCircle}>
                           <Text style={styles.statValue}>{t('HP')}</Text>
-                          <Text style={styles.statValue}>{selectedFeat?.hp}</Text>
+                          <Text style={styles.statValue}>{selectedFeat?.averageHitPoints}</Text>
                         </View>
-                        <View style={styles.dividerStats} />
-                        <View style={styles.statRight}>
+                        <View style={styles.statCircle}>
                           <Text style={styles.statValue}>{t('AC')}</Text>
-                          <Text style={styles.statValue}>{selectedFeat?.ac}</Text>
+                          <Text style={styles.statValue}>{selectedFeat?.armorClass}</Text>
                         </View>
                       </View>
-                <View style={styles.additionalInfo}>
-                      <Text style={styles.featStatSmall}>{selectedFeat?.type}</Text>
+                 <View style={styles.additionalInfo}>
+                      <Text style={styles.featStatSmall}>{selectedFeat?.monsterType}</Text>
                     </View>
                 <View style={styles.additionalInfo}>
                       <Text style={styles.featStatSmall}>{selectedFeat?.alignment}</Text>
@@ -410,49 +441,35 @@ const Bestiary = ({ navigation }) => {
                   </View>
 
 
-                  <View style={styles.statsContainerFeatsB}>
-                  <View style={styles.statsContainerFeatsA}>
-                    {['strbonus', 'dexbonus', 'conbonus', 'intbonus', 'wisbonus', 'chabonus'].map((statbonus) => (
-                      <View key={statbonus} style={styles.statBlock}>
-                        <Text style={styles.statValue}>{selectedFeat?.[statbonus]}</Text>
-                      </View>
-                    ))}
-                  </View>
-                  <View style={styles.statsContainerFeats}>
-                    {['str', 'dex', 'con', 'int', 'wis', 'cha'].map((stat) => (
-                      <View key={stat} style={styles.statBlock}>
-                        <Text style={styles.statLabel}>{stat.toUpperCase()}: {selectedFeat?.[stat]}</Text>
-                      </View>
-                    ))}
-                  </View>
-                  </View>
+                <View style={styles.statsContainerFeatsB}>
+                <View style={styles.statsContainerFeatsA}>
+                  {['strScore', 'dexScore', 'conScore', 'intScore', 'wisScore', 'chaScore'].map((statbonus) => (
+                    <View key={statbonus} style={styles.statBlock}>
+                      <Text style={styles.statValue}>{Math.floor((selectedFeat?.[statbonus]-10)/2)}</Text>
+                          </View>
+                  ))}
+                </View>
+                <View style={styles.statsContainerFeats}>
+                  {['strScore', 'dexScore', 'conScore', 'intScore', 'wisScore', 'chaScore'].map((stat) => (
+                    <View key={stat} style={styles.statBlock}>
+                      <Text style={styles.statLabel}>{stat.slice(0, 3).toUpperCase()}: {selectedFeat?.[stat]}</Text>
+                    </View>
+                  ))}
+                </View>
+                </View>
 
                 <View style={styles.additionalInfo}>
                   <Text style={styles.actionDescription}>{t('Skills')}: {selectedFeat?.skills}</Text>
                 </View>
                 <View style={styles.additionalInfo}>
-                  <Text style={styles.actionDescription}>{t('Senses')}: {selectedFeat?.senses}</Text>
+                  <Text style={styles.actionDescription}>{t('Senses')}: {selectedFeat?.passivePerception}</Text>
                 </View>
                 <View style={styles.additionalInfo}>
-                  <Text style={styles.actionDescription}>{t('Languages')}: {selectedFeat?.languages}</Text>
-                </View>
-
-                <View style={styles.additionalInfo}>
-                  {selectedFeat?.actions.map((action, index) => (
-                    <View key={index} style={styles.actionContainerFeats}>
-                      <Text style={styles.actionName}>{t('Actions')}: {action.name}</Text>
-                      <Text style={styles.actionDescription}>{action.description}</Text>
-                    </View>
-                  ))}
+                  <Text style={styles.actionDescription}>{t('Languages')}: {selectedFeat?.languageNoteOverride.join(', ')}</Text>
                 </View>
 
                 <View style={styles.additionalInfo}>
-                  {selectedFeat?.features.map((feature, index) => (
-                    <View key={index} style={styles.featureContainerFeats}>
-                      <Text style={styles.featureName}>{t('Features')}: {feature.name}</Text>
-                      <Text style={styles.featureDescription}>{feature.description}</Text>
-                    </View>
-                  ))}
+                      <Text style={styles.actionDescription}>{selectedFeat?.actionDescription}</Text>
                 </View>
 
                 <View style={styles.modalButtons}>
