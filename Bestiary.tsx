@@ -81,7 +81,7 @@ const Bestiary = ({ navigation }) => {
 
     if (selectedEnvironment !== 'All') {
       filtered = filtered.filter((feat) =>
-        feat.environment && feat.environment.includes(selectedEnvironment)
+        feat.environments && feat.environments.includes(selectedEnvironment)
       );
     }
 

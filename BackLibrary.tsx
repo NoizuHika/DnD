@@ -4,8 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 
-const backLibraryData = require('./assets/Library/BackLibrary.json');
-
 const BackLibrary = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
@@ -17,8 +15,31 @@ const BackLibrary = ({ navigation }) => {
   const [editedItem, setEditedItem] = useState(null);
 
   useEffect(() => {
-    setBackLibrary(backLibraryData);
+   fetchData();
   }, []);
+
+const fetchData = async () => {
+            try {
+                const backgroundResponse = await fetch(`http://${ipv4}:8000/backgrounds/all`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'accept': 'application/json'
+                            }
+                        });
+
+
+                if (!backgroundResponse.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+
+                const backgrounds= await backgroundResponse.json();
+                setBackLibrary(backgrounds);
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -106,19 +127,19 @@ const BackLibrary = ({ navigation }) => {
               <View style={styles.itemModal}>
                 <Text style={styles.itemTitle}>{selectedItem.name}</Text>
                 <Text style={styles.itemDescriptionAttune}>
-                  {t('Skill Proficiencies')}: {selectedItem.skillProficiencies || t('None')}
+                  {t('Skill Proficiencies')}: {selectedItem.skillProficiencies.join(', ') || t('None')}
                 </Text>
                 <Text style={styles.itemDescription}>
-                  {t('Languages')}: {selectedItem.languages || t('None')}
+                  {t('Languages')}: {selectedItem.languages.join(', ') || t('None')}
                 </Text>
                 <Text style={styles.itemDescription}>
-                  {t('Tool Proficiencies')}: {selectedItem.toolProficiencies || t('None')}
+                  {t('Tool Proficiencies')}: {selectedItem.toolProficiencies.join(', ') || t('None')}
                 </Text>
                 <Text style={styles.itemDescription}>
-                  {t('Equipment')}: {selectedItem.equipment || t('None')}
+                  {t('Equipment')}: {selectedItem.equipments.join(', ') || t('None')}
                 </Text>
                 <Text style={styles.itemDescription}>
-                  {t('Feature')}: {selectedItem.feature || t('None')}
+                  {t('Feature')}: {selectedItem.features.join(', ') || t('None')}
                 </Text>
                 <Text style={styles.itemDescription}>{selectedItem.description}</Text>
                 <View style={styles.modalButtons}>
@@ -159,13 +180,13 @@ const BackLibrary = ({ navigation }) => {
                 <TextInput
                   style={styles.itemDescription}
                   value={editedItem.equipment}
-                  onChangeText={(value) => handleEditChange('equipment', value)}
+                  onChangeText={(value) => handleEditChange('equipments', value)}
                   placeholder={t('Equipment')}
                 />
                 <TextInput
                   style={styles.itemDescription}
                   value={editedItem.feature}
-                  onChangeText={(value) => handleEditChange('feature', value)}
+                  onChangeText={(value) => handleEditChange('features', value)}
                   placeholder={t('Feature')}
                 />
                 <TextInput

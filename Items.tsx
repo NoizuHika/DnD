@@ -8,13 +8,12 @@ import { Appearance } from 'react-native';
 
 Appearance.setColorScheme('light');
 
-const sampleItems = require('./assets/Library/items.json');
-
 const Items = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
 
   const [items, setItems] = useState([]);
+  const [subTypes, setSubTypes] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [selectedType, setSelectedType] = useState('Type');
   const [selectedSubtype, setSelectedSubtype] = useState('Subtype');
@@ -23,22 +22,41 @@ const Items = ({ navigation }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedItem, setEditedItem] = useState(null);
 
-  const categories = ['Type', 'Weapon', 'Armor', 'Adventuring Gear', 'Consumable', 'Magic', 'Other'];
-  const rarities = ['Rarity', 'Common', 'Uncommon', 'Rare', 'Very Rare', 'Legendary'];
+  const categories = ['Type', 'weapon', 'armor', 'adventuring_gear', 'consumable', 'magic', 'other'];
+  const rarities = ['Rarity', 'common', 'uncommon', 'rare', 'very rare', 'legendary'];
 
-  const handleSubtypePicker = (type) => {
-    if (type === 'Weapon') return ['Sword', 'Dagger', 'Hammer', 'Polearm'];
-    if (type === 'Armor') return ['Plate Armor', 'Shield', 'Leather Armor'];
-    if (type === 'Adventuring Gear') return ['Magic Container', 'Tool', 'Instrument'];
-    if (type === 'Consumable') return ['Potion', 'Elixir'];
-    if (type === 'Magic') return ['Wand', 'Scroll', 'Staff'];
-    if (type === 'Other') return ['Treasure', 'Alchemical Item'];
+  const handleSubtypePicker = (type,subTypes) => {
+    if (type === 'weapon') return [subtypes.weapons];
+    if (type === 'armor') return [subtypes.armors];
+    if (type === 'adventuring_gear') return [subtypes.adventuringGears];
+    if (type === 'consumable') return [subtypes.consumables];
+    if (type === 'magic') return [subtypes.magics];
+    if (type === 'other') return [subtypes.others];
     return [];
   };
 
   useEffect(() => {
-    setItems(sampleItems);
+    fetchData();
   }, []);
+  const fetchData = async () => {
+          try {
+              const [itemsResponse, itemTypesResponse] = await Promise.all([
+                fetch(`http://${ipv4}:8000/items/all`),
+                fetch(`http://${ipv4}:8000/itemTypes/all`),
+              ]);
+
+              if (!itemsResponse.ok || !itemTypesResponse.ok) {
+                throw new Error('Failed to fetch data');
+              }
+
+              const itemsData = await itemsResponse.json();
+              const itemTypesData = await itemTypesResponse.json();
+              setItems(itemsData);
+              setSubTypes(itemTypesData)
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            }
+          };
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -160,7 +178,7 @@ const Items = ({ navigation }) => {
               <Text style={styles.tableCell}>{item.name}</Text>
               <Text style={styles.tableCell}>{item.rarity}</Text>
               <Text style={styles.tableCell}>{item.type}</Text>
-              <Text style={styles.tableCell}>{item.subtype.join(', ')}</Text>
+              <Text style={styles.tableCell}>{item.itemType.join(', ')}</Text>
               <TouchableOpacity
                 style={styles.tableCell}
                 onPress={() => handleItemPress(item)}
@@ -180,11 +198,11 @@ const Items = ({ navigation }) => {
                 <Text style={styles.itemTitle}>{selectedItem.name}</Text>
                 <View style={styles.itemsDetails}>
                   <Text style={styles.itemCategory}>{t('Type')}: {selectedItem.type}</Text>
-                  <Text style={styles.itemCategory}>{t('Subtype')}: {selectedItem.subtype}</Text>
+                  <Text style={styles.itemCategory}>{t('Subtype')}: {selectedItem.itemType}</Text>
                   <Text style={styles.itemCategory}>{t('Rarity')}: {selectedItem.rarity}</Text>
                 </View>
                 <View style={styles.itemsDetails}>
-                  <Text style={styles.itemCategory}>{t('Price')}: {selectedItem.price} gp</Text>
+                  <Text style={styles.itemCategory}>{t('Price')}: {selectedItem.value} gp</Text>
                   <Text style={styles.itemCategory}>{t('Weight')}: {selectedItem.weight} lb</Text>
                 </View>
                 <Text style={styles.itemDescription}>{selectedItem.description}</Text>
@@ -213,7 +231,7 @@ const Items = ({ navigation }) => {
                     selectedValue={editedItem.type}
                     onValueChange={(value) => {
                       handleEditChange('type', value);
-                      handleEditChange('subtype', 'Subtype');
+                      handleEditChange('itemType', 'Subtype');
                     }}
                     style={styles.pickerItems}
                   >
@@ -225,12 +243,12 @@ const Items = ({ navigation }) => {
                   {editedItem.type !== 'Type' && (
                     <Picker
                       selectedValue={editedItem.subtype}
-                      onValueChange={(value) => handleEditChange('subtype', value)}
+                      onValueChange={(value) => handleEditChange('itemType', value)}
                       style={styles.pickerItems}
                     >
                       <Picker.Item label={t('Subtype')} value="Subtype" />
-                      {handleSubtypePicker(editedItem.type).map((subtype) => (
-                        <Picker.Item key={subtype} label={t(subtype)} value={subtype} />
+                      {handleSubtypePicker(editedItem.itemType).map((itemType) => (
+                        <Picker.Item key={itemType} label={t(subtype)} value={itemType} />
                       ))}
                     </Picker>
                   )}
@@ -250,8 +268,8 @@ const Items = ({ navigation }) => {
 
                   <TextInput
                     style={styles.itemCategory}
-                    value={String(editedItem.price)}
-                    onChangeText={(value) => handleEditChange('price', parseFloat(value) || 0)}
+                    value={String(editedItem.value)}
+                    onChangeText={(value) => handleEditChange('value', parseFloat(value) || 0)}
                     placeholder={t('Price')}
                     keyboardType="numeric"
                   />

@@ -4,8 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 
-const RulesGlossData = require('./assets/Library/RulesGloss.json');
-
 const RulesGloss = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
@@ -17,8 +15,26 @@ const RulesGloss = ({ navigation }) => {
   const [editedRule, setEditedRule] = useState(null);
 
   useEffect(() => {
-    setRulesGloss(RulesGlossData);
-  }, []);
+         fetchData();
+       }, []);
+
+   const fetchData = async () => {
+         try {
+             const [rulesResponse] = await Promise.all([
+               fetch(`http://${ipv4}:8000/rules/all`)
+             ]);
+
+             if (!rulesResponse.ok) {
+               throw new Error('Failed to fetch data');
+             }
+
+             const rules = await rulesResponse.json();
+             setRulesGloss(rules);
+
+           } catch (error) {
+             console.error('Error fetching data:', error);
+           }
+         };
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -86,7 +102,7 @@ const RulesGloss = ({ navigation }) => {
           filteredRules.map((rule, index) => (
             <View key={index} style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.nameColumn]}>{rule.name}</Text>
-              <Text style={[styles.tableCell]}>{rule.type || t('None')}</Text>
+              <Text style={[styles.tableCell]}>{rule.ruleType || t('None')}</Text>
               <Text style={[styles.tableCell]}>{rule.source}</Text>
               <TouchableOpacity
                 style={[styles.tableCell, styles.actionsColumn]}
@@ -106,7 +122,7 @@ const RulesGloss = ({ navigation }) => {
               <View style={styles.itemModal}>
                 <Text style={styles.itemTitle}>{selectedRule.name}</Text>
                 <Text style={styles.itemDescriptionAttune}>
-                  {t('Type')}: {selectedRule.type || t('None')}
+                  {t('Type')}: {selectedRule.ruleType || t('None')}
                 </Text>
                 <Text style={styles.itemDescription}>{selectedRule.description}</Text>
                 <View style={styles.modalButtons}>
@@ -128,7 +144,7 @@ const RulesGloss = ({ navigation }) => {
                 />
                 <TextInput
                   style={styles.itemDescriptionAttune}
-                  value={editedRule.type}
+                  value={editedRule.ruleType}
                   onChangeText={(value) => handleEditChange('type', value)}
                   placeholder={t('Type')}
                 />
