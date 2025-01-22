@@ -5,10 +5,12 @@ import * as ImagePicker from 'react-native-image-picker';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const YourBook = ({ navigation }) => {
+const YourBook: React.FC = ({ navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const [activeSection, setActiveSection] = useState(null);
@@ -64,10 +66,10 @@ const YourBook = ({ navigation }) => {
   const renderCharacters = () => (
     <View style={styles.characterRow}>
       {characters.map((character, index) => (
-        <ImageBackground key={index} source={character.image} style={styles.characterImage} />
+        <ImageBackground key={index} source={character.image} style={[styles.characterImage, { height: 100 * scaleFactor, width: 100 * scaleFactor }]} />
       ))}
       <TouchableOpacity onPress={handleAddCharacter}>
-        <ImageBackground source={require('./assets/icons/characters.png')} style={styles.characterImage} />
+        <ImageBackground source={require('./assets/icons/characters.png')} style={[styles.characterImage, { height: 100 * scaleFactor, width: 100 * scaleFactor }]} />
       </TouchableOpacity>
     </View>
   );
@@ -77,12 +79,12 @@ const YourBook = ({ navigation }) => {
       <FlatList
         data={notes}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <Text style={styles.itemText}>{item}</Text>}
+        renderItem={({ item }) => <Text style={[styles.itemText, { fontSize: fontSize, color: theme.fontColor }]}>{item}</Text>}
       />
       <TextInput
         placeholder={t('Add Note')}
         placeholderTextColor="#fff"
-        style={styles.inputNotes}
+        style={[styles.inputNotes, { fontSize: fontSize, height: 50 * scaleFactor, padding: 10 * scaleFactor }]}
         onSubmitEditing={(e) => {
           setNotes([...notes, e.nativeEvent.text]);
           e.target.clear();
@@ -96,45 +98,45 @@ const YourBook = ({ navigation }) => {
       <FlatList
         data={images}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => <Image source={{ uri: item }} style={styles.image} />}
+        renderItem={({ item }) => <Image source={{ uri: item }} style={[styles.image, { height: 200 * scaleFactor, width: 200 * scaleFactor }]} />}
       />
       <TouchableOpacity style={styles.addButtonImage} onPress={handleAddImage}>
-        <Text style={styles.addButtonText}>{t('Add Image')}</Text>
+        <Text style={[styles.addButtonText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Add Image')}</Text>
       </TouchableOpacity>
     </View>
   );
 
   return (
     <ImageBackground source={theme.background} style={styles.container}>
-      <Text style={[styles.appName, { color: theme.fontColor }]}>DUNGEON MASTER BOOK</Text>
+      <Text style={[styles.appName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>DUNGEON MASTER BOOK</Text>
 
       {activeSection === null && (
         <>
        <View style={[styles.buttonContainerUsu, {bottom: '50%' }]}>
-          <TouchableOpacity style={[styles.button]} onPress={() => setActiveSection('characters')}>
-            <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
-              <Image source={theme.icons.characters} style={styles.icons} />
-              <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
+          <TouchableOpacity style={[styles.button, { height: 50 * scaleFactor }]} onPress={() => setActiveSection('characters')}>
+            <ImageBackground source={theme.backgroundButton} style={[styles.buttonBackground, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}>
+              <Image source={theme.icons.characters} style={[styles.icons, { height: 40 * scaleFactor, width: 40 * scaleFactor }]} />
+              <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
               {t('Characters')}</Text>
             </ImageBackground>
           </TouchableOpacity>
        </View>
 
        <View style={[styles.buttonContainerUsu, { bottom: '40%' }]}>
-          <TouchableOpacity style={[styles.button]} onPress={() => setActiveSection('notes')}>
-            <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
-              <Image source={theme.icons.notes} style={styles.icons} />
-              <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
+          <TouchableOpacity style={[styles.button, { height: 50 * scaleFactor }]} onPress={() => setActiveSection('notes')}>
+            <ImageBackground source={theme.backgroundButton} style={[styles.buttonBackground, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}>
+              <Image source={theme.icons.notes} style={[styles.icons, { height: 40 * scaleFactor, width: 40 * scaleFactor }]} />
+              <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
               {t('Notes')}</Text>
             </ImageBackground>
           </TouchableOpacity>
        </View>
 
        <View style={[styles.buttonContainerUsu, {bottom: '30%' }]}>
-          <TouchableOpacity style={[styles.button]} onPress={() => setActiveSection('images')}>
-            <ImageBackground source={require('./assets/font/font1.png')} style={styles.buttonBackground}>
-              <Image source={theme.icons.images} style={styles.icons} />
-              <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: theme.fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
+          <TouchableOpacity style={[styles.button, { height: 50 * scaleFactor }]} onPress={() => setActiveSection('images')}>
+            <ImageBackground source={theme.backgroundButton} style={[styles.buttonBackground, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}>
+              <Image source={theme.icons.images} style={[styles.icons, { height: 40 * scaleFactor, width: 40 * scaleFactor }]} />
+              <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: fontSize, fontStyle: theme.fontStyle, textShadowColor: theme.textShadowColor, textShadowOffset: theme.textShadowOffset, textShadowRadius: theme.textShadowRadius, flex: theme.flex, textAlign: theme.textAlign}]}>
               {t('Images')}</Text>
             </ImageBackground>
           </TouchableOpacity>
@@ -146,15 +148,15 @@ const YourBook = ({ navigation }) => {
       {activeSection === 'notes' && renderNotes()}
       {activeSection === 'images' && renderImages()}
       {activeSection !== null && (
-        <TouchableOpacity style={styles.backButton} onPress={handleBackPress}>
-          <Text style={styles.backButtonText}>{t('Back')}</Text>
+        <TouchableOpacity style={[styles.backButton, { height: 50 * scaleFactor, width: 150 * scaleFactor }]} onPress={handleBackPress}>
+          <Text style={[styles.backButtonText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Back')}</Text>
         </TouchableOpacity>
       )}
 
-      <View style={styles.GoBack}>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>

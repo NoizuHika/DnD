@@ -5,10 +5,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const YourCampaigns = ({ navigation }) => {
+const YourCampaigns: React.FC = ({ navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
 
@@ -98,14 +100,14 @@ const YourCampaigns = ({ navigation }) => {
        >
        <ScrollView contentContainerStyle={styles.scrollContainerCamp}>
 
-      <Text style={[styles.headerTextCamp, { color: theme.fontColor }]}>{t('Dungeon Master Campaigns')}</Text>
+      <Text style={[styles.headerTextCamp, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>{t('Dungeon Master Campaigns')}</Text>
         {campaigns.map((campaign, index) => (
-          <View key={index} style={styles.buttonContainerCamp}>
+          <View key={index} style={[styles.buttonContainerCamp, { marginBottom: 20 * scaleFactor }]}>
             <TouchableOpacity style={styles.button} onPress={() => handleCampaignPress(campaign)}>
-              <Text style={styles.buttonTextCamp}>{campaign}</Text>
+              <Text style={[styles.buttonTextCamp, { fontSize: fontSize }]}>{campaign}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteCampaign(index)}>
-              <Text style={styles.deleteButtonText}>{t('Delete')}</Text>
+              <Text style={[styles.deleteButtonText, { fontSize: fontSize }]}>{t('Delete')}</Text>
             </TouchableOpacity>
           </View>
         ))}
@@ -114,29 +116,29 @@ const YourCampaigns = ({ navigation }) => {
           {showInput ? (
             <View style={styles.addCampaignContainer}>
               <TextInput
-                style={styles.inputCamp}
+                style={[styles.inputCamp, { height: 50 * scaleFactor, fontSize: fontSize }]}
                 value={newCampaign}
                 onChangeText={setNewCampaign}
                 placeholder={t('Enter campaign name')}
                 placeholderTextColor="#d6d6d6"
               />
-              <TouchableOpacity style={styles.addButtonCamp} onPress={handleAddCampaign}>
-                <Text style={styles.buttonTextCamp}>{t('Add')}</Text>
+              <TouchableOpacity style={[styles.addButtonCamp, { height: 50 * scaleFactor, width: 70 * scaleFactor }]} onPress={handleAddCampaign}>
+                <Text style={[styles.buttonTextCamp, { fontSize: fontSize }]}>{t('Add')}</Text>
               </TouchableOpacity>
             </View>
           ) : (
             <TouchableOpacity style={styles.button} onPress={() => setShowInput(true)}>
-              <Text style={styles.buttonTextPlus}>{t('Add new')}</Text>
+              <Text style={[styles.buttonTextPlus, { fontSize: fontSize }]}>{t('Add new')}</Text>
             </TouchableOpacity>
           )}
         </View>
 
       </ScrollView>
 
-      <View style={styles.GoBack}>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>

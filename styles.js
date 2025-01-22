@@ -157,8 +157,9 @@ const styles = StyleSheet.create({
   appName: {
     position: 'absolute',
     top: '16%',
-    left: '50%',
-    transform: [{ translateX: -50 }],
+    justifyContent: 'center',
+    textAlign: 'center',
+    alignItems: 'center',
     fontSize: 30,
     textShadowColor: 'rgba(0, 0, 0, 0.7)',
     textShadowOffset: { width: 2, height: 2 },
@@ -632,6 +633,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   inputMagicItemCreatorSmall: {
+    marginTop: 10,
     padding: 14,
     backgroundColor: '#fff',
     textAlign: 'center',
@@ -667,7 +669,6 @@ const styles = StyleSheet.create({
     width: "50%",
     alignSelf: 'flex-start',
     marginLeft: 10,
-    marginTop: 10,
   },
   pickerLeftContainerA: {
     width: "95%",
@@ -678,8 +679,6 @@ const styles = StyleSheet.create({
   pickerMagicItemCre: {
     color: 'black',
     backgroundColor: '#fff',
-    marginHorizontal: 5,
-    width: "70%",
   },
   addButtonMonCre: {
     backgroundColor: '#ffa500',
@@ -852,8 +851,7 @@ const styles = StyleSheet.create({
     borderColor: '#7F7F7F',
     borderWidth: 1.5,
     borderRadius: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
+    justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     alignItems: 'center',
   },
@@ -1317,7 +1315,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   centeredBlock: {
-    marginBottom: 20,
     alignItems: 'center',
     width: '100%',
   },
@@ -1917,7 +1914,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     backgroundColor: 'green',
-    marginTop: 20,
   },
   applyFilterText: {
     fontSize: 16,
@@ -1930,7 +1926,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     backgroundColor: 'red',
-    marginTop: 20,
   },
   resetFilterText: {
     fontSize: 16,
@@ -1962,6 +1957,9 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#d6d6d6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlignVertical: 'center',
   },
   monsterRow: {
     flexDirection: 'row',
@@ -2048,11 +2046,13 @@ const styles = StyleSheet.create({
   },
   endEncounterButton: {
     color: '#fff',
-    fontSize: 16,
     backgroundColor: '#f44336',
-    padding: 5,
     borderWidth: 1,
     borderColor: '#444',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    textAlignVertical: 'center',
   },
   endEncounterButtonText: {
     color: '#fff',
@@ -2064,6 +2064,10 @@ const styles = StyleSheet.create({
   },
   nextTurnTextEncounterRun: {
     color: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    textAlignVertical: 'center',
   },
   middleEncounterContRun: {
     flexDirection: 'row',
@@ -2071,9 +2075,8 @@ const styles = StyleSheet.create({
     marginTop: '25%',
   },
   autoRollEncounterButton: {
-    width: '40%',
     backgroundColor: '#222',
-    padding: 10,
+    justifyContent: 'center',
     borderRadius: 5,
     alignItems: 'center',
     textAlign: 'center',
@@ -2093,7 +2096,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   cellAvatarEncounterRun: {
-    flex: 0.5,
+    flex: 0.6,
     textAlign: 'center',
   },
   cellNameEncounterRun: {
@@ -2109,9 +2112,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   startEncounterButton: {
-    width: '40%',
     backgroundColor: '#5a5',
-    padding: 10,
+    justifyContent: 'center',
     borderRadius: 5,
     alignItems: 'center',
     textAlign: 'center',
@@ -2122,7 +2124,7 @@ const styles = StyleSheet.create({
   },
   acEncounterText: {
     color: '#fff',
-    fontSize: 14,
+    padding: 4,
     flex: 1,
     textAlign: 'center',
     marginLeft: 30,
@@ -2131,10 +2133,10 @@ const styles = StyleSheet.create({
   },
   crEncounterText: {
     color: '#fff',
-    fontSize: 14,
+    padding: 4,
     flex: 1,
     textAlign: 'center',
-    marginRight: 30,
+    marginRight: 20,
     borderColor: '#fff',
     borderWidth: 1,
   },
@@ -2188,7 +2190,7 @@ const styles = StyleSheet.create({
   modalTitleEncounter: {
     fontSize: 22,
     color: '#d6d6d6',
-    marginBottom: 40,
+    marginBottom: 10,
   },
   modalDetailsFeats: {
     fontSize: 16,
@@ -2361,9 +2363,8 @@ const styles = StyleSheet.create({
   runButton: {
     backgroundColor: 'green',
     borderRadius: 4,
-    padding: 10,
-    marginVertical: 10,
-    paddingHorizontal: 30,
+    justifyContent: 'center',
+    marginVertical: 5,
     flex: 1,
     alignItems: 'center',
   },
@@ -3240,7 +3241,6 @@ const styles = StyleSheet.create({
   buttonContainerCamp: {
     flex: 1,
     width: '80%',
-    marginBottom: 30,
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderColor: '#7F7F7F',
@@ -3275,6 +3275,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1.5,
     backgroundColor: 'rgba(255, 0, 0, 0.8)',
+  },
+  deleteButtonText: {
+    color: '#d6d6d6',
+  },
+  deleteButtonNewColor: {
+    padding: 7,
+    marginLeft: 10,
+    justifyContent: 'space-between',
+    borderColor: '#7F7F7F',
+    alignItems: 'center',
+    borderRadius: 10,
+    borderWidth: 1.5,
+    backgroundColor: 'rgba(255, 0, 0, 0.8)',
+    color: '#fff',
   },
   deleteButtonText: {
     color: '#d6d6d6',

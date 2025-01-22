@@ -4,8 +4,10 @@ import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { SettingsContext } from './SettingsContext';
 
-const BackLibCreator = ({ navigation }) => {
+const BackLibCreator: React.FC = ({ navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const [backLib, setBackLib] = useState({
     name: '',
     skillProficiency1: '',
@@ -33,18 +35,19 @@ const BackLibCreator = ({ navigation }) => {
   return (
     <ImageBackground source={theme.background} style={styles.containerCreator}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <View style={styles.GoBack}>
-          <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-            <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-              <Text style={styles.GoBackText}>{t('Go_back')}</Text>
-            </ImageBackground>
-          </TouchableOpacity>
-        </View>
 
-        <View style={styles.centeredBlock}>
-          <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Name')}</Text>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
+        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
+          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
+          </ImageBackground>
+        </TouchableOpacity>
+      </View>
+
+        <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
+          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
           <TextInput
-            style={styles.inputItemCreator}
+            style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
             placeholder={t('Enter name')}
             value={backLib.name}
             onChangeText={(text) => handleInputChange('name', text)}
@@ -54,10 +57,10 @@ const BackLibCreator = ({ navigation }) => {
       <View style={styles.rowCreateItemContainer}>
        <View style={styles.column}>
         <View style={styles.centeredBlock}>
-          <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Skill Proficiency 1')}</Text>
+          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Skill Proficiency 1')}</Text>
           <Picker
             selectedValue={backLib.skillProficiency1}
-            style={styles.pickerMagicItemCre}
+            style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
             onValueChange={(value) => handleInputChange('skillProficiency1', value)}
           >
             <Picker.Item label={t('Acrobatics')} value="Acrobatics" />
@@ -69,10 +72,10 @@ const BackLibCreator = ({ navigation }) => {
 
        <View style={styles.column}>
         <View style={styles.centeredBlock}>
-          <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Skill Proficiency 2')}</Text>
+          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Skill Proficiency 2')}</Text>
           <Picker
             selectedValue={backLib.skillProficiency2}
-            style={styles.pickerMagicItemCre}
+            style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
             onValueChange={(value) => handleInputChange('skillProficiency2', value)}
           >
             <Picker.Item label={t('Acrobatics')} value="Acrobatics" />
@@ -84,11 +87,11 @@ const BackLibCreator = ({ navigation }) => {
       </View>
 
 
-        <View style={styles.centeredBlock}>
-          <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Additional Proficiency')}</Text>
+        <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
+          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Additional Proficiency')}</Text>
           <Picker
             selectedValue={backLib.additionalProficiency}
-            style={styles.pickerMagicItemCre}
+            style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
             onValueChange={(value) => handleInputChange('additionalProficiency', value)}
           >
             <Picker.Item label={t('2 Languages')} value="2 Languages" />
@@ -97,20 +100,20 @@ const BackLibCreator = ({ navigation }) => {
           </Picker>
         </View>
 
-        <View style={styles.centeredBlock}>
-          <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Feature Name')}</Text>
+        <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
+          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Feature Name')}</Text>
           <TextInput
-            style={styles.inputItemCreator}
+            style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
             placeholder={t('Enter feature name')}
             value={backLib.featureName}
             onChangeText={(text) => handleInputChange('featureName', text)}
           />
         </View>
 
-        <View style={styles.centeredBlock}>
-          <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Feature Description')}</Text>
+        <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
+          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Feature Description')}</Text>
           <TextInput
-            style={[styles.inputItemCreator, { height: 100 }]}
+            style={[styles.inputItemCreator, { height: 100 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
             multiline
             placeholder={t('Enter feature description')}
             value={backLib.featureDescription}
@@ -119,10 +122,10 @@ const BackLibCreator = ({ navigation }) => {
         </View>
       </ScrollView>
 
-      <View style={styles.saveButton}>
-        <TouchableOpacity style={styles.buttonMonstrum} onPress={saveBackLib}>
-          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Save BackLib')}</Text>
+      <View style={[styles.saveButton, { marginBottom: 10 * scaleFactor }]}>
+        <TouchableOpacity style={[styles.buttonMonstrum, { height: 50 * scaleFactor, width: 200 * scaleFactor }]} onPress={saveBackLib}>
+          <ImageBackground source={theme.backgroundButton} style={[styles.buttonBackground, { height: 50 * scaleFactor, width: 200 * scaleFactor }]}>
+            <Text style={[styles.GoBackText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Save BackLib')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>

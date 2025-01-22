@@ -4,8 +4,10 @@ import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { SettingsContext } from './SettingsContext';
 
-const ItemCreator = ({ navigation }) => {
+const ItemCreator: React.FC = ({ navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const [item, setItem] = useState({
     name: '',
     gold: '',
@@ -22,7 +24,7 @@ const ItemCreator = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
 
-  const categories = ['Type', 'Weapon', 'Armor', 'Tools', 'Potions', 'Scrolls', 'Adventuring Gear', 'Other'];
+  const categories = ['Type', 'Weapon', 'Armor', 'Adventuring Gear', 'Consumable', 'Magic', 'Other'];
   const rarities = ['Rarity', 'Common', 'Uncommon', 'Rare', 'Very Rare', 'Legendary'];
 
   const handleSubtypePicker = (type) => {
@@ -63,31 +65,32 @@ const ItemCreator = ({ navigation }) => {
   return (
     <ImageBackground source={theme.background} style={styles.containerCreator}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <View style={styles.GoBack}>
-          <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-            <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-              <Text style={styles.GoBackText}>{t('Go_back')}</Text>
-            </ImageBackground>
-          </TouchableOpacity>
-        </View>
 
-          <View style={styles.centeredBlock}>
-            <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Name')}</Text>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
+        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
+          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
+          </ImageBackground>
+        </TouchableOpacity>
+      </View>
+
+          <View style={[styles.centeredBlock, { marginTop: 40 * scaleFactor }]}>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
             <TextInput
-              style={styles.inputItemCreator}
+              style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               placeholder={t('Enter item name')}
               value={item.name}
               onChangeText={(text) => handleInputChange('name', text)}
             />
           </View>
 
-          <View style={styles.centeredBlock}>
-            <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Cost')}</Text>
+          <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Cost')}</Text>
             <View style={styles.rowCreateItemContainer}>
               <View style={styles.column}>
-                <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Gold')}</Text>
+                <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Gold')}</Text>
                 <TextInput
-                  style={styles.inputItemCreatorSmall}
+                  style={[styles.inputItemCreatorSmall, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
                   placeholder={t('Enter gold')}
                   value={item.gold}
                   onChangeText={(text) => handleInputChange('gold', text)}
@@ -96,9 +99,9 @@ const ItemCreator = ({ navigation }) => {
               </View>
 
               <View style={styles.column}>
-                <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Silver')}</Text>
+                <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Silver')}</Text>
                 <TextInput
-                  style={styles.inputItemCreatorSmall}
+                  style={[styles.inputItemCreatorSmall, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
                   placeholder={t('Enter silver')}
                   value={item.silver}
                   onChangeText={(text) => handleInputChange('silver', text)}
@@ -107,9 +110,9 @@ const ItemCreator = ({ navigation }) => {
               </View>
 
               <View style={styles.column}>
-                <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Copper')}</Text>
+                <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Copper')}</Text>
                 <TextInput
-                  style={styles.inputItemCreatorSmall}
+                  style={[styles.inputItemCreatorSmall, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
                   placeholder={t('Enter copper')}
                   value={item.copper}
                   onChangeText={(text) => handleInputChange('copper', text)}
@@ -119,10 +122,10 @@ const ItemCreator = ({ navigation }) => {
             </View>
           </View>
 
-          <View style={styles.centeredBlock}>
-            <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Weight')}</Text>
+          <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Weight')}</Text>
             <TextInput
-              style={styles.inputItemCreatorSmall}
+              style={[styles.inputItemCreatorSmall, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               placeholder={t('Enter item weight')}
               value={item.weight}
               onChangeText={(text) => handleInputChange('weight', text)}
@@ -132,11 +135,11 @@ const ItemCreator = ({ navigation }) => {
 
         <View style={styles.rowCreateItemContainer}>
          <View style={styles.column}>
-         <View style={styles.centeredBlock}>
-           <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Type')}</Text>
+          <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
+           <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Type')}</Text>
            <Picker
              selectedValue={selectedType}
-             style={styles.pickerMagicItemCre}
+            style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
              onValueChange={(value) => {
                setSelectedType(value);
                setSelectedSubtype('Subtype');
@@ -151,11 +154,11 @@ const ItemCreator = ({ navigation }) => {
 
          <View style={styles.column}>
          {selectedType !== 'Type' && (
-           <View style={styles.centeredBlock}>
-             <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Subtype')}</Text>
+          <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
+             <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Subtype')}</Text>
              <Picker
                selectedValue={selectedSubtype}
-               style={styles.pickerMagicItemCre}
+               style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
                onValueChange={(value) => setSelectedSubtype(value)}
              >
                <Picker.Item label={t('Subtype')} value="Subtype" />
@@ -168,11 +171,11 @@ const ItemCreator = ({ navigation }) => {
          </View>
          </View>
 
-         <View style={styles.centeredBlock}>
-           <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Rarity')}</Text>
+          <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
+           <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Rarity')}</Text>
            <Picker
              selectedValue={selectedRarity}
-             style={styles.pickerMagicItemCre}
+             style={[styles.pickerMagicItemCre, { width: 300 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
              onValueChange={(value) => setSelectedRarity(value)}
            >
              {rarities.map((rarity) => (
@@ -181,10 +184,10 @@ const ItemCreator = ({ navigation }) => {
            </Picker>
          </View>
 
-          <View style={styles.centeredBlock}>
-            <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Description')}</Text>
+          <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Description')}</Text>
             <TextInput
-              style={[styles.inputItemCreator, { height: 100 }]}
+              style={[styles.inputItemCreator, { height: 100 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               multiline
               placeholder={t('Enter item description')}
               value={item.description}
@@ -194,10 +197,10 @@ const ItemCreator = ({ navigation }) => {
 
         </ScrollView>
 
-        <View style={styles.saveButton}>
-          <TouchableOpacity style={styles.buttonMonstrum} onPress={saveItem}>
-            <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-              <Text style={styles.GoBackText}>{t('Save Item')}</Text>
+        <View style={[styles.saveButton, { marginBottom: 10 * scaleFactor }]}>
+          <TouchableOpacity style={[styles.buttonMonstrum, { height: 50 * scaleFactor, width: 200 * scaleFactor }]} onPress={saveItem}>
+            <ImageBackground source={theme.backgroundButton} style={[styles.buttonBackground, { height: 50 * scaleFactor, width: 200 * scaleFactor }]}>
+              <Text style={[styles.GoBackText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Save Item')}</Text>
             </ImageBackground>
           </TouchableOpacity>
         </View>

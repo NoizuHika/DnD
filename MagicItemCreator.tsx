@@ -5,8 +5,13 @@ import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
-const MagicItemCreator = ({ navigation }) => {
+Appearance.setColorScheme('light');
+
+const MagicItemCreator: React.FC = ({ navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const [itemType, setItemType] = useState('item');
   const [rarity, setRarity] = useState('');
   const [isDamageDiceOverride, setIsDamageDiceOverride] = useState(false);
@@ -40,30 +45,30 @@ const MagicItemCreator = ({ navigation }) => {
     <ImageBackground source={theme.background} style={styles.containerCreator}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
 
-        <View style={styles.GoBack}>
-          <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-            <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-              <Text style={styles.GoBackText}>{t('Go_back')}</Text>
-            </ImageBackground>
-          </TouchableOpacity>
-        </View>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
+        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
+          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
+          </ImageBackground>
+        </TouchableOpacity>
+      </View>
 
-          <View style={styles.centeredBlock}>
-            <Text style={[styles.labelItemCre, { color: theme.textColor }]}>{t('Name')}</Text>
+          <View style={[styles.centeredBlock, { marginTop: 60 * scaleFactor }]}>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
             <TextInput
-              style={styles.inputItemCreator}
+              style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               placeholder={t('Enter item name')}
               value={MagicItem.name}
               onChangeText={(text) => handleInputChange('name', text)}
             />
           </View>
 
-        <View style={styles.rowCreateItemContainer}>
+        <View style={[styles.rowCreateItemContainer, { marginTop: 10 * scaleFactor }]}>
           <View style={styles.column}>
-            <Text style={styles.label}>{t('Item Type')}</Text>
+            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Item Type')}</Text>
             <Picker
               selectedValue={itemType}
-              style={styles.pickerMagicItemCre}
+              style={[styles.pickerMonCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
               onValueChange={(value) => setItemType(value)}
             >
               <Picker.Item label={t('Item')} value="item" />
@@ -73,10 +78,10 @@ const MagicItemCreator = ({ navigation }) => {
           </View>
 
           <View style={styles.column}>
-            <Text style={styles.label}>{t('Rarity')}</Text>
+            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Rarity')}</Text>
             <Picker
               selectedValue={rarity}
-              style={styles.pickerMagicItemCre}
+              style={[styles.pickerMonCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
               onValueChange={(value) => setRarity(value)}
             >
               <Picker.Item label={t('Common')} value="common" />
@@ -91,10 +96,10 @@ const MagicItemCreator = ({ navigation }) => {
 
         {itemType === 'item' && (
           <View style={styles.pickerLeftContainer}>
-            <Text style={styles.label}>{t('Item Type')}</Text>
+            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Item Type')}</Text>
             <Picker
               selectedValue={armorType}
-              style={styles.pickerMonCre}
+              style={[styles.pickerMonCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
               onValueChange={(value) => setArmorType(value)}
             >
               <Picker.Item label={t('Wondrous Item')} value="Wondrous_Item" />
@@ -112,10 +117,10 @@ const MagicItemCreator = ({ navigation }) => {
         {itemType === 'weapon' && (
           <View style={styles.pickerLeftContainerA}>
           <View style={styles.column}>
-            <Text style={styles.label}>{t('Base Weapon')}</Text>
+            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Base Weapon')}</Text>
             <Picker
               selectedValue={armorType}
-              style={styles.pickerMonCre}
+              style={[styles.pickerMonCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
               onValueChange={(value) => setArmorType(value)}
             >
               <Picker.Item label={t('Longbow')} value="longbow" />
@@ -126,10 +131,10 @@ const MagicItemCreator = ({ navigation }) => {
             {isDamageDiceOverride && (
               <View style={styles.twoColumnContainer}>
               <View style={styles.column}>
-                <Text style={styles.label}>{t('Dice Type')}</Text>
+                <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Dice Type')}</Text>
                 <Picker
                   selectedValue={diceType}
-                  style={styles.pickerMonCre}
+                  style={[styles.pickerMonCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
                   onValueChange={(value) => setDiceType(value)}
                 >
                   <Picker.Item label="D4" value="d4" />
@@ -143,9 +148,9 @@ const MagicItemCreator = ({ navigation }) => {
               </View>
               <View style={styles.column}>
 
-                <Text style={styles.label}>{t('Dice Count')}</Text>
+                <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Dice Count')}</Text>
                 <TextInput
-                  style={styles.inputMagicItemCreatorSmall}
+                  style={[styles.inputMagicItemCreatorSmall, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
                   placeholder={t('Enter dice count')}
                   value={diceCount}
                   onChangeText={setDiceCount}
@@ -162,7 +167,7 @@ const MagicItemCreator = ({ navigation }) => {
                 onValueChange={(value) => setIsDamageDiceOverride(value)}
                 tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
               />
-              <Text style={styles.label}>{t('Damage Dice Override')}</Text>
+              <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Damage Dice Override')}</Text>
             </View>
 
             <View style={styles.checkboxContainer}>
@@ -171,7 +176,7 @@ const MagicItemCreator = ({ navigation }) => {
                 onValueChange={(value) => setIsFinesse(value)}
                 tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
               />
-              <Text style={styles.label}>{t('Is Finesse')}</Text>
+              <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Is Finesse')}</Text>
             </View>
           </View>
         </View>
@@ -182,10 +187,10 @@ const MagicItemCreator = ({ navigation }) => {
           <View style={styles.pickerLeftContainerA}>
           <View style={styles.twoColumnContainer}>
             <View style={styles.column}>
-            <Text style={styles.label}>{t('Base Armor')}</Text>
+            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Base Armor')}</Text>
             <Picker
               selectedValue={armorType}
-              style={styles.pickerMonCre}
+              style={[styles.pickerMonCre, { width: 150 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
               onValueChange={(value) => setArmorType(value)}
             >
               <Picker.Item label={t('Light Armor')} value="light" />
@@ -196,10 +201,10 @@ const MagicItemCreator = ({ navigation }) => {
             </View>
             <View style={styles.column}>
 
-            <Text style={styles.label}>{t('Max Dex Bonus')}</Text>
+            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Max Dex Bonus')}</Text>
             <Picker
               selectedValue={dexBonus}
-              style={styles.pickerMonCre}
+              style={[styles.pickerMonCre, { width: 150 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
               onValueChange={(value) => setDexBonus(value)}
             >
               <Picker.Item label={t('None')} value="None" />
@@ -210,9 +215,9 @@ const MagicItemCreator = ({ navigation }) => {
             </View>
             <View style={styles.column}>
 
-            <Text style={styles.label}>{t('Str Requirement')}</Text>
+            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Str Requirement')}</Text>
             <TextInput
-              style={styles.inputMagicItemCreatorSmall}
+              style={[styles.inputMagicItemCreatorSmall, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               placeholder={t('Enter Str Requirement')}
               value={strengthRequirement}
               onChangeText={setStrengthRequirement}
@@ -228,7 +233,7 @@ const MagicItemCreator = ({ navigation }) => {
                 onValueChange={(value) => setRequiresStealth(value)}
                 tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
               />
-              <Text style={styles.label}>{t('Requires Stealth')}</Text>
+              <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Requires Stealth')}</Text>
             </View>
           </View>
           </View>
@@ -236,9 +241,9 @@ const MagicItemCreator = ({ navigation }) => {
 
         <View style={styles.centeredBlockDescription}>
           <View style={styles.centeredBlockMagicItemCont}>
-            <Text style={[styles.labelMagicItemCre, { color: theme.textColor }]}>{t('Magic item description')}</Text>
+            <Text style={[styles.labelMagicItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Magic item description')}</Text>
             <TextInput
-              style={[styles.inputItemCreator, { height: 100, width: 300, }]}
+              style={[styles.inputItemCreator, { height: 100 * scaleFactor, width: 300 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               multiline
               placeholder={t('Enter magic item description')}
               value={MagicItem.magicDescription}
@@ -252,13 +257,13 @@ const MagicItemCreator = ({ navigation }) => {
                 onValueChange={(value) => setRequiresAttunement(value)}
                 tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
               />
-              <Text style={styles.label}>{t('Requires Attunement')}</Text>
+              <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Requires Attunement')}</Text>
             </View>
 
           <View style={styles.centeredBlockA}>
-            <Text style={[styles.labelMagicItemCre, { color: theme.textColor }]}>{t('Attunement description')}</Text>
+            <Text style={[styles.labelMagicItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Attunement description')}</Text>
             <TextInput
-              style={[styles.inputItemCreator, { width: 300, }]}
+              style={[styles.inputItemCreator, { width: 300 * scaleFactor, height: 100 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               multiline
               placeholder={t('Enter attunement description')}
               value={MagicItem.attunementDescription}
@@ -268,10 +273,10 @@ const MagicItemCreator = ({ navigation }) => {
         </View>
       </ScrollView>
 
-        <View style={styles.saveButton}>
-          <TouchableOpacity style={styles.buttonMonstrum} onPress={saveMagicItem}>
-            <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-              <Text style={styles.GoBackText}>{t('Save Magic Item')}</Text>
+        <View style={[styles.saveButton, { marginBottom: 10 * scaleFactor }]}>
+          <TouchableOpacity style={[styles.buttonMonstrum, { height: 50 * scaleFactor, width: 200 * scaleFactor }]} onPress={saveMagicItem}>
+            <ImageBackground source={theme.backgroundButton} style={[styles.buttonBackground, { height: 50 * scaleFactor, width: 200 * scaleFactor }]}>
+              <Text style={[styles.GoBackText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Save Magic Item')}</Text>
             </ImageBackground>
           </TouchableOpacity>
         </View>

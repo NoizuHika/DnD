@@ -5,10 +5,12 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const MonsterCreationDescription = ({ navigation }) => {
+const MonsterCreationDescription: React.FC = ({ navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
 
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
@@ -49,29 +51,29 @@ const MonsterCreationDescription = ({ navigation }) => {
     <ImageBackground source={theme.background} style={styles.containerMonCre}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
        <View style={styles.columnDescr}>
-        <Text style={styles.labelMonCre}>{t('Monster Description')}</Text>
+        <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Monster Description')}</Text>
         <TouchableOpacity style={styles.inputMonCre} onPress={() => openDescriptionModal('monsterDescription')}>
-          <Text style={styles.TextMonCre}> {monsterDescriptions.monsterDescription || t('Enter monster description')}</Text>
+          <Text style={[styles.TextMonCre, { fontSize: fontSize }]}> {monsterDescriptions.monsterDescription || t('Enter monster description')}</Text>
         </TouchableOpacity>
 
-        <Text style={styles.labelMonCre}>{t('Actions Description')}</Text>
+        <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Actions Description')}</Text>
         <TouchableOpacity style={styles.inputMonCre} onPress={() => openDescriptionModal('actionsDescription')}>
-          <Text style={styles.TextMonCre}> {monsterDescriptions.actionsDescription || t('Enter actions description')}</Text>
+          <Text style={[styles.TextMonCre, { fontSize: fontSize }]}> {monsterDescriptions.actionsDescription || t('Enter actions description')}</Text>
         </TouchableOpacity>
 
-        <Text style={styles.labelMonCre}>{t('Bonus Action Description')}</Text>
+        <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Bonus Action Description')}</Text>
         <TouchableOpacity style={styles.inputMonCre} onPress={() => openDescriptionModal('bonusActionsDescription')}>
-          <Text style={styles.TextMonCre}> {monsterDescriptions.bonusActionsDescription || t('Enter bonus action description')}</Text>
+          <Text style={[styles.TextMonCre, { fontSize: fontSize }]}> {monsterDescriptions.bonusActionsDescription || t('Enter bonus action description')}</Text>
         </TouchableOpacity>
 
-        <Text style={styles.labelMonCre}>{t('Reactions Description')}</Text>
+        <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Reactions Description')}</Text>
         <TouchableOpacity style={styles.inputMonCre} onPress={() => openDescriptionModal('reactionsDescription')}>
-          <Text style={styles.TextMonCre}> {monsterDescriptions.reactionsDescription || t('Enter reactions description')}</Text>
+          <Text style={[styles.TextMonCre, { fontSize: fontSize }]}> {monsterDescriptions.reactionsDescription || t('Enter reactions description')}</Text>
         </TouchableOpacity>
 
-        <Text style={styles.labelMonCre}>{t('Special Traits Description')}</Text>
+        <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Special Traits Description')}</Text>
         <TouchableOpacity style={styles.inputMonCre} onPress={() => openDescriptionModal('specialTraitsDescription')}>
-          <Text style={styles.TextMonCre}> {monsterDescriptions.specialTraitsDescription || t('Enter special traits description')}</Text>
+          <Text style={[styles.TextMonCre, { fontSize: fontSize }]}> {monsterDescriptions.specialTraitsDescription || t('Enter special traits description')}</Text>
         </TouchableOpacity>
 
         <View style={styles.section}>
@@ -84,18 +86,18 @@ const MonsterCreationDescription = ({ navigation }) => {
               }}
               tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
             />
-            <Text style={styles.label}>{t('Legendary?')}</Text>
+            <Text style={[styles.label, { fontSize: fontSize * 1.2 }]}>{t('Legendary?')}</Text>
           </View>
         </View>
 
         {isLegendary && (
           <View>
-            <Text style={styles.labelMonCre}>{t('Legendary Action Description')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Legendary Action Description')}</Text>
             <TouchableOpacity
               style={styles.inputMonCre}
               onPress={() => openDescriptionModal('legendaryActionsDescription')}
             >
-              <Text style={styles.TextMonCre}>
+              <Text style={[styles.TextMonCre, { fontSize: fontSize }]}>
                 {monsterDescriptions.legendaryActionsDescription || t('Enter legendary action description')}
               </Text>
             </TouchableOpacity>
@@ -107,7 +109,7 @@ const MonsterCreationDescription = ({ navigation }) => {
         <Modal visible={descriptionModalVisible} transparent={true} animationType="slide">
           <View style={styles.modalContainerMonCre}>
             <View style={styles.modalContentMonCre}>
-              <Text style={styles.modalTitleMonCre}>
+              <Text style={[styles.modalTitleMonCre, { fontSize: fontSize * 1.2 }]}>
                 {t(
                   (descriptionType || '')
                     .replace(/([A-Z])/g, ' $1')
@@ -115,7 +117,7 @@ const MonsterCreationDescription = ({ navigation }) => {
                 )}
               </Text>
               <TextInput
-                style={styles.modalInputMonCre}
+                style={[styles.modalInputMonCre, { height: 100 * scaleFactor, fontSize: fontSize }]}
                 multiline
                 placeholder={t(`Enter ${descriptionType.replace(/([A-Z])/g, ' $1').toLowerCase()}`)}
                 value={descriptionText}
@@ -128,10 +130,10 @@ const MonsterCreationDescription = ({ navigation }) => {
         </Modal>
       </ScrollView>
 
-      <View style={styles.GoBack}>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>

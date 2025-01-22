@@ -5,10 +5,12 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import bestiary from './assets/Library/bestiary.json';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const EncounterEdit = ({ route, navigation }) => {
+const EncounterEdit: React.FC = ({ route, navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const { encounter } = route.params;
@@ -101,36 +103,36 @@ const EncounterEdit = ({ route, navigation }) => {
   return (
     <ImageBackground source={theme.background} style={styles.containerEncounter}>
 
-      <View style={styles.GoBack}>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>
 
      <View style={styles.encounterNameB}>
-      <Text style={[styles.encounterName, { color: theme.fontColor, textAlign: 'center' }]}>{encounter.name}</Text>
-      <Text style={[styles.encounterNameA, { color: theme.fontColor, textAlign: 'center' }]}>{t('Recommended level')}: {encounter.level}</Text>
+      <Text style={[styles.encounterName, { color: theme.fontColor, textAlign: 'center', fontSize: fontSize * 1.5 }]}>{encounter.name}</Text>
+      <Text style={[styles.encounterNameA, { color: theme.fontColor, textAlign: 'center', fontSize: fontSize }]}>{t('Recommended level')}: {encounter.level}</Text>
      </View>
 
-      <View style={[styles.monstersList, { marginTop: 50 }]}>
-        <Text style={styles.sectionTitleEncounter}>{t('Current Monsters')}:</Text>
+      <View style={[styles.monstersList, { marginTop: 50 * scaleFactor }]}>
+        <Text style={[styles.sectionTitleEncounter, { fontSize: fontSize * 1.2 }]}>{t('Current Monsters')}:</Text>
         <FlatList
           data={monsters}
           keyExtractor={(item, index) => `${item.name}-${index}`}
           renderItem={({ item }) => (
             <View style={styles.monsterRow}>
-              <Text style={styles.monsterText}>{item.name}</Text>
+              <Text style={[styles.monsterText, { fontSize: fontSize }]}>{item.name}</Text>
               <TouchableOpacity onPress={() => updateMonsterCount(item.name, -1)}>
-                <Text style={styles.controlButton}>-</Text>
+                <Text style={[styles.controlButton, { fontSize: fontSize }]}>-</Text>
               </TouchableOpacity>
-              <Text style={styles.monsterCount}>x{item.count}</Text>
+              <Text style={[styles.monsterCount, { fontSize: fontSize }]}>x{item.count}</Text>
               <TouchableOpacity onPress={() => updateMonsterCount(item.name, 1)}>
-                <Text style={styles.controlButton}>+</Text>
+                <Text style={[styles.controlButton, { fontSize: fontSize }]}>+</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => deleteMonster(item.name)}>
-                <Text style={styles.deleteButton}>{t('Delete')}</Text>
+                <Text style={[styles.deleteButtonNewColor, { fontSize: fontSize }]}>{t('Delete')}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -144,11 +146,11 @@ const EncounterEdit = ({ route, navigation }) => {
         style={styles.filterEncounter}
         onPress={() => setFilterModalVisible(!filterModalVisible)}
       >
-        <Text style={styles.filterEncounterText}>{t('Filter')}</Text>
+        <Text style={[styles.filterEncounterText, { fontSize: fontSize }]}>{t('Filter')}</Text>
       </TouchableOpacity>
 
       <TextInput
-        style={styles.searchInputEncounters}
+        style={[styles.searchInputEncounters, { height: 50 * scaleFactor, fontSize: fontSize }]}
         placeholder="Search monsters..."
         placeholderTextColor="#fff"
         value={searchText}
@@ -164,9 +166,9 @@ const EncounterEdit = ({ route, navigation }) => {
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
           <View style={styles.monsterRow}>
-            <Text style={styles.monsterText}>{item.name}</Text>
+            <Text style={[styles.monsterText, { fontSize: fontSize }]}>{item.name}</Text>
             <TouchableOpacity onPress={() => addMonster(item)}>
-              <Text style={styles.controlButton}>{t('Add')}</Text>
+              <Text style={[styles.controlButton, { fontSize: fontSize }]}>{t('Add')}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -181,24 +183,24 @@ const EncounterEdit = ({ route, navigation }) => {
           navigation.navigate('Encounters', { updatedEncounter });
         }}
       >
-        <Text style={styles.saveButtonTextEncounters}>{t('Save')}</Text>
+        <Text style={[styles.saveButtonTextEncounters, { fontSize: fontSize }]}>{t('Save')}</Text>
       </TouchableOpacity>
 
       {filterModalVisible && (
         <View style={styles.modalContainer}>
-          <Text style={styles.modalTitleEncounter}>{t('Filter Options')}</Text>
+          <Text style={[styles.modalTitleEncounter, { fontSize: fontSize * 1.5 }]}>{t('Filter Options')}</Text>
 
         <View style={styles.twoColumnContainer}>
          <View style={styles.column}>
           <TextInput
-            style={styles.filterInput}
+            style={[styles.filterInput, { height: 40 * scaleFactor, fontSize: fontSize }]}
             placeholder="Min CR (e.g., 1/4)"
             value={minCr}
             placeholderTextColor="#808080"
             onChangeText={setMinCr}
           />
           <TextInput
-            style={styles.filterInput}
+            style={[styles.filterInput, { height: 40 * scaleFactor, fontSize: fontSize }]}
             placeholder="Max CR (e.g., 2)"
             value={maxCr}
             placeholderTextColor="#808080"
@@ -207,14 +209,14 @@ const EncounterEdit = ({ route, navigation }) => {
          </View>
          <View style={styles.column}>
           <TextInput
-            style={styles.filterInput}
+            style={[styles.filterInput, { height: 40 * scaleFactor, fontSize: fontSize }]}
             placeholder="Type (e.g., Beast)"
             value={typeFilter}
             placeholderTextColor="#808080"
             onChangeText={setTypeFilter}
           />
           <TextInput
-            style={styles.filterInput}
+            style={[styles.filterInput, { height: 40 * scaleFactor, fontSize: fontSize }]}
             placeholder="Environment (e.g., Forest)"
             value={environmentFilter}
             placeholderTextColor="#808080"
@@ -225,11 +227,11 @@ const EncounterEdit = ({ route, navigation }) => {
 
           <View style={styles.rowContainer}>
           <TouchableOpacity style={styles.applyFilterButton} onPress={applyFilters}>
-            <Text style={styles.applyFilterText}>{t('Apply Filters')}</Text>
+            <Text style={[styles.applyFilterText, { fontSize: fontSize }]}>{t('Apply Filters')}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.resetFilterButton} onPress={resetFilters}>
-            <Text style={styles.resetFilterText}>{t('Reset Filters')}</Text>
+            <Text style={[styles.resetFilterText, { fontSize: fontSize }]}>{t('Reset Filters')}</Text>
           </TouchableOpacity>
         </View>
         </View>

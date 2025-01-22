@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const Encounters = ({ navigation, route }) => {
+const Encounters: React.FC = ({ navigation, route }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
 
@@ -23,6 +25,19 @@ const Encounters = ({ navigation, route }) => {
     campaign: '',
     level: '',
   });
+
+  const updateEncounters = (updatedEncounters) => {
+    setEncounters(updatedEncounters);
+  };
+
+  useEffect(() => {
+    if (route.params?.updatedEncounter) {
+      const updatedList = encounters.map((e) =>
+        e.id === route.params.updatedEncounter.id ? route.params.updatedEncounter : e
+      );
+      updateEncounters(updatedList);
+    }
+  }, [route.params?.updatedEncounter]);
 
   const handleAddEncounter = () => {
     if (!newEncounter.name || !newEncounter.campaign || !newEncounter.level) {
@@ -69,44 +84,47 @@ const Encounters = ({ navigation, route }) => {
 
   return (
     <ImageBackground source={theme.background} style={styles.containerCreator}>
-      <View style={styles.GoBack}>
+
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>
+
+
       <View style={styles.tableContainerEncounter}>
         <View style={styles.tableHeader}>
-          <Text style={styles.tableHeaderText}>{t('Name')}</Text>
-          <Text style={styles.tableHeaderText}>{t('Campaign')}</Text>
-          <Text style={styles.tableHeaderText}>{t('Level')}</Text>
-          <Text style={styles.tableHeaderText}>{t('Action')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Name')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Campaign')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Level')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Action')}</Text>
         </View>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           {encounters.map((encounter) => (
             <View key={encounter.id} style={styles.tableRow}>
-              <Text style={styles.tableCellEncounter}>{encounter.name}</Text>
-              <Text style={styles.tableCellEncounter}>{encounter.campaign}</Text>
-              <Text style={styles.tableCellEncounter}>{encounter.level}</Text>
+              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.name}</Text>
+              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.campaign}</Text>
+              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.level}</Text>
               <View style={styles.actions}>
                 <TouchableOpacity
-                  style={styles.editButton}
+                  style={[styles.editButton, { height: 45 * scaleFactor, width: 80 * scaleFactor }]}
                   onPress={() => handleEditEncounter(encounter)}
                 >
-                  <Text style={styles.editButtonText}>{t('Edit')}</Text>
+                  <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.runButton}
+                  style={[styles.runButton, { height: 45 * scaleFactor, width: 80 * scaleFactor }]}
                   onPress={() => handleRunEncounter(encounter)}
                 >
-                  <Text style={styles.runButtonText}>{t('Run')}</Text>
+                  <Text style={[styles.runButtonText, { fontSize: fontSize }]}>{t('Run')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.deleteButtonEncounter}
+                  style={[styles.deleteButtonEncounter, { height: 45 * scaleFactor, width: 80 * scaleFactor }]}
                   onPress={() => handleDeleteEncounter(encounter.id)}
                 >
-                  <Text style={styles.deleteButtonTextEncounter}>{t('Delete')}</Text>
+                  <Text style={[styles.deleteButtonTextEncounter, { fontSize: fontSize }]}>{t('Delete')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -117,7 +135,7 @@ const Encounters = ({ navigation, route }) => {
         style={styles.addButtonEncounter}
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.addButtonTextEncounter}>{t('Add Encounter')}</Text>
+        <Text style={[styles.addButtonTextEncounter, { fontSize: fontSize }]}>{t('Add Encounter')}</Text>
       </TouchableOpacity>
       <Modal
         visible={modalVisible}
@@ -130,19 +148,19 @@ const Encounters = ({ navigation, route }) => {
             <Text style={styles.modalTitleEncounterName}>{t('Add Encounter')}</Text>
             <TextInput
               placeholder={t('Name')}
-              style={styles.modalInputEncounter}
+              style={[styles.modalInputEncounter, { height: 40 * scaleFactor, fontSize: fontSize }]}
               value={newEncounter.name}
               onChangeText={(text) => setNewEncounter((prev) => ({ ...prev, name: text }))}
             />
             <TextInput
               placeholder={t('Campaign')}
-              style={styles.modalInputEncounter}
+              style={[styles.modalInputEncounter, { height: 40 * scaleFactor, fontSize: fontSize }]}
               value={newEncounter.campaign}
               onChangeText={(text) => setNewEncounter((prev) => ({ ...prev, campaign: text }))}
             />
             <TextInput
               placeholder={t('Level')}
-              style={styles.modalInputEncounter}
+              style={[styles.modalInputEncounter, { height: 40 * scaleFactor, fontSize: fontSize }]}
               keyboardType="numeric"
               value={newEncounter.level}
               onChangeText={(text) => {
@@ -155,13 +173,13 @@ const Encounters = ({ navigation, route }) => {
                 style={styles.cancelButtonEncounter}
                 onPress={() => setModalVisible(false)}
               >
-                <Text style={styles.cancelButtonTextEncounter}>{t('Cancel')}</Text>
+                <Text style={[styles.cancelButtonTextEncounter, { fontSize: fontSize }]}>{t('Cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.confirmButtonEncounter}
                 onPress={handleAddEncounter}
               >
-                <Text style={styles.confirmButtonTextEncounter}>{t('Add')}</Text>
+                <Text style={[styles.confirmButtonTextEncounter, { fontSize: fontSize }]}>{t('Add')}</Text>
               </TouchableOpacity>
             </View>
           </View>

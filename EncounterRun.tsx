@@ -4,10 +4,12 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const EncounterRun = ({ route, navigation }) => {
+const EncounterRun: React.FC = ({ route, navigation }) => {
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
 
@@ -58,29 +60,30 @@ const EncounterRun = ({ route, navigation }) => {
 
   return (
     <ImageBackground source={theme.background} style={styles.containerEncounterRun}>
-      <View style={styles.GoBack}>
+
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>
 
       <View style={styles.middleEncounterContRun}>
-        <TouchableOpacity style={styles.autoRollEncounterButton}>
-          <Text style={styles.autoRollEncounterText}>{t('Auto Roll Initiative')}</Text>
+        <TouchableOpacity style={[styles.autoRollEncounterButton, { height: 50 * scaleFactor, width: 150 * scaleFactor }]}>
+          <Text style={[styles.autoRollEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Auto Roll Initiative')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.startEncounterButton} onPress={handleStart}>
-          <Text style={styles.startEncounterButtonText}>{t('Start')}</Text>
+        <TouchableOpacity style={[styles.startEncounterButton, { height: 50 * scaleFactor, width: 150 * scaleFactor }]} onPress={handleStart}>
+          <Text style={[styles.startEncounterButtonText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Start')}</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.monstersListContainer}>
       <View style={[styles.monsterRowEncounterRun, { backgroundColor: '#222' }]}>
-        <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun]}>{t('Initiative')}</Text>
-        <Text style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun]}>{t('Avatar')}</Text>
-        <Text style={[styles.cellEncounterRun, styles.cellNameEncounterRun]}>{t('Name')}</Text>
-        <Text style={[styles.cellEncounterRun, styles.cellCountEncounterRun]}>{t('Count')}</Text>
+        <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('Initiative')}</Text>
+        <Text style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('Avatar')}</Text>
+        <Text style={[styles.cellEncounterRun, styles.cellNameEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('Name')}</Text>
+        <Text style={[styles.cellEncounterRun, styles.cellCountEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('Count')}</Text>
       </View>
 
         {playersFromState.map((player, index) => (
@@ -91,16 +94,16 @@ const EncounterRun = ({ route, navigation }) => {
               index % 2 === 0 && styles.monsterRowOdd,
             ]}
           >
-            <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun]}>-</Text>
-            <View style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun]} />
+            <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>-</Text>
+            <View style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { height: 50 * scaleFactor, width: 50 * scaleFactor }]} />
             <View style={[styles.cellEncounterRun, styles.cellNameEncounterRun]}>
-              <Text style={styles.monsterTextEncRun}>{player.name}</Text>
+              <Text style={[styles.monsterTextEncRun, { fontSize: fontSize, color: theme.fontColor }]}>{player.name}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={styles.acEncounterText}>{t('AC')}: {player.ac}</Text>
-                <Text style={styles.crEncounterText}>{t('Level')}: {player.level || 'N/A'}</Text>
+                <Text style={[styles.acEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('AC')}: {player.ac}</Text>
+                <Text style={[styles.crEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Level')}: {player.level || 'N/A'}</Text>
               </View>
             </View>
-            <Text style={[styles.cellEncounterRun, styles.cellCountEncounterRun]}>1</Text>
+            <Text style={[styles.cellEncounterRun, styles.cellCountEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>1</Text>
           </View>
         ))}
 
@@ -112,26 +115,26 @@ const EncounterRun = ({ route, navigation }) => {
               (playersFromState.length + index) % 2 === 0 && styles.monsterRowOdd,
             ]}
           >
-            <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun]}>-</Text>
-            <View style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun]}>
+            <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>-</Text>
+            <View style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { height: 50 * scaleFactor, width: 50 * scaleFactor }]}>
               <ImageBackground
                 source={{ uri: monster.image }}
-                style={styles.avatarImage}
+                style={[styles.avatarImage, { height: 100 * scaleFactor, width: 100 * scaleFactor }]}
               />
             </View>
             <View style={[styles.cellEncounterRun, styles.cellNameEncounterRun]}>
-              <Text style={styles.monsterTextEncRun}>{monster.name}</Text>
+              <Text style={[styles.monsterTextEncRun, { fontSize: fontSize, color: theme.fontColor }]}>{monster.name}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={styles.acEncounterText}>{t('AC')}: {monster.ac}</Text>
-                <Text style={styles.crEncounterText}>{t('CR')}: {monster.cr}</Text>
+                <Text style={[styles.acEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('AC')}: {monster.ac}</Text>
+                <Text style={[styles.crEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('CR')}: {monster.cr}</Text>
               </View>
             </View>
-            <Text style={[styles.cellEncounterRun, styles.cellCountEncounterRun]}>x{monster.count}</Text>
+            <Text style={[styles.cellEncounterRun, styles.cellCountEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>x{monster.count}</Text>
           </View>
         ))}
 
       {players.length === 0 && monsters.length === 0 && (
-        <Text style={styles.monsterText}>{t('No players or monsters in this encounter')}.</Text>
+        <Text style={[styles.monsterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('No players or monsters in this encounter')}.</Text>
       )}
       </ScrollView>
 
