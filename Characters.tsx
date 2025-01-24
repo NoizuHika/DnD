@@ -1,11 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
-
+import { UserData } from './UserData';
+import { useAuth } from './AuthContext';
 Appearance.setColorScheme('light');
 
 const Characters: React.FC = ({ navigation }) => {
@@ -18,7 +19,7 @@ const Characters: React.FC = ({ navigation }) => {
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const [characters, setCharacters] = useState([]);
-  const { ipv4 } = useContext(userData)
+  const { ipv4 } = useContext(UserData)
 
   useEffect(() => {
             fetchData();
@@ -70,13 +71,13 @@ const Characters: React.FC = ({ navigation }) => {
               <View key={index} style={styles.buttonContainerCamp}>
                 <TouchableOpacity style={styles.button} onPress={() => handleCharacterPress(character)}>
                   <ImageBackground
-                  source={require('./assets/assasin.jpeg')}
-                  style={[styles.characterImage, { height: 100 * scaleFactor, width: 100 * scaleFactor }]}
-                >
-                </ImageBackground>
-              </TouchableOpacity>
-               </View>
-                ))}
+                                    source={{uri: character.image }}
+                                    style={[styles.characterImage, { height: 100 * scaleFactor, width: 100 * scaleFactor }]}
+                                      >
+                  </ImageBackground>
+                </TouchableOpacity>
+              </View>
+            ))}
 
               <TouchableOpacity onPress={() => handleCharacterPress('CreateCharacter')}>
                 <ImageBackground

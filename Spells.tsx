@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
-
+import { UserData } from './UserData';
 Appearance.setColorScheme('light');
 
 const spellsData = require('./assets/Library/spells.json');

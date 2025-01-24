@@ -15,6 +15,7 @@ Appearance.setColorScheme('light');
 const PlayerSessions: React.FC = () => {
     const { fontSize, scaleFactor } = useContext(SettingsContext);
     const [sessions, setSessions] = useState([]);
+    const [result, setResult] = useState([]);
     const navigation = useNavigation();
     const { t } = useTranslation();
     const { theme } = useContext(ThemeContext);
@@ -22,7 +23,7 @@ const PlayerSessions: React.FC = () => {
     const { token } = useAuth();
 
     useEffect(() => {
-                 fetchData();
+         fetchData();
     }, []);
     const fetchData = async () => {
           try {
@@ -49,8 +50,8 @@ const PlayerSessions: React.FC = () => {
     };
 
 
-    const openSessionDetails = (session) => {
-        navigation.navigate('PlayerSessionDetails', {campaign: sResult[1], player:sResult[0],session:sResult[1].sessions[sResult[1].sessions.length - 1] });
+    const openSessionDetails = (item) => {
+        navigation.navigate('PlayerSessionDetails', {campaign: item[1], player:item[0],session:item[1].sessions[item[1].sessions.length - 1] });
     };
 
     return (

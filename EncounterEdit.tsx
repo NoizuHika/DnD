@@ -112,7 +112,7 @@ const EncounterEdit: React.FC = ({ route, navigation }) => {
       </View>
 
      <View style={styles.encounterNameB}>
-      <Text style={[styles.encounterName, { color: theme.fontColor, textAlign: 'center', fontSize: fontSize * 1.5 }]}>{encounter.name}</Text>
+      <Text style={[styles.encounterName, { color: theme.fontColor, textAlign: 'center', fontSize: fontSize * 1.5 }]}>{encounter.title}</Text>
       <Text style={[styles.encounterNameA, { color: theme.fontColor, textAlign: 'center', fontSize: fontSize }]}>{t('Recommended level')}: {encounter.level}</Text>
      </View>
 

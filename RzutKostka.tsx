@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, Animated, Easing, ScrollView } from 'react-native';
+import { ImageBackground, StyleSheet, View, Text, TouchableOpacity,route, Animated, Easing, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
@@ -20,7 +20,7 @@ const diceTypes = [
   { sides: 100, image: require('./assets/dice/d100.png') },
 ];
 
-const RzutKostka: React.FC = ({ navigation }) => {
+const RzutKostka: React.FC = ({ route,navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme, addDiceResult } = useContext(ThemeContext);
@@ -30,7 +30,7 @@ const RzutKostka: React.FC = ({ navigation }) => {
   const [diceValues, setDiceValues] = useState([]);
   const [rotateValues] = useState(diceTypes.map(() => new Animated.Value(0)));
   const { ipv4 } = useContext(UserData);
-
+  const { token } = useAuth();
   const handleDiceSelection = (index) => {
     const alreadySelected = selectedDice.find((dice) => dice.index === index);
     if (alreadySelected) {
@@ -51,7 +51,7 @@ const RzutKostka: React.FC = ({ navigation }) => {
         diceResults.push(randomValue);
       }
       newDiceValues.push({ index, results: diceResults });
-      resultsSummary.push(`${diceTypes[index].sides}: ${diceResults.join(', ')}`);
+      resultsSummary.push(`${player.name} roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
 
       Animated.timing(rotateValues[index], {
         toValue: 1,

@@ -13,6 +13,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
 
+
   const encounterPlayer = {
     playersFromState: [{ name: 'Player 1', ac: 15, level: 1 }],
   };
@@ -99,7 +100,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
             <View style={[styles.cellEncounterRun, styles.cellNameEncounterRun]}>
               <Text style={[styles.monsterTextEncRun, { fontSize: fontSize, color: theme.fontColor }]}>{player.name}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={[styles.acEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('AC')}: {player.ac}</Text>
+                <Text style={[styles.acEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('AC')}: {player.armorClass}</Text>
                 <Text style={[styles.crEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Level')}: {player.level || 'N/A'}</Text>
               </View>
             </View>

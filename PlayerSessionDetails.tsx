@@ -7,15 +7,15 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
-import { UserProvider } from './UserData';
+import { UserData } from './UserData';
 
 Appearance.setColorScheme('light');
 
 const PlayerSessionDetails: React.FC = ({ navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const route = useRoute();
-  const { session } = route.params || {};
-  const { ipv4 } = useContext(userData);
+
+  const { ipv4 } = useContext(UserData);
   const { t } = useTranslation();
   const { theme, diceResults } = useContext(ThemeContext);
   const { campaign,player} = route.params;
@@ -35,7 +35,7 @@ const PlayerSessionDetails: React.FC = ({ navigation }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
-  const [noteVisibility, setNoteVisibility] = useState(new Array(notes.length).fill(false));
+  const [noteVisibility, setNoteVisibility] = useState(new Array(notes?.length).fill(false));
   const [modalVisible, setModalVisible] = useState(false);
   const [actualSession,setActualSession]= useState(session);
 
@@ -94,40 +94,6 @@ const PlayerSessionDetails: React.FC = ({ navigation }) => {
     }
   };
 
-  const handlePlayerAction = (action) => {
-    const updatedPlayers = players.map(player => {
-      if (selectedPlayers.includes(player.id)) {
-        switch (action) {
-          case 'addCoins':
-            player.coins += 10;
-            break;
-          case 'levelUp':
-            player.level += 1;
-            break;
-          case 'changeHP':
-            player.hp = player.hp < 100 ? 100 : player.hp - 10;
-            break;
-          case 'remove':
-            return null;
-        }
-      }
-      return player;
-    }).filter(player => player !== null);
-    setPlayers(updatedPlayers);
-    setSelectedPlayers([]);
-  };
-
-  const handleAddPlayer = () => {
-    const newPlayer = {
-      id: players.length + 1,
-      name: `Player ${players.length + 1}`,
-      image: require('./assets/adventurer.jpeg'),
-      coins: 0,
-      level: 1,
-      hp: 100,
-    };
-    setPlayers([...players, newPlayer]);
-  };
 
   useEffect(() => {
     const loadNotes = async () => {
@@ -158,7 +124,7 @@ const PlayerSessionDetails: React.FC = ({ navigation }) => {
   };
 
   const handleRoll = () => {
-    navigation.navigate('RzutKostka');
+    navigation.navigate('RzutKostka',{player:playerActual,session:actualSession})
   };
 
   const handlePressPortrait = () => {
@@ -299,12 +265,10 @@ return (
         <View style={styles.leftCampaignContainer}>
 
     <View style={styles.playersSessionDetailStatsContainer}>
-      {players.map((player) => (
         <View key={player.id} style={styles.playerSessionDetailStatsRow}>
           <Text style={[styles.playerSessionDetailStatHP, styles.statWithBorder, { fontSize: fontSize }]}>{t('HP')}: {playerActual.actualHP}</Text>
           <Text style={[styles.playerSessionDetailStatAC, { fontSize: fontSize }]}>{t('AC')}: {playerActual.armorClass}</Text>
         </View>
-      ))}
     </View>
 
     <TouchableOpacity style={styles.rollSessionDetailButton} onPress={() => handleRoll()}>
@@ -315,23 +279,27 @@ return (
 
 
 
-      {!addingNewSession && (
-      <View style={styles.noteContent}>
-        {notes.map((note, index) => (
-          <View key={index} style={styles.noteHeader}>
-            <TouchableOpacity onPress={() => handleOpenNote(note, index)}>
-              <View style={styles.noteActions}>
-                <Text style={[styles.noteTitle, { fontSize: fontSize }]}>{note.title}</Text>
-              </View>
-            </TouchableOpacity>
-            {noteVisibility[index] && (
-              <>
-                <Text style={[styles.noteContent, { fontSize: fontSize }]}>{note.content}</Text>
-                <Image source={note.image} style={[styles.noteImage, { width: 200 * scaleFactor, height: 200 * scaleFactor }]} />
-              </>
-            )}
-          </View>
-        ))}
+       {!addingNewSession && (
+            <View style={styles.noteContent}>
+             {notes && notes.length > 0 ? (
+               notes.map((note, index) => (
+                 <View key={index} style={styles.noteHeader}>
+                   <TouchableOpacity onPress={() => handleOpenNote(note, index)}>
+                     <View style={styles.noteActions}>
+                       <Text style={[styles.noteTitle, { fontSize: fontSize }]}>{note.title}</Text>
+                     </View>
+                   </TouchableOpacity>
+                   {noteVisibility[index] && (
+                     <>
+                       <Text style={[styles.noteContent, { fontSize: fontSize }]}>{note.content}</Text>
+                       <Image source={note.image} style={[styles.noteImage, { width: 200 * scaleFactor, height: 200 * scaleFactor }]} />
+                                     </>
+                   )}
+                 </View>
+               ))
+             ) : (
+               <Text style={styles.emptyResultText}>No notes available</Text>
+             )}
 
         {selectedNote && (
          <Modal
@@ -435,8 +403,10 @@ return (
 
         <View style={styles.rightCampaignContainer}>
           <View style={styles.playerSessionDetailAvatarContainer}>
-            <Image source={players[0].image} style={[styles.playerSessionDetailAvatar, { width: 100 * scaleFactor, height: 100 * scaleFactor }]} />
+          <TouchableOpacity onPress={handlePressPortrait}>
+            <Image source={{uri: playerActual.image}} style={[styles.playerSessionDetailAvatar, { width: 100 * scaleFactor, height: 100 * scaleFactor }]} />
             <Text style={[styles.playerSessionDetailName, { fontSize: fontSize }]}>{playerActual.name}</Text>
+            </TouchableOpacity>
           </View>
           <ScrollView style={styles.rightCampaignContainerScrollArea} ref={scrollViewRef}>
           {actualSession?.logs?.length > 0 ? (

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { ImageBackground, View, Text, TouchableOpacity, Animated, Easing } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
@@ -25,8 +25,11 @@ const RzutKostka_Bonus: React.FC = ({ route, navigation }) => {
   const [result, setResult] = useState(null);
   const [answer, setAnswer] = useState(null);
   const { ipv4 } = useContext(UserData);
-  const [answer, setAnswer] = useState(null);
-
+useEffect(() => {
+  if (answer && answer.trim().length > 0 && session) {
+    fetchData(answer);
+  }
+}, [answer]);
   const attributes = {
     STR: t('Strength'),
     DEX: t('Dexterity'),
@@ -54,16 +57,13 @@ const RzutKostka_Bonus: React.FC = ({ route, navigation }) => {
 
         const finalStatValue = isNaN(statValue) || statValue === 'None' ? 0 : parseInt(statValue);
         setResult(randomValue + finalStatValue);
-        setAnswer(`${player.name} roll for ${statName} ${result} ( ${diceValue} ${statValue >= 0 ? '+' : ''}${statValue})`)
 
-       if (answer && answer.trim().length > 0) {
-         fetchData();
-       }
       }, 200);
+  setAnswer(`${player.name} roll for ${statName} ${result} (${diceValue}${statValue >= 0 ? '+' : ''}${statValue})`)
     });
   };
 
-  const fetchData = async () => {
+  const fetchData = async (answer) => {
             try {
                 console.log(answer)
                 const sessionResponse = await fetch(`http://${ipv4}:8000/sessions/addToLogs`, {
@@ -72,7 +72,7 @@ const RzutKostka_Bonus: React.FC = ({ route, navigation }) => {
                                 'Content-Type': 'application/json',
                                 'accept': 'application/json'
                             },
-                            body: JSON.stringify({ token: token.toString(),log:`${answer}`,sessionID:session.id }),
+                            body: JSON.stringify({ token: token.toString(),log:answer,sessionID:session.id }),
                         });
 
 
@@ -115,7 +115,7 @@ const RzutKostka_Bonus: React.FC = ({ route, navigation }) => {
       {result !== null && (
         <View style={styles.resultContainer}>
           <Text style={[styles.resultTextKostka, { fontSize: fontSize * 1.2 }]}>
-            {`${t('Result')}: ${diceValue} ${statValue >= 0 ? '+' : ''}${statValue} = ${result}`}
+            {`${t('Result')}: ${diceValue} ${statValue >= 0 ? '+' : ''} ${statValue} = ${result}`}
           </Text>
         </View>
       )}

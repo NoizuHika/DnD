@@ -22,6 +22,7 @@ const Encounters: React.FC = ({ navigation, route }) => {
       campaignID: campaign.id
     });
   useEffect(() => {
+      console.log(campaign.encounters)
       setEncounters(campaign.encounters)
     }, []);
 
@@ -103,8 +104,8 @@ const Encounters: React.FC = ({ navigation, route }) => {
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           {encounters.map((encounter) => (
             <View key={encounter.id} style={styles.tableRow}>
-              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.name}</Text>
-              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.campaign}</Text>
+              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.title}</Text>
+              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.campaignTitle}</Text>
               <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.level}</Text>
               <View style={styles.actions}>
                 <TouchableOpacity

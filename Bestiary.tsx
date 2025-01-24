@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { ImageBackground, View, Text, TouchableOpacity, ScrollView, TextInput, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
@@ -22,13 +22,13 @@ const Bestiary = ({ navigation }) => {
   const [selectedFeat, setSelectedFeat] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedFeat, setEditedFeat] = useState(null);
-
-  const { ipv4 } = useContext(UserData)
+  const [feats,setFeats]= useState([]);
+  const { ipv4 } = useContext(UserData);
   const crOptions = ["0", "1/8", "1/4", "1/2", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
                       "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
                       "23", "24", "25", "26", "27", "28", "29", "30"];
-  const [typeOptions,setTypeOptions] = useState([])
-  const [environmentOptions,setEnvironmentOptions] = useState([])
+  const [typeOptions,setTypeOptions] = useState([]);
+  const [environmentOptions,setEnvironmentOptions] = useState([]);
 
   useEffect(() => {
         fetchData();

@@ -3,16 +3,18 @@ import { ImageBackground, View, Text, TouchableOpacity, ScrollView, TextInput, M
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { UserData } from './UserData';
 
 const BackLibrary = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
-
+  const { ipv4 } = useContext(UserData);
   const [backLibrary, setBackLibrary] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedItem, setEditedItem] = useState(null);
+  const [feats,setFeats]= useState([]);
 
   useEffect(() => {
    fetchData();
@@ -21,7 +23,7 @@ const BackLibrary = ({ navigation }) => {
 const fetchData = async () => {
             try {
                 const backgroundResponse = await fetch(`http://${ipv4}:8000/backgrounds/all`, {
-                            method: 'POST',
+                            method: 'GET',
                             headers: {
                                 'Content-Type': 'application/json',
                                 'accept': 'application/json'
@@ -107,7 +109,10 @@ const fetchData = async () => {
           filteredBackLibrary.map((item, index) => (
             <View key={index} style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.nameColumn]}>{item.name}</Text>
-              <Text style={[styles.tableCell]}>{item.skillProficiencies || t('None')}</Text>
+              <Text style={[styles.tableCell]}>
+                  {Array.isArray(item.skillProficiencies) && item.skillProficiencies.length > 0
+                                        ? item.skillProficiencies.join(', ')
+                                        : t('None')}</Text>
               <Text style={[styles.tableCell]}>{item.source}</Text>
               <TouchableOpacity
                 style={[styles.tableCell, styles.actionsColumn]}
@@ -123,89 +128,49 @@ const fetchData = async () => {
       {selectedItem && (
         <Modal visible={true} transparent={true} animationType="fade">
           <View style={styles.modalOverlayItems}>
-            {!isEditing ? (
+
               <View style={styles.itemModal}>
                 <Text style={styles.itemTitle}>{selectedItem.name}</Text>
                 <Text style={styles.itemDescriptionAttune}>
                   {t('Skill Proficiencies')}: {selectedItem.skillProficiencies.join(', ') || t('None')}
                 </Text>
                 <Text style={styles.itemDescription}>
-                  {t('Languages')}: {selectedItem.languages.join(', ') || t('None')}
+                  {console.log(selectedItem.languages)}
+                   {t('Languages')}:{' '}
+                    {Array.isArray(selectedItem.languages) && selectedItem.languages.length > 0
+                      ? selectedItem.languages.join(', ')
+                      : t('None')}
                 </Text>
                 <Text style={styles.itemDescription}>
-                  {t('Tool Proficiencies')}: {selectedItem.toolProficiencies.join(', ') || t('None')}
+                     {t('Tool Proficiencies')}:{' '}
+                      {Array.isArray(selectedItem.toolProficiencies) && selectedItem.toolProficiencies.length > 0
+                        ? selectedItem.toolProficiencies.join(', ')
+                        : t('None')}
                 </Text>
                 <Text style={styles.itemDescription}>
-                  {t('Equipment')}: {selectedItem.equipments.join(', ') || t('None')}
+                  {t('Equipment')}: {' '}
+                  {Array.isArray(selectedItem.equipments) && selectedItem.equipments.length > 0
+                              ? selectedItem.equipments.join(', ')
+                              : t('None')}
                 </Text>
                 <Text style={styles.itemDescription}>
-                  {t('Feature')}: {selectedItem.features.join(', ') || t('None')}
+                  {t('Feature')}: {'\n'}
+                   {Array.isArray(selectedItem.features) && selectedItem.features.length > 0
+                      ? selectedItem.features.map((feature, index) => (
+                              <Text key={index} style={styles.featureItem}>
+                                {feature.name}{':\n'}
+                                {feature.description}
+                              </Text>
+                            ))
+                      : t('None')}
                 </Text>
                 <Text style={styles.itemDescription}>{selectedItem.description}</Text>
                 <View style={styles.modalButtons}>
-                  <TouchableOpacity onPress={() => setIsEditing(true)} style={styles.editButton}>
-                    <Text style={styles.editButtonText}>{t('Edit')}</Text>
-                  </TouchableOpacity>
                   <TouchableOpacity onPress={closeItemModal} style={styles.closeButtonItem}>
                     <Text style={styles.closeButtonText}>{t('Close')}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
-            ) : (
-              <View style={styles.itemModal}>
-                <TextInput
-                  style={styles.itemTitle}
-                  value={editedItem.name}
-                  onChangeText={(value) => handleEditChange('name', value)}
-                  placeholder={t('Name')}
-                />
-                <TextInput
-                  style={styles.itemDescriptionAttune}
-                  value={editedItem.skillProficiencies}
-                  onChangeText={(value) => handleEditChange('skillProficiencies', value)}
-                  placeholder={t('Skill Proficiencies')}
-                />
-                <TextInput
-                  style={styles.itemDescription}
-                  value={editedItem.languages}
-                  onChangeText={(value) => handleEditChange('languages', value)}
-                  placeholder={t('Languages')}
-                />
-                <TextInput
-                  style={styles.itemDescription}
-                  value={editedItem.toolProficiencies}
-                  onChangeText={(value) => handleEditChange('toolProficiencies', value)}
-                  placeholder={t('Tool Proficiencies')}
-                />
-                <TextInput
-                  style={styles.itemDescription}
-                  value={editedItem.equipment}
-                  onChangeText={(value) => handleEditChange('equipments', value)}
-                  placeholder={t('Equipment')}
-                />
-                <TextInput
-                  style={styles.itemDescription}
-                  value={editedItem.feature}
-                  onChangeText={(value) => handleEditChange('features', value)}
-                  placeholder={t('Feature')}
-                />
-                <TextInput
-                  style={styles.itemDescription}
-                  value={editedItem.description}
-                  onChangeText={(value) => handleEditChange('description', value)}
-                  placeholder={t('Description')}
-                  multiline
-                />
-                <View style={styles.modalButtons}>
-                  <TouchableOpacity onPress={closeItemModal} style={styles.closeButtonItem}>
-                    <Text style={styles.closeButtonText}>{t('Cancel')}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={saveItemChanges} style={styles.editButton}>
-                    <Text style={styles.editButtonText}>{t('Save')}</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
           </View>
         </Modal>
       )}

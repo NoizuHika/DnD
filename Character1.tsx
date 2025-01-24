@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, Image,route, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Picker } from '@react-native-picker/picker';
 import PlayerCharacter from './PlayerCharacter';
@@ -12,7 +12,7 @@ const spellsData = require('./assets/Library/spells.json');
 
 Appearance.setColorScheme('light');
 
-const Character1: React.FC = ({ navigation }) => {
+const Character1: React.FC = ({ route,navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t, i18n } = useTranslation();
   const { characterData } =  route.params;
@@ -29,6 +29,7 @@ const Character1: React.FC = ({ navigation }) => {
   const { theme } = useContext(ThemeContext);
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [spells, setSpells] = useState(character.spellbook || []);
+  const maxHP = character.playerClasses[0].maxHP
 
   const handleGoBack = () => {
     navigation.navigate('Characters');
@@ -48,7 +49,7 @@ const Character1: React.FC = ({ navigation }) => {
   };
 
   const handleHealthChange = (amount) => {
-    setHealth(prevHealth => Math.max(0, Math.min(100, prevHealth + amount)));
+    setHealth(prevHealth => Math.max(0, Math.min(maxHP, prevHealth + amount)));
   };
 
   if (!character) {
@@ -112,6 +113,7 @@ const Character1: React.FC = ({ navigation }) => {
       setReactVisible(false);
     }
   };
+
 
   const handleRomanNumeralPress = (label) => {
     const levelMap = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8, IX: 9 };
@@ -314,6 +316,7 @@ const Character1: React.FC = ({ navigation }) => {
 
   return (
     <ImageBackground source={theme.background} style={styles.container}>
+
       <View style={[styles.dropdownContainerCharacter, { height: 40 * scaleFactor, width: 200 * scaleFactor }]}>
         <Picker
           selectedValue={selectedScreen}
@@ -323,26 +326,27 @@ const Character1: React.FC = ({ navigation }) => {
             navigation.navigate(itemValue,{ characterData : character });
           }}
         >
+
           <Picker.Item label={t('Main Scene')} value="Character1" />
           <Picker.Item label={t('Inventory')} value="Inventory" />
           <Picker.Item label={t('Character Details')} value="CharacterDetails" />
         </Picker>
       </View>
-      <View style={styles.imageContainer}>
-        <Image source={{uri: character.image }} style={styles.image} />
+      <View style={[styles.imageContainer, { width: 100 * scaleFactor, height: 100 * scaleFactor }]}>
+        <Image source={{uri: characterData.image }} style={styles.image} />
     </View>
 
       <View style={[styles.healthContainer, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
-        <TouchableOpacity style={[styles.healthButtonChar, { height: 30 * scaleFactor, width: 80 * scaleFactor, right: 15 * scaleFactor }]} onPress={() => handleHealthChange(10)}>
+        <TouchableOpacity style={[styles.healthButtonChar, { height: 30 * scaleFactor, width: 80 * scaleFactor, right: 15 * scaleFactor }]} onPress={() => handleHealthChange(1)}>
           <Text style={[styles.healthText, { fontSize: fontSize }]}>{t('Heal')}</Text>
         </TouchableOpacity>
         <View style={{ alignItems: 'center' }}>
-            <Text style={[styles.statText, { fontSize: fontSize }]}>{t('Health')}: {health}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize }]}>{'\n'}{t('Health')}: {health}</Text>
             <View style={styles.healthBar}>
-              <View style={[styles.healthFill, { width: `${health}%` }]} />
+              <View style={[styles.healthFill, { width: `${(health / maxHP) * 100}%` }]} />
             </View>
           </View>
-        <TouchableOpacity style={[styles.damageButtonChar, { height: 30 * scaleFactor, width: 80 * scaleFactor, left: 15 * scaleFactor }]} onPress={() => handleHealthChange(-10)}>
+        <TouchableOpacity style={[styles.damageButtonChar, { height: 30 * scaleFactor, width: 80 * scaleFactor, left: 15 * scaleFactor }]} onPress={() => handleHealthChange(-1)}>
           <Text style={[styles.damageText, { fontSize: fontSize }]}>{t('Damage')}</Text>
         </TouchableOpacity>
        </View>

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useContext } from 'react';
-import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView, Alert, Image, Modal } from 'react-native';
+import { ImageBackground, StyleSheet, View, Text, TouchableOpacity,route, TextInput, ScrollView, Alert, Image, Modal } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeContext } from './theme/ThemeContext';
@@ -10,7 +10,7 @@ import { SettingsContext } from './SettingsContext';
 import { UserData } from './UserData';
 Appearance.setColorScheme('light');
 
-const CampaignOne: React.FC = ({ navigation }) => {
+const CampaignOne: React.FC = ({ route,navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { campaign } = route.params;
   const { t, i18n } = useTranslation();
@@ -64,8 +64,8 @@ const CampaignOne: React.FC = ({ navigation }) => {
 
   const fetchData = async () => {
         try {
-            const sessionsResponse = await fetch(`http://${ipv4}:8000/user/campaign/${campaign.id}`, {
-                method: 'POST',
+            const sessionsResponse = await fetch(`http://${ipv4}:8000/campaigns/${campaign.id}`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'accept': 'application/json'
@@ -78,7 +78,8 @@ const CampaignOne: React.FC = ({ navigation }) => {
 
              const data = await sessionsResponse.json();
                     setActualCampaign(data)
-
+                    setPlayers(data.characters);
+                    setSessions(data.sessions);
 
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -152,14 +153,14 @@ const CampaignOne: React.FC = ({ navigation }) => {
 
   const handleAddSession = () => {
     if (newSessionName && newSessionContent) {
-      const updatedSessions = [...sessions, { name: newSessionName, content: newSessionContent }];
+      const updatedSessions = [...sessions, { name: newSessionName, description: newSessionContent }];
       saveSessions(updatedSessions);
       setNewSessionName('');
       setNewSessionContent('');
       setAddingNewSession(false);
       setActiveSessionIndex(updatedSessions.length - 1);
     } else {
-      Alert.alert(t('Please enter both name and content for the session.'));
+      Alert.alert(t('Please enter both name and description for the session.'));
     }
   };
 
@@ -311,8 +312,9 @@ const CampaignOne: React.FC = ({ navigation }) => {
             <TouchableOpacity key={index} style={styles.sessionTab} onPress={() => {
               setActiveSessionIndex(index);
               setAddingNewSession(false);
+              console.log(sessions[activeSessionIndex].description)
             }}>
-              <Text style={[styles.sessionTabText, { fontSize: fontSize }]}>{session.name}</Text>
+              <Text style={[styles.sessionTabText, { fontSize: fontSize }]}>{session.title}</Text>
             </TouchableOpacity>
           ))}
             <TouchableOpacity style={styles.sessionTab} onPress={handleNewSessionTab}>
@@ -322,11 +324,11 @@ const CampaignOne: React.FC = ({ navigation }) => {
       </View>
 
       <View style={styles.CampaignOneContainerMain}>
-        {sessions.length > 0 && activeSessionIndex < sessions.length && !addingNewSession && (
+        {sessions.length > 0 && !addingNewSession && (
           <View style={styles.sessionContainer}>
             <View style={styles.sessionHeader}>
            <ScrollView style={styles.sessionContentScrollContainer}>
-            <Text style={styles.sessionContent, { fontSize: fontSize }]}>{sessions[activeSessionIndex]?.description}</Text>
+            <Text style={[styles.sessionContent, { fontSize: fontSize }]}>{sessions[activeSessionIndex].description}</Text>
            </ScrollView>
             </View>
              <View style={styles.rowContainerRight}>

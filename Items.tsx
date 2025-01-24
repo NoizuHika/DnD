@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
-
+import { UserData } from './UserData';
 Appearance.setColorScheme('light');
 
 const Items = ({ navigation }) => {
@@ -21,17 +21,18 @@ const Items = ({ navigation }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedItem, setEditedItem] = useState(null);
-
+  const { ipv4 } = useContext(UserData);
   const categories = ['Type', 'weapon', 'armor', 'adventuring_gear', 'consumable', 'magic', 'other'];
   const rarities = ['Rarity', 'common', 'uncommon', 'rare', 'very rare', 'legendary'];
 
-  const handleSubtypePicker = (type,subTypes) => {
-    if (type === 'weapon') return [subtypes.weapons];
-    if (type === 'armor') return [subtypes.armors];
-    if (type === 'adventuring_gear') return [subtypes.adventuringGears];
-    if (type === 'consumable') return [subtypes.consumables];
-    if (type === 'magic') return [subtypes.magics];
-    if (type === 'other') return [subtypes.others];
+  const handleSubtypePicker = (type) => {
+    if (!subTypes || subTypes.length === 0) return [];
+    if (type === 'weapon') return subTypes.weapons || [];
+    if (type === 'armor') return subTypes.armors || [];
+    if (type === 'adventuring_gear') return subTypes.adventuringGears || [];
+    if (type === 'consumable') return subTypes.consumables || [];
+    if (type === 'magic') return subTypes.magics || [];
+    if (type === 'other') return subTypes.others || [];
     return [];
   };
 
@@ -76,10 +77,24 @@ const Items = ({ navigation }) => {
     if (selectedType && selectedType !== 'Type') {
       filtered = filtered.filter((item) => item.type.includes(selectedType));
     }
+    console.log(selectedSubtype)
+if (selectedSubtype && selectedSubtype !== 'Subtype') {
+  filtered = filtered.filter((item) => {
+    // Sprawdź, czy itemType istnieje i jest tablicą
+    if (!item.itemType) return false;
 
-    if (selectedSubtype && selectedSubtype !== 'Subtype') {
-      filtered = filtered.filter((item) => item.subtype.includes(selectedSubtype));
-    }
+    // Zbierz itemType w jedno ciąg oddzielone przecinkiem i normalizuj
+    const normalizedItemTypes = Array.isArray(item.itemType)
+      ? item.itemType.map((s) => s.trim().toLowerCase()).join(',')  // Znormalizowana lista itemType oddzielona przecinkiem
+      : item.itemType.trim().toLowerCase();                          // Jeśli to nie jest tablica, znormalizuj bez przecinka
+
+    // Sprawdź, czy selectedSubtype znajduje się w znormalizowanej tablicy itemType
+    return normalizedItemTypes.split(',').includes(selectedSubtype.trim().toLowerCase());
+  });
+}
+
+
+
 
     if (selectedRarity && selectedRarity !== 'Rarity') {
       filtered = filtered.filter((item) => item.rarity.includes(selectedRarity));
@@ -146,7 +161,7 @@ const Items = ({ navigation }) => {
           >
             <Picker.Item label={t('Subtype')} value="Subtype" />
             {handleSubtypePicker(selectedType).map((subtype) => (
-              <Picker.Item key={subtype} label={t(subtype)} value={subtype} />
+              <Picker.Item key={subtype.id || subtype} label={t(subtype.name || subtype)} value={subtype.name} />
             ))}
           </Picker>
         )}
