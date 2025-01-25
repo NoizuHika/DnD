@@ -45,6 +45,12 @@ useEffect(() => {
 
     const randomValue = Math.floor(Math.random() * 20) + 1;
 
+    setDiceValue(randomValue);
+
+    const finalStatValue = isNaN(statValue) || statValue === 'None' ? 0 : parseInt(statValue);
+    setResult(diceValue + finalStatValue);
+
+    setAnswer(`${player.name} roll for ${statName} ${result} (${diceValue}${statValue >= 0 ? '+' : ''}${statValue})`)
     Animated.timing(rotateValue, {
       toValue: 1,
       duration: 1000,
@@ -52,14 +58,7 @@ useEffect(() => {
       useNativeDriver: true,
     }).start(() => {
       rotateValue.setValue(0);
-      setTimeout(() => {
-        setDiceValue(randomValue);
 
-        const finalStatValue = isNaN(statValue) || statValue === 'None' ? 0 : parseInt(statValue);
-        setResult(randomValue + finalStatValue);
-
-      }, 200);
-  setAnswer(`${player.name} roll for ${statName} ${result} (${diceValue}${statValue >= 0 ? '+' : ''}${statValue})`)
     });
   };
 

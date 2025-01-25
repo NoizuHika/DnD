@@ -3,6 +3,7 @@ import { ImageBackground, View, Text, TouchableOpacity, ScrollView, TextInput, M
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
+import { UserData } from './UserData';
 
 const RulesGloss = ({ navigation }) => {
   const { t } = useTranslation();
@@ -13,7 +14,7 @@ const RulesGloss = ({ navigation }) => {
   const [selectedRule, setSelectedRule] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedRule, setEditedRule] = useState(null);
-
+    const { ipv4 } = useContext(UserData);
   useEffect(() => {
          fetchData();
        }, []);
@@ -126,9 +127,6 @@ const RulesGloss = ({ navigation }) => {
                 </Text>
                 <Text style={styles.itemDescription}>{selectedRule.description}</Text>
                 <View style={styles.modalButtons}>
-                  <TouchableOpacity onPress={() => setIsEditing(true)} style={styles.editButton}>
-                    <Text style={styles.editButtonText}>{t('Edit')}</Text>
-                  </TouchableOpacity>
                   <TouchableOpacity onPress={closeRuleModal} style={styles.closeButtonItem}>
                     <Text style={styles.closeButtonText}>{t('Close')}</Text>
                   </TouchableOpacity>

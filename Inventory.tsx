@@ -10,9 +10,10 @@ import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-const Inventory: React.FC = ({ navigation }) => {
+const Inventory: React.FC = ({ route,navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
+  const { character } = route.params;
   const { theme } = useContext(ThemeContext);
   const [selectedScreen, setSelectedScreen] = useState('Inventory');
   const [isModalVisible, setModalVisible] = useState(false);
@@ -22,8 +23,6 @@ const Inventory: React.FC = ({ navigation }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [items, setItems] = useState(sampleItems.items || []);
   const [gold, setGold] = useState(sampleItems.gold || 0);
-
-
 
   const handleSpendGold = (amount) => {
     if (gold >= amount) {
@@ -67,23 +66,6 @@ const Inventory: React.FC = ({ navigation }) => {
 
     setNewItem({ name: '', weight: 0, quantity: 0, cost: 0, description: '', category: '' });
     setModalVisible(false);
-  };
-
-
-  const handleAddItemsFromJSON = () => {
-    const updatedItems = [...items];
-
-    sampleItems.items.forEach(sampleItem => {
-      const existingItemIndex = updatedItems.findIndex(item => item.name === sampleItem.name);
-
-      if (existingItemIndex >= 0) {
-        updatedItems[existingItemIndex].quantity += sampleItem.quantity;
-      } else {
-        updatedItems.push(sampleItem);
-      }
-    });
-
-    setItems(updatedItems);
   };
 
 

@@ -5,12 +5,15 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
 
 Appearance.setColorScheme('light');
 
 const RzutKostka_Bonus_SpellStat: React.FC = ({ route, navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { statValue, spell } = route.params;
+
   const handleGoBack = () => {
     navigation.goBack();
   };
@@ -27,7 +30,7 @@ const RzutKostka_Bonus_SpellStat: React.FC = ({ route, navigation }) => {
   const handleRollDice = () => {
     setDiceValue(null);
     setResult(null);
-
+    console.log(statValue)
     const randomValue = Math.floor(Math.random() * 20) + 1;
 
     Animated.timing(rotateValue, {
@@ -39,8 +42,8 @@ const RzutKostka_Bonus_SpellStat: React.FC = ({ route, navigation }) => {
       rotateValue.setValue(0);
       setTimeout(() => {
         setDiceValue(randomValue);
-
         const finalStatValue = isNaN(statValue) || statValue === 'None' ? null : parseInt(statValue);
+
         if (finalStatValue !== null) {
           setResult(randomValue + finalStatValue);
           if (session !== null && session !== undefined && Object.keys(session).length > 0) {

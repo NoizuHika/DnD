@@ -312,7 +312,6 @@ const CampaignOne: React.FC = ({ route,navigation }) => {
             <TouchableOpacity key={index} style={styles.sessionTab} onPress={() => {
               setActiveSessionIndex(index);
               setAddingNewSession(false);
-              console.log(sessions[activeSessionIndex].description)
             }}>
               <Text style={[styles.sessionTabText, { fontSize: fontSize }]}>{session.title}</Text>
             </TouchableOpacity>
@@ -505,11 +504,15 @@ const CampaignOne: React.FC = ({ route,navigation }) => {
 
         <View style={styles.rightCampaignContainer}>
           <ScrollView style={styles.rightCampaignContainerScrollArea} ref={scrollViewRef}>
-          {sessions[activeSessionIndex]?.logs?.map((result, index) => (
-            <Text key={index} style={[styles.diceResult, { fontSize: fontSize }]}>
-              {t('Dice roll result')}: {result}
-            </Text>
-          ))}
+                      <>
+                      {sessions[activeSessionIndex]?.logs?.map((result, index) => (
+                          <Text key={index} style={[styles.diceResult, { fontSize: fontSize }]}>
+                              {result}
+                          </Text>
+                         ))}
+                         <Text style={styles.diceResult}>{"\n\n"}</Text>
+                       </>
+
           </ScrollView>
           <TouchableOpacity style={styles.encounterButtonCampaignOne} onPress={handleGoToEncounter}>
             <Text style={[styles.encounterButtonTextCampaignOne, { fontSize: fontSize }]}>{t('Start Encounter')}</Text>

@@ -9,18 +9,28 @@ import { SettingsContext } from './SettingsContext';
 Appearance.setColorScheme('light');
 
 const Encounters: React.FC = ({ navigation, route }) => {
+
+
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const { campaign } = route.params;
   const [encounters, setEncounters] = useState([]);
-
+  const [difficulty,setDifficulty]= useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [newEncounter, setNewEncounter] = useState({
       title: '',
       campaignTitle: campaign.title,
       campaignID: campaign.id
     });
+const thresholdsXP = {
+  1: { easy: 25, medium: 50, hard: 75, deadly: 100 },
+  2: { easy: 50, medium: 100, hard: 150, deadly: 200 },
+  3: { easy: 75, medium: 150, hard: 225, deadly: 400 },
+  4: { easy: 125, medium: 250, hard: 375, deadly: 500 },
+  5: { easy: 250, medium: 500, hard: 750, deadly: 1100 },
+};
+
   useEffect(() => {
       console.log(campaign.encounters)
       setEncounters(campaign.encounters)
@@ -69,9 +79,55 @@ const Encounters: React.FC = ({ navigation, route }) => {
       ]
     );
   };
+  const calculateEncounterXP = (encounter) => {
+      if (!encounter.entities || encounter.entities.length === 0) {
+          return { totalXP: 0, adjustedXP: 0, multiplier: 1 };
+        }
+
+    let totalXP = 0;
+    encounter.entities.forEach((entity) => {
+      const challengeRating = entity.bestiary.challengeRating;
+      const xpStr = challengeRating.split("(")[1].replace("xp)", "").trim();
+      totalXP += parseInt(xpStr, 10);
+    });
+    const numEntities = encounter.entities.length;
+    let multiplier = 1;
+
+    if (numEntities === 2) multiplier = 1.5;
+    else if (numEntities >= 3 && numEntities <= 6) multiplier = 2;
+    else if (numEntities >= 7 && numEntities <= 10) multiplier = 2.5;
+    else if (numEntities >= 11 && numEntities <= 14) multiplier = 3;
+    else if (numEntities >= 15) multiplier = 4;
+
+    const adjustedXP = totalXP * multiplier;
+
+    return { totalXP, adjustedXP, multiplier };
+  };
+    const calculatePartyThresholds = (campaign) => {
+      const thresholds = { easy: 0, medium: 0, hard: 0, deadly: 0 };
+
+      campaign.characters.forEach((player) => {
+        const level = player.playerClasses[0].level;
+        const levelThresholds = thresholdsXP[level];
+
+        thresholds.easy += levelThresholds.easy;
+        thresholds.medium += levelThresholds.medium;
+        thresholds.hard += levelThresholds.hard;
+        thresholds.deadly += levelThresholds.deadly;
+      });
+
+  return thresholds;
+};
+const getEncounterDifficulty = (adjustedXP, partyThresholds) => {
+  if (adjustedXP < partyThresholds.easy) return "Easy";
+  if (adjustedXP < partyThresholds.medium) return "Medium";
+  if (adjustedXP < partyThresholds.hard) return "Hard";
+  if (adjustedXP < partyThresholds.deadly) return "Deadly";
+  return "Deadlier than Deadly!";
+};
 
   const handleEditEncounter = (encounter) => {
-    navigation.navigate('EncounterEdit', { encounter });
+    navigation.navigate('EncounterEdit', { encounter,campaign });
   };
 
   const handleRunEncounter = (encounter) => {
@@ -81,7 +137,7 @@ const Encounters: React.FC = ({ navigation, route }) => {
   const handleGoBack = () => {
     navigation.goBack();
   };
-
+const partyThresholds = calculatePartyThresholds(campaign);
   return (
     <ImageBackground source={theme.background} style={styles.containerCreator}>
 
@@ -98,15 +154,18 @@ const Encounters: React.FC = ({ navigation, route }) => {
         <View style={styles.tableHeader}>
           <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Name')}</Text>
           <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Campaign')}</Text>
-          <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Level')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Difficulty')}</Text>
           <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Action')}</Text>
         </View>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          {encounters.map((encounter) => (
+          {encounters.map((encounter) => {
+              const { totalXP, adjustedXP, multiplier } = calculateEncounterXP(encounter);
+                      const difficulty = getEncounterDifficulty(adjustedXP, partyThresholds);
+            return(
             <View key={encounter.id} style={styles.tableRow}>
               <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.title}</Text>
               <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.campaignTitle}</Text>
-              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.level}</Text>
+              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{difficulty}</Text>
               <View style={styles.actions}>
                 <TouchableOpacity
                   style={[styles.editButton, { height: 45 * scaleFactor, width: 80 * scaleFactor }]}
@@ -128,7 +187,8 @@ const Encounters: React.FC = ({ navigation, route }) => {
                 </TouchableOpacity>
               </View>
             </View>
-          ))}
+            );
+          })}
         </ScrollView>
       </View>
       <TouchableOpacity
