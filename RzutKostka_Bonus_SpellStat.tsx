@@ -5,26 +5,32 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
 
 Appearance.setColorScheme('light');
 
 const RzutKostka_Bonus_SpellStat: React.FC = ({ route, navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { statValue, spell } = route.params;
+
   const handleGoBack = () => {
     navigation.goBack();
   };
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
-
+  const { token } = useAuth();
+  const { player,session ={} } = route.params;
   const [diceValue, setDiceValue] = useState(null);
   const [rotateValue] = useState(new Animated.Value(0));
   const [result, setResult] = useState(null);
+  const { ipv4 } = useContext(UserData);
+  const [answer, setAnswer] = useState(null);
 
   const handleRollDice = () => {
     setDiceValue(null);
     setResult(null);
-
+    console.log(statValue)
     const randomValue = Math.floor(Math.random() * 20) + 1;
 
     Animated.timing(rotateValue, {
@@ -36,16 +42,44 @@ const RzutKostka_Bonus_SpellStat: React.FC = ({ route, navigation }) => {
       rotateValue.setValue(0);
       setTimeout(() => {
         setDiceValue(randomValue);
-
         const finalStatValue = isNaN(statValue) || statValue === 'None' ? null : parseInt(statValue);
+
         if (finalStatValue !== null) {
           setResult(randomValue + finalStatValue);
+          if (session !== null && session !== undefined && Object.keys(session).length > 0) {
+              setAnswer(`${player.name} roll for ${spell.name} ${result}`)
+              fetchData();
+            }
         } else {
           setResult(null);
         }
       }, 200);
     });
   };
+
+  const fetchData = async () => {
+    try {
+        console.log(answer)
+        const sessionResponse = await fetch(`http://${ipv4}:8000/sessions/addToLogs`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'accept': 'application/json'
+                    },
+                    body: JSON.stringify({ token: token.toString(),log:`${answer}`,sessionID:session.id }),
+                });
+
+
+        if (!sessionResponse.ok) {
+            throw new Error('Failed to fetch data');
+        }
+
+            const ans = await sessionResponse.json();
+
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+};
 
   const spin = rotateValue.interpolate({
     inputRange: [0, 1],

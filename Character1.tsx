@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { ImageBackground,Alert, StyleSheet, View, Text, TouchableOpacity, Image,route, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Picker } from '@react-native-picker/picker';
-import PlayerCharacter from './PlayerCharacter';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
@@ -12,12 +11,14 @@ const spellsData = require('./assets/Library/spells.json');
 
 Appearance.setColorScheme('light');
 
-const Character1: React.FC = ({ navigation }) => {
+const Character1: React.FC = ({ route,navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t, i18n } = useTranslation();
-  const [characterData, setCharacterData] = useState(null);
+  const { characterData } =  route.params;
+  const { session = {} } = route.params;
+  const [character, setCharacter] = useState(characterData);
   const [selectedScreen, setSelectedScreen] = useState('Character1');
-  const [health, setHealth] = useState(100);
+  const [health, setHealth] = useState(character.actualHP);
   const [skillsVisible, setSkillsVisible] = useState(false);
   const [actionVisible, setActionVisible] = useState(false);
   const [bonusVisible, setBonusVisible] = useState(false);
@@ -26,40 +27,19 @@ const Character1: React.FC = ({ navigation }) => {
   const [selectedRomanNumeral, setSelectedRomanNumeral] = useState(null);
   const { theme } = useContext(ThemeContext);
   const [selectedLevel, setSelectedLevel] = useState(null);
-  const [spells, setSpells] = useState([]);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    setSpells(spellsData);
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const response = await fetch('http://10.0.2.2:8000/characters/1');
-      if (!response.ok) {
-        throw new Error('Failed to fetch data');
-      }
-      const data = await response.json();
-      setCharacterData(data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      // Handle error fetching data
-    }
-  };
+  const [spells, setSpells] = useState(character.spellbook || []);
+  const maxHP = character.playerClasses[0].maxHP
 
   const handleGoBack = () => {
     navigation.navigate('Characters');
   };
 
   const handleRollDice = () => {
-    navigation.navigate('RzutKostka');
+    navigation.navigate('RzutKostka',{player:characterData,session:session});
   };
 
   const handleStatPress = (statName, statValue) => {
-    navigation.navigate('RzutKostka_Bonus', { statName, statValue });
+    navigation.navigate('RzutKostka_Bonus', { statName, statValue, player:characterData,session:session });
   };
 
   const calculateLargerNumber = (value) => {
@@ -68,16 +48,16 @@ const Character1: React.FC = ({ navigation }) => {
   };
 
   const handleHealthChange = (amount) => {
-    setHealth(prevHealth => Math.max(0, Math.min(100, prevHealth + amount)));
+    setHealth(prevHealth => Math.max(0, Math.min(maxHP, prevHealth + amount)));
   };
 
-  if (!characterData) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Text>{t('Loading...')}</Text>
-      </View>
-    );
-  }
+  if (!character) {
+      return (
+        <View style={styles.loadingContainer}>
+          <Text>{t('Loading...')}</Text>
+        </View>
+      );
+    }
 
   const toggleSkills = () => {
     setSkillsVisible(!skillsVisible);
@@ -124,7 +104,7 @@ const Character1: React.FC = ({ navigation }) => {
       setSelectedLevel(null);
       setRomanVisible(false);
     } else {
-      setSelectedLevel(level);
+        handleRomanNumeralPress(level);
       setRomanVisible(true);
       setSkillsVisible(false);
       setActionVisible(false);
@@ -133,26 +113,31 @@ const Character1: React.FC = ({ navigation }) => {
     }
   };
 
+
   const handleRomanNumeralPress = (label) => {
-    const levelMap = { I: 1, II: 2, III: 3, IV: 4, V: 5, VI: 6, VII: 7, VIII: 8, IX: 9 };
+
+    const levelMap = { Cantrip: "Cantrip", I: "1st", II: "2nd", III: "3rd", IV: "4th", V: "5th", VI: "6th", VII: "7th", VIII: "8th", IX: "9th" };
     const level = levelMap[label];
     if (selectedRomanNumeral === label) {
+
       setSelectedRomanNumeral(null);
     } else {
+        setSelectedLevel(level);
       setSelectedRomanNumeral(level);
     }
   };
 
-  {selectedRomanNumeral && <AbilitiesWindow level={selectedRomanNumeral - 1} />}
 
   const groupSpellsByLevel = (spells) => {
     const grouped = {};
     spells.forEach((spell) => {
+
       if (!grouped[spell.level]) {
         grouped[spell.level] = [];
       }
       grouped[spell.level].push(spell);
     });
+
     return grouped;
   };
 
@@ -165,39 +150,42 @@ const Character1: React.FC = ({ navigation }) => {
   };
 
   const handleSpellPress = (spell) => {
-    if (!spell || !spell.requiredStat) {
+    if (!spell) {
       console.error('Invalid spell data:', spell);
       return;
     }
 
-    const requiredStat = spell.requiredStat;
-    const statValue = calculateLargerNumber(player[requiredStat]);
 
-    navigation.navigate('RzutKostka_Bonus_SpellStat', { spell, statValue });
-  };
+    const requiredStat = character.playerClasses[0].playerClass.spellThrowBonus;
+    console.log(character.playerClasses[0].playerClass.spellThrowBonus)
+    if (character.playerClasses[0].playerClass.spellThrowBonus === 'None') {
+            Alert.alert('Error', `${player.playerClasses[0].playerClass.name} cant cast spells`);
+            return;
+      }
+    const statScore = requiredStat.toLowerCase().slice(0, 3) + "Score";
+    const level = character.playerClasses[0].level;
+    let proficiencyBonus;
+      if (level >= 17) {
+        proficiencyBonus = 6;
+      } else if (level >= 13) {
+        proficiencyBonus = 5;
+      } else if (level >= 9) {
+        proficiencyBonus = 4;
+      } else if (level >= 5) {
+        proficiencyBonus = 3;
+      } else if (level >= 1) {
+        proficiencyBonus = 2;
+      }
+
+    const statValue = calculateLargerNumber(player[statScore]);
+
+    navigation.navigate('RzutKostka_Bonus_SpellStat', { spell:spell, statValue: statValue,player: characterData,session: session });
+    };
 
   const AbilitiesWindow = ({ level, navigation }) => {
     const spells = spellsByLevel[level] || [];
 
-    return (
-      <View style={styles.abilityWindow}>
-      <ScrollView>
-        {spells.map((spell, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.spellContainer}
-            onPress={() => handleSpellPress(spell)}
-          >
-            <Text style={[styles.spellName, { fontSize: fontSize }]}>{spell.name}</Text>
-            <Text style={[styles.spellDetails, { fontSize: fontSize * 0.8 }]}>
-              {t('Level')}: {spell.level}, {t('Casting Time')}: {spell.castingTime}, {t('Range')}: {spell.range}
-            </Text>
-            <Text style={[styles.spellDescription, { fontSize: fontSize * 0.8 }]}>{spell.description}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View>
-    );
+
   };
 
 
@@ -221,7 +209,7 @@ const Character1: React.FC = ({ navigation }) => {
 
         {showPowerLevels && (
           <View style={styles.powerLevels}>
-            {['I', 'II', 'III', 'IV', 'V', 'VI'].map((label, index) => (
+            {['Cantrip','I', 'II', 'III', 'IV', 'V', 'VI'].map((label, index) => (
               <TouchableOpacity key={index} style={styles.rightButton}>
                 <Text style={styles.buttonTextCharacter}>{label}</Text>
               </TouchableOpacity>
@@ -249,7 +237,7 @@ const Character1: React.FC = ({ navigation }) => {
 
         {showPowerLevels && (
           <View style={styles.powerLevels}>
-            {['I', 'II', 'III', 'IV', 'V', 'VI'].map((label, index) => (
+            {['Cantrip','I', 'II', 'III', 'IV', 'V', 'VI'].map((label, index) => (
               <TouchableOpacity key={index} style={styles.rightButton}>
                 <Text style={styles.buttonTextCharacter}>{label}</Text>
               </TouchableOpacity>
@@ -277,7 +265,7 @@ const Character1: React.FC = ({ navigation }) => {
 
         {showPowerLevels && (
           <View style={styles.powerLevels}>
-            {['I', 'II', 'III', 'IV', 'V', 'VI'].map((label, index) => (
+            {['Cantrip','I', 'II', 'III', 'IV', 'V', 'VI'].map((label, index) => (
               <TouchableOpacity key={index} style={styles.rightButton}>
                 <Text style={styles.buttonTextCharacter}>{label}</Text>
               </TouchableOpacity>
@@ -288,16 +276,7 @@ const Character1: React.FC = ({ navigation }) => {
     );
   };
 
-  const player = new PlayerCharacter(
-    characterData.strScore,
-    characterData.dexScore,
-    characterData.conScore,
-    characterData.intScore,
-    characterData.wisScore,
-    characterData.chaScore,
-    characterData.armorClass,
-    calculateLargerNumber(characterData.dexScore)
-  );
+  const player = characterData
 
   const skills = [
     { mod: 'DEX', skill: 'Acrobatics', bonus: 3 },
@@ -334,81 +313,83 @@ const Character1: React.FC = ({ navigation }) => {
 
   return (
     <ImageBackground source={theme.background} style={styles.container}>
+
       <View style={[styles.dropdownContainerCharacter, { height: 40 * scaleFactor, width: 200 * scaleFactor }]}>
         <Picker
           selectedValue={selectedScreen}
           style={[styles.pickerChooseChar, { width: 200 * scaleFactor }]}
           onValueChange={(itemValue) => {
             setSelectedScreen(itemValue);
-            navigation.navigate(itemValue);
+            navigation.navigate(itemValue,{ characterData : character });
           }}
         >
+
           <Picker.Item label={t('Main Scene')} value="Character1" />
           <Picker.Item label={t('Inventory')} value="Inventory" />
           <Picker.Item label={t('Character Details')} value="CharacterDetails" />
         </Picker>
       </View>
-      <View style={styles.imageContainer}>
-        <Image source={require('./assets/assasin.jpeg')} style={[styles.image, { height: 100 * scaleFactor, width: 100 * scaleFactor }]} />
-      </View>
+      <View style={[styles.imageContainer, { width: 100 * scaleFactor, height: 100 * scaleFactor }]}>
+        <Image source={{uri: characterData.image }} style={styles.image} />
+    </View>
 
       <View style={[styles.healthContainer, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>
-        <TouchableOpacity style={[styles.healthButtonChar, { height: 30 * scaleFactor, width: 80 * scaleFactor, right: 15 * scaleFactor }]} onPress={() => handleHealthChange(10)}>
+        <TouchableOpacity style={[styles.healthButtonChar, { height: 30 * scaleFactor, width: 80 * scaleFactor, right: 15 * scaleFactor }]} onPress={() => handleHealthChange(1)}>
           <Text style={[styles.healthText, { fontSize: fontSize }]}>{t('Heal')}</Text>
         </TouchableOpacity>
         <View style={{ alignItems: 'center' }}>
-            <Text style={[styles.statText, { fontSize: fontSize }]}>{t('Health')}: {health}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize }]}>{'\n'}{t('Health')}: {health}</Text>
             <View style={styles.healthBar}>
-              <View style={[styles.healthFill, { width: `${health}%` }]} />
+              <View style={[styles.healthFill, { width: `${(health / maxHP) * 100}%` }]} />
             </View>
           </View>
-        <TouchableOpacity style={[styles.damageButtonChar, { height: 30 * scaleFactor, width: 80 * scaleFactor, left: 15 * scaleFactor }]} onPress={() => handleHealthChange(-10)}>
+        <TouchableOpacity style={[styles.damageButtonChar, { height: 30 * scaleFactor, width: 80 * scaleFactor, left: 15 * scaleFactor }]} onPress={() => handleHealthChange(-1)}>
           <Text style={[styles.damageText, { fontSize: fontSize }]}>{t('Damage')}</Text>
         </TouchableOpacity>
        </View>
 
       <View style={styles.statsContainer}>
       <View style={styles.blackLeftContainer}>
-        <TouchableOpacity onPress={() => handleStatPress('STR', calculateLargerNumber(player.STR))}>
+        <TouchableOpacity onPress={() => handleStatPress('STR', calculateLargerNumber(player.strScore))}>
           <View style={[styles.statBox, { height: 55 * scaleFactor, width: 85 * scaleFactor }]}>
-            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.STR)}</Text>
-            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`STR: ${player.STR}`}</Text>
+            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.strScore)}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`STR: ${player.strScore}`}</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleStatPress('DEX', calculateLargerNumber(player.DEX))}>
+        <TouchableOpacity onPress={() => handleStatPress('DEX', calculateLargerNumber(player.dexScore))}>
           <View style={[styles.statBox, { height: 55 * scaleFactor, width: 85 * scaleFactor }]}>
-            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.DEX)}</Text>
-            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`DEX: ${player.DEX}`}</Text>
+            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.dexScore)}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`DEX: ${player.dexScore}`}</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleStatPress('CON', calculateLargerNumber(player.CON))}>
+        <TouchableOpacity onPress={() => handleStatPress('CON', calculateLargerNumber(player.conScore))}>
           <View style={[styles.statBox, { height: 55 * scaleFactor, width: 85 * scaleFactor }]}>
-            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.CON)}</Text>
-            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`CON: ${player.CON}`}</Text>
+            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.conScore)}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`CON: ${player.conScore}`}</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleStatPress('INT', calculateLargerNumber(player.INT))}>
+        <TouchableOpacity onPress={() => handleStatPress('INT', calculateLargerNumber(player.intScore))}>
           <View style={[styles.statBox, { height: 55 * scaleFactor, width: 85 * scaleFactor }]}>
-            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.INT)}</Text>
-            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`INT: ${player.INT}`}</Text>
+            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.intScore)}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`INT: ${player.intScore}`}</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleStatPress('WIS', calculateLargerNumber(player.WIS))}>
+        <TouchableOpacity onPress={() => handleStatPress('WIS', calculateLargerNumber(player.wisScore))}>
           <View style={[styles.statBox, { height: 55 * scaleFactor, width: 85 * scaleFactor }]}>
-            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.WIS)}</Text>
-            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`WIS: ${player.WIS}`}</Text>
+            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.wisScore)}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`WIS: ${player.wisScore}`}</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleStatPress('CHA', calculateLargerNumber(player.CHA))}>
+        <TouchableOpacity onPress={() => handleStatPress('CHA', calculateLargerNumber(player.chaScore))}>
           <View style={[styles.statBox, { height: 55 * scaleFactor, width: 85 * scaleFactor }]}>
-            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.CHA)}</Text>
-            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`CHA: ${player.CHA}`}</Text>
+            <Text style={[styles.largeText, { fontSize: fontSize }]}>{calculateLargerNumber(player.chaScore)}</Text>
+            <Text style={[styles.statText, { fontSize: fontSize * 0.8 }]}>{`CHA: ${player.chaScore}`}</Text>
           </View>
         </TouchableOpacity>
 
       <View style={styles.blackLeftContainer}>
         <View style={[styles.circleBox, { height: 82 * scaleFactor, width: 82 * scaleFactor }]}>
-          <Text style={[styles.circleText, { fontSize: fontSize }]}>{player.AC}</Text>
+          <Text style={[styles.circleText, { fontSize: fontSize }]}>{player.armorClass}</Text>
           <Text style={[styles.circleLabel, { fontSize: fontSize * 0.8 }]}>{t('AC')}</Text>
         </View>
         <View style={[styles.circleBox, { height: 82 * scaleFactor, width: 82 * scaleFactor }]}>
@@ -470,18 +451,28 @@ const Character1: React.FC = ({ navigation }) => {
           <TouchableOpacity style={[styles.rightButton, { height: 40 * scaleFactor, width: 80 * scaleFactor }]} onPress={toggleReact}>
             <Text style={[styles.buttonTextCharacter, { fontSize: fontSize }]}>{t('React')}</Text>
           </TouchableOpacity>
-          {['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'].map((label, index) => (
+          {['Cantrip', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'].map((label) => (
             <TouchableOpacity
-              key={index}
+              key={label}
               style={[
-                styles.rightButton, { height: 40 * scaleFactor, width: 80 * scaleFactor },
-                selectedLevel === index + 1 ? styles.levelButtonSelected : {}
+                styles.rightButton,
+                { height: 40 * scaleFactor, width: 80 * scaleFactor },
+                selectedLevel === label && styles.levelButtonSelected
               ]}
-              onPress={() => toggleRoman(index + 1)}
+              onPress={() => toggleRoman(label)}
             >
-              <Text style={[styles.buttonTextCharacter, { fontSize: fontSize } , selectedLevel === index + 1 && styles.activeLevelButtonSelectedText]}>{label}</Text>
+              <Text
+                style={[
+                  styles.buttonTextCharacter,
+                  { fontSize: fontSize },
+                  selectedLevel === label && styles.activeLevelButtonSelectedText
+                ]}
+              >
+                {label}
+              </Text>
             </TouchableOpacity>
           ))}
+
         </View>
 
         {selectedLevel && (

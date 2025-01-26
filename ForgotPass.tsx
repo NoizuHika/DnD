@@ -41,9 +41,8 @@ const ForgotPass: React.FC = () => {
 
       <View style={[styles.resetForgotPassContainer, { marginVertical: 20 * scaleFactor }]}>
         <Text style={[styles.resetForgotPass, { fontSize: fontSize * 1.2 }]}>{t('Reset_pass')}</Text>
+        <Text style={[styles.emailForgotPass, { fontSize: fontSize * 1.1, marginBottom: 10 * scaleFactor }]}>{t('Enter_username_or_email')}</Text>
       </View>
-
-    <Text style={[styles.emailForgotPass, { fontSize: fontSize * 1.1, marginBottom: 10 * scaleFactor }]}>{t('Enter_username_or_email')}</Text>
 
     <TextInput
         style={[styles.emailForgotPassInput, { height: 50 * scaleFactor, paddingHorizontal: 15 * scaleFactor, fontSize: fontSize * 1.1}]}

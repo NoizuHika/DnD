@@ -6,6 +6,8 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
 
 Appearance.setColorScheme('light');
 
@@ -13,37 +15,41 @@ const YourCampaigns: React.FC = ({ navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
-
+  const { token } = useAuth();
+  const { ipv4 } = useContext(UserData);
   const [campaigns, setCampaigns] = useState([]);
   const [newCampaign, setNewCampaign] = useState('');
   const [showInput, setShowInput] = useState(false);
 
   useEffect(() => {
-    const loadCampaigns = async () => {
-      try {
-        const storedCampaigns = await AsyncStorage.getItem('campaigns');
-        if (storedCampaigns) {
-          console.log('Loaded campaigns from storage:', storedCampaigns);
-          setCampaigns(JSON.parse(storedCampaigns));
-        } else {
-          const initialCampaigns = ["LOREM PSILUM", "UNGA BUNGA", "KRWAWA ŁAŹNIA"];
-          await AsyncStorage.setItem('campaigns', JSON.stringify(initialCampaigns));
-          setCampaigns(initialCampaigns);
-        }
-      } catch (error) {
-        console.error('Failed to load campaigns:', error);
-      }
-    };
-    loadCampaigns();
-  }, []);
+      fetchData();
+    }, []);
 
-  const saveCampaigns = async (newCampaigns) => {
-    try {
-      await AsyncStorage.setItem('campaigns', JSON.stringify(newCampaigns));
-      setCampaigns(newCampaigns);
-    } catch (error) {
-      console.error('Failed to save campaigns:', error);
-    }
+  const fetchData = async () => {
+      try {
+          console.log('Token:', token.toString());
+
+          const campaignsResponse = await fetch(`http://${ipv4}:8000/user/campaigns`, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'accept': 'application/json'
+                      },
+                      body: JSON.stringify({ token: token.toString() }),
+                  });
+
+
+          if (!campaignsResponse.ok) {
+              throw new Error('Failed to fetch data');
+          }
+
+          const campaigns = await campaignsResponse.json();
+           console.log('Fetched campaigns:', campaigns);
+          setCampaigns(campaigns.campaigns);
+
+      } catch (error) {
+          console.error('Error fetching data:', error);
+      }
   };
 
   const handleDeleteCampaign = (index) => {
@@ -77,17 +83,8 @@ const YourCampaigns: React.FC = ({ navigation }) => {
   };
 
   const handleCampaignPress = (campaign) => {
-    switch (campaign) {
-      case 'LOREM PSILUM':
-        navigation.navigate('CampaignOne');
-        break;
-      case 'KRWAWA ŁAŹNIA':
-        navigation.navigate('CampaignThree');
-        break;
-      default:
-        navigation.navigate('GenericCampaign', { campaignName: campaign });
-    }
-  };
+          navigation.navigate('CampaignOne', { campaign: campaign });
+    };
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -104,7 +101,7 @@ const YourCampaigns: React.FC = ({ navigation }) => {
         {campaigns.map((campaign, index) => (
           <View key={index} style={[styles.buttonContainerCamp, { marginBottom: 20 * scaleFactor }]}>
             <TouchableOpacity style={styles.button} onPress={() => handleCampaignPress(campaign)}>
-              <Text style={[styles.buttonTextCamp, { fontSize: fontSize }]}>{campaign}</Text>
+              <Text style={[styles.buttonTextCamp, { fontSize: fontSize }]}>{campaign.title}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteCampaign(index)}>
               <Text style={[styles.deleteButtonText, { fontSize: fontSize }]}>{t('Delete')}</Text>

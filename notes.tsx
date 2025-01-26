@@ -33,4 +33,9 @@ DM change session
         </TouchableOpacity>
       </View>
 
+      style={[styles.pickerMonCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
+
       onPress={() => navigation.goBack()}>
+
+Локализация, виды до конца (спелы итд), автоматическое поберание экрана,
+НПС креатор

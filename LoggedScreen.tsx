@@ -15,11 +15,6 @@ Appearance.setColorScheme('light');
     { code: 'ru', label: 'Русский', flag: require('./assets/flags/russia.png') }
   ];
 
-  const themes = [
-    { name: 'theme1', label: 'Dark', preview: require('./assets/font/theme1.png') },
-    { name: 'theme2', label: 'Light', preview: require('./assets/font/theme2.png') }
-  ];
-
 const LoggedScreen: React.FC = ({ navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const handleLoginPress = () => {
@@ -42,6 +37,11 @@ const LoggedScreen: React.FC = ({ navigation }) => {
   const [settingsModalVisible, setSettingsModalVisible] = useState(false);
   const { t, i18n } = useTranslation();
   const [currentLang, setCurrentLang] = useState(i18n.language);
+
+  const themes = [
+    { name: 'theme1', label: t('Dark'), preview: require('./assets/font/theme1.png') },
+    { name: 'theme2', label: t('Light'), preview: require('./assets/font/theme2.png') }
+  ];
 
   const changeLanguage = (code) => {
     i18n.changeLanguage(code);

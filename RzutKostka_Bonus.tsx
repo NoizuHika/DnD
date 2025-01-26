@@ -1,10 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { ImageBackground, View, Text, TouchableOpacity, Animated, Easing } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
 
 Appearance.setColorScheme('light');
 
@@ -16,11 +18,18 @@ const RzutKostka_Bonus: React.FC = ({ route, navigation }) => {
   };
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
-
+  const { token } = useAuth();
+  const { player, session ={} } = route.params;
   const [diceValue, setDiceValue] = useState(null);
   const [rotateValue] = useState(new Animated.Value(0));
   const [result, setResult] = useState(null);
-
+  const [answer, setAnswer] = useState(null);
+  const { ipv4 } = useContext(UserData);
+useEffect(() => {
+  if (answer && answer.trim().length > 0 && session) {
+    fetchData(answer);
+  }
+}, [answer]);
   const attributes = {
     STR: t('Strength'),
     DEX: t('Dexterity'),
@@ -36,6 +45,12 @@ const RzutKostka_Bonus: React.FC = ({ route, navigation }) => {
 
     const randomValue = Math.floor(Math.random() * 20) + 1;
 
+    setDiceValue(randomValue);
+
+    const finalStatValue = isNaN(statValue) || statValue === 'None' ? 0 : parseInt(statValue);
+    setResult(diceValue + finalStatValue);
+
+    setAnswer(`${player.name} roll for ${statName} ${result} (${diceValue}${statValue >= 0 ? '+' : ''}${statValue})`)
     Animated.timing(rotateValue, {
       toValue: 1,
       duration: 1000,
@@ -43,13 +58,32 @@ const RzutKostka_Bonus: React.FC = ({ route, navigation }) => {
       useNativeDriver: true,
     }).start(() => {
       rotateValue.setValue(0);
-      setTimeout(() => {
-        setDiceValue(randomValue);
 
-        const finalStatValue = isNaN(statValue) || statValue === 'None' ? 0 : parseInt(statValue);
-        setResult(randomValue + finalStatValue);
-      }, 200);
     });
+  };
+
+  const fetchData = async (answer) => {
+            try {
+                console.log(answer)
+                const sessionResponse = await fetch(`http://${ipv4}:8000/sessions/addToLogs`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'accept': 'application/json'
+                            },
+                            body: JSON.stringify({ token: token.toString(),log:answer,sessionID:session.id }),
+                        });
+
+
+                if (!sessionResponse.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+
+                    const ans = await sessionResponse.json();
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
   };
 
   const spin = rotateValue.interpolate({
@@ -80,7 +114,7 @@ const RzutKostka_Bonus: React.FC = ({ route, navigation }) => {
       {result !== null && (
         <View style={styles.resultContainer}>
           <Text style={[styles.resultTextKostka, { fontSize: fontSize * 1.2 }]}>
-            {`${t('Result')}: ${diceValue} ${statValue >= 0 ? '+' : ''}${statValue} = ${result}`}
+            {`${t('Result')}: ${diceValue} ${statValue >= 0 ? '+' : ''} ${statValue} = ${result}`}
           </Text>
         </View>
       )}

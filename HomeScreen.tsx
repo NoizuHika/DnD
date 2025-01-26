@@ -15,15 +15,16 @@ const languages = [
   { code: 'ru', label: 'Русский', flag: require('./assets/flags/russia.png') }
 ];
 
-const themes = [
-  { name: 'theme1', label: 'Dark', preview: require('./assets/font/theme1.png') },
-  { name: 'theme2', label: 'Light', preview: require('./assets/font/theme2.png') }
-];
-
 const HomeScreen: React.FC = ({ navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
 
   const { t, i18n } = useTranslation();
+
+  const themes = [
+    { name: 'theme1', label: t('Dark'), preview: require('./assets/font/theme1.png') },
+    { name: 'theme2', label: t('Light'), preview: require('./assets/font/theme2.png') }
+  ];
+
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [isThemeDropdownVisible, setThemeDropdownVisible] = useState(false);
   const [settingsModalVisible, setSettingsModalVisible] = useState(false);

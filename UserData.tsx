@@ -9,7 +9,7 @@ export const UserData = createContext();
 
 export const UserProvider = ({ children }) => {
   const [users, setUsers] = useState([]);
-
+  const [ipv4, setIpv4] = useState('192.168.1.109');
   const registerUser = async (login, password, email) => {
     try {
       const payload = {
@@ -17,7 +17,7 @@ export const UserProvider = ({ children }) => {
         email: email,
         password: password,
       };
-      const response = await fetch('http://192.168.56.1:8000/register', {
+      const response = await fetch('http://192.168.1.109:8000/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export const UserProvider = ({ children }) => {
         formData.append('username', login);
         formData.append('password', password);
 
-        const response = await fetch('http://192.168.56.1:8000/login', {
+        const response = await fetch(`http://${ipv4}:8000/login`, {
             method: 'POST',
             body: formData,
         });
@@ -69,7 +69,7 @@ export const UserProvider = ({ children }) => {
 
 
   return (
-    <UserData.Provider value={{ users, loginUser, registerUser }}>
+    <UserData.Provider value={{ users, loginUser, registerUser,ipv4 }}>
       {children}
     </UserData.Provider>
   );

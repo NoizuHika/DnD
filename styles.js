@@ -1109,6 +1109,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#7F7F7F',
     textAlign: 'center',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    padding: 10,
   },
   rightContainer: {
     position: 'absolute',
@@ -1399,6 +1401,12 @@ const styles = StyleSheet.create({
   },
   modalOverlayItems: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  modalOverlaySpells: {
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
@@ -2218,15 +2226,13 @@ const styles = StyleSheet.create({
   },
   statLeft: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    paddingLeft: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   statRight: {
     flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    paddingRight: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dividerStats: {
     height: '100%',
@@ -2593,9 +2599,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   resetForgotPassContainer: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
     marginTop: 20,
     marginBottom: 10,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    padding: 10,
   },
   resetForgotPass: {
     fontSize: 22,
