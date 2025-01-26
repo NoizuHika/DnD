@@ -164,24 +164,24 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
             <View style={styles.column}>
             <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Size')}</Text>
             <Picker selectedValue={monster.size} onValueChange={(value) => handleInputChange('size', value)} style={[styles.pickerMagicItemCre, { width: 150 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}>
-              <Picker.Item label="Small" value="Small" />
-              <Picker.Item label="Medium" value="Medium" />
-              <Picker.Item label="Large" value="Large" />
+              <Picker.Item label={t('Small')} value="Small" />
+              <Picker.Item label={t('Medium')} value="Medium" />
+              <Picker.Item label={t('Large')} value="Large" />
             </Picker>
 
             <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Alignment')}</Text>
             <Picker selectedValue={monster.alignment} onValueChange={(value) => handleInputChange('alignment', value)} style={[styles.pickerMagicItemCre, { width: 150 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}>
-              <Picker.Item label="Good" value="Good" />
-              <Picker.Item label="Evil" value="Evil" />
-              <Picker.Item label="Neutral" value="Neutral" />
+              <Picker.Item label={t('Good')} value="Good" />
+              <Picker.Item label={t('Evil')} value="Evil" />
+              <Picker.Item label={t('Neutral')} value="Neutral" />
             </Picker>
           </View>
             <View style={styles.column}>
             <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Monster Type')}</Text>
             <Picker selectedValue={monster.monsterType} onValueChange={(value) => handleInputChange('monsterType', value)} style={[styles.pickerMagicItemCre, { width: 150 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}>
-              <Picker.Item label="Beast" value="Beast" />
-              <Picker.Item label="Dragon" value="Dragon" />
-              <Picker.Item label="Undead" value="Undead" />
+              <Picker.Item label={t('Beast')} value="Beast" />
+              <Picker.Item label={t('Dragon')} value="Dragon" />
+              <Picker.Item label={t('Undead')} value="Undead" />
             </Picker>
 
           <View style={styles.section}>
@@ -202,9 +202,9 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
                   onValueChange={(value) => setSubtypeValue(value)}
                   style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
                 >
-                  <Picker.Item label="Subtype 1" value="Subtype 1" />
-                  <Picker.Item label="Subtype 2" value="Subtype 2" />
-                  <Picker.Item label="Subtype 3" value="Subtype 3" />
+                  <Picker.Item label={t('Subtype 1')} value="Subtype 1" />
+                  <Picker.Item label={t('Subtype 2')} value="Subtype 2" />
+                  <Picker.Item label={t('Subtype 3')} value="Subtype 3" />
                 </Picker>
               </View>
             )}
@@ -283,7 +283,7 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
             ))}
 
           <View style={styles.columnAdding}>
-            <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Languages')}</Text>
+            <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Language')}</Text>
             <TouchableOpacity style={[styles.addButtonMonCre, { height: 50 * scaleFactor, width: 200 * scaleFactor }]} onPress={() => openInputModal('languages')}>
               <Text style={[styles.addButtonText, { color: theme.textColor, fontSize: fontSize }]}>{t('Add language')}</Text>
             </TouchableOpacity>

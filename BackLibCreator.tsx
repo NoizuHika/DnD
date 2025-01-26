@@ -101,21 +101,21 @@ const BackLibCreator: React.FC = ({ navigation }) => {
         </View>
 
         <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
-          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Feature Name')}</Text>
+          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Back Library Name')}</Text>
           <TextInput
             style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
-            placeholder={t('Enter feature name')}
+            placeholder={t('Enter back library name')}
             value={backLib.featureName}
             onChangeText={(text) => handleInputChange('featureName', text)}
           />
         </View>
 
         <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
-          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Feature Description')}</Text>
+          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Back Library Description')}</Text>
           <TextInput
             style={[styles.inputItemCreator, { height: 100 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
             multiline
-            placeholder={t('Enter feature description')}
+            placeholder={t('Enter back library description')}
             value={backLib.featureDescription}
             onChangeText={(text) => handleInputChange('featureDescription', text)}
           />

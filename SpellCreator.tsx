@@ -286,7 +286,7 @@ const SpellCreator: React.FC = ({ navigation }) => {
 
         <View style={styles.centeredBlockDescription}>
           <View style={styles.centeredBlockMagicItemCont}>
-            <Text style={[styles.labelMagicItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Magic item description')}</Text>
+            <Text style={[styles.labelMagicItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Spell description')}</Text>
             <TextInput
               style={[styles.inputItemCreator, { height: 100 * scaleFactor, width: 300 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               multiline
@@ -308,7 +308,7 @@ const SpellCreator: React.FC = ({ navigation }) => {
           </View>
 
           <View style={styles.centeredBlockMagicItemCont}>
-            <Text style={[styles.labelMagicItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Magic item description')}</Text>
+            <Text style={[styles.labelMagicItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Classes description')}</Text>
             <TextInput
               style={[styles.inputItemCreator, { height: 100 * scaleFactor, width: 300 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               multiline

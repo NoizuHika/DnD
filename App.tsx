@@ -83,7 +83,7 @@ const App = () => {
     <UserProvider>
     <AuthProvider>
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SetupHome">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="SetupHome" component={SetupHome} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LogIn" component={LogInScreen} options={{ headerShown: false }} />
