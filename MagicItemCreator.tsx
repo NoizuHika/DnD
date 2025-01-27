@@ -54,7 +54,7 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
       </View>
 
           <View style={[styles.centeredBlock, { marginTop: 60 * scaleFactor }]}>
-            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
+            <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
             <TextInput
               style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               placeholder={t('Enter item name')}
@@ -65,7 +65,7 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
 
         <View style={[styles.rowCreateItemContainer, { marginTop: 10 * scaleFactor }]}>
           <View style={styles.column}>
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Item Type')}</Text>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Item Type')}</Text>
             <Picker
               selectedValue={itemType}
               style={[styles.pickerMonCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
@@ -78,7 +78,7 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
           </View>
 
           <View style={styles.column}>
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Rarity')}</Text>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Rarity')}</Text>
             <Picker
               selectedValue={rarity}
               style={[styles.pickerMonCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
@@ -96,7 +96,7 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
 
         {itemType === 'item' && (
           <View style={styles.pickerLeftContainer}>
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Item Type')}</Text>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Item Type')}</Text>
             <Picker
               selectedValue={armorType}
               style={[styles.pickerMonCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
@@ -117,7 +117,7 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
         {itemType === 'weapon' && (
           <View style={styles.pickerLeftContainerA}>
           <View style={styles.column}>
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Base Weapon')}</Text>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Base Weapon')}</Text>
             <Picker
               selectedValue={armorType}
               style={[styles.pickerMonCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
@@ -131,7 +131,7 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
             {isDamageDiceOverride && (
               <View style={styles.twoColumnContainer}>
               <View style={styles.column}>
-                <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Dice Type')}</Text>
+                <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Dice Type')}</Text>
                 <Picker
                   selectedValue={diceType}
                   style={[styles.pickerMonCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
@@ -148,7 +148,7 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
               </View>
               <View style={styles.column}>
 
-                <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Dice Count')}</Text>
+                <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Dice Count')}</Text>
                 <TextInput
                   style={[styles.inputMagicItemCreatorSmall, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
                   placeholder={t('Enter dice count')}
@@ -165,18 +165,24 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
               <CheckBox
                 value={isDamageDiceOverride}
                 onValueChange={(value) => setIsDamageDiceOverride(value)}
-                tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
+                tintColors={{
+                  true: theme.checkboxActive || '#4caf50',
+                  false: theme.checkboxInactive || '#f44336',
+                }}
               />
-              <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Damage Dice Override')}</Text>
+              <Text style={[styles.labelCheck, { fontSize: fontSize, color: theme.textColor }]}>{t('Damage Dice Override')}</Text>
             </View>
 
             <View style={styles.checkboxContainer}>
               <CheckBox
                 value={isFinesse}
                 onValueChange={(value) => setIsFinesse(value)}
-                tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
+                tintColors={{
+                  true: theme.checkboxActive || '#4caf50',
+                  false: theme.checkboxInactive || '#f44336',
+                }}
               />
-              <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Is Finesse')}</Text>
+              <Text style={[styles.labelCheck, { fontSize: fontSize, color: theme.textColor }]}>{t('Is Finesse')}</Text>
             </View>
           </View>
         </View>
@@ -187,10 +193,10 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
           <View style={styles.pickerLeftContainerA}>
           <View style={styles.twoColumnContainer}>
             <View style={styles.column}>
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Base Armor')}</Text>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Base Armor')}</Text>
             <Picker
               selectedValue={armorType}
-              style={[styles.pickerMonCre, { width: 150 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
+              style={[styles.pickerMonCre, { width: 180 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
               onValueChange={(value) => setArmorType(value)}
             >
               <Picker.Item label={t('Light Armor')} value="light" />
@@ -201,10 +207,10 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
             </View>
             <View style={styles.column}>
 
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Max Dex Bonus')}</Text>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Max Dex Bonus')}</Text>
             <Picker
               selectedValue={dexBonus}
-              style={[styles.pickerMonCre, { width: 150 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
+              style={[styles.pickerMonCre, { width: 180 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
               onValueChange={(value) => setDexBonus(value)}
             >
               <Picker.Item label={t('None')} value="None" />
@@ -213,9 +219,8 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
             </Picker>
 
             </View>
-            <View style={styles.column}>
 
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Str Requirement')}</Text>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Str Requirement')}</Text>
             <TextInput
               style={[styles.inputMagicItemCreatorSmall, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               placeholder={t('Enter Str Requirement')}
@@ -224,16 +229,18 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
               keyboardType="numeric"
             />
           </View>
-          </View>
 
           <View style={styles.rowContainer}>
             <View style={styles.checkboxContainer}>
               <CheckBox
                 value={requiresStealth}
                 onValueChange={(value) => setRequiresStealth(value)}
-                tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
+                tintColors={{
+                  true: theme.checkboxActive || '#4caf50',
+                  false: theme.checkboxInactive || '#f44336',
+                }}
               />
-              <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Requires Stealth')}</Text>
+              <Text style={[styles.labelCheck, { fontSize: fontSize, color: theme.textColor }]}>{t('Requires Stealth')}</Text>
             </View>
           </View>
           </View>
@@ -241,7 +248,7 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
 
         <View style={styles.centeredBlockDescription}>
           <View style={styles.centeredBlockMagicItemCont}>
-            <Text style={[styles.labelMagicItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Magic item description')}</Text>
+            <Text style={[styles.labelMagicItemCreA, { fontSize: fontSize, color: theme.textColor }]}>{t('Magic item description')}</Text>
             <TextInput
               style={[styles.inputItemCreator, { height: 100 * scaleFactor, width: 300 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               multiline
@@ -255,13 +262,16 @@ const MagicItemCreator: React.FC = ({ navigation }) => {
               <CheckBox
                 value={isRequiresAttunement}
                 onValueChange={(value) => setRequiresAttunement(value)}
-                tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
+                tintColors={{
+                  true: theme.checkboxActive || '#4caf50',
+                  false: theme.checkboxInactive || '#f44336',
+                }}
               />
-              <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Requires Attunement')}</Text>
+              <Text style={[styles.labelCheck, { fontSize: fontSize, color: theme.textColor }]}>{t('Requires Attunement')}</Text>
             </View>
 
           <View style={styles.centeredBlockA}>
-            <Text style={[styles.labelMagicItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Attunement description')}</Text>
+            <Text style={[styles.labelMagicItemCreA, { fontSize: fontSize, color: theme.textColor }]}>{t('Attunement description')}</Text>
             <TextInput
               style={[styles.inputItemCreator, { width: 300 * scaleFactor, height: 100 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               multiline

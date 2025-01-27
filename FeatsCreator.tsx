@@ -40,7 +40,7 @@ const FeatsCreator: React.FC = ({ navigation }) => {
       </View>
 
         <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
-          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
+          <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
           <TextInput
             style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
             placeholder={t('Enter feat name')}
@@ -50,7 +50,7 @@ const FeatsCreator: React.FC = ({ navigation }) => {
         </View>
 
         <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
-          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Prerequisite')}</Text>
+          <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Prerequisite')}</Text>
           <TextInput
             style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
             placeholder={t('Enter prerequisite')}
@@ -60,7 +60,7 @@ const FeatsCreator: React.FC = ({ navigation }) => {
         </View>
 
         <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
-          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Description')}</Text>
+          <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Description')}</Text>
           <TextInput
             style={[styles.inputItemCreator, { height: 100 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
             multiline

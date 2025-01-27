@@ -45,7 +45,7 @@ const BackLibCreator: React.FC = ({ navigation }) => {
       </View>
 
         <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
-          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
+          <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
           <TextInput
             style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
             placeholder={t('Enter name')}
@@ -88,7 +88,7 @@ const BackLibCreator: React.FC = ({ navigation }) => {
 
 
         <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
-          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Additional Proficiency')}</Text>
+          <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Additional Proficiency')}</Text>
           <Picker
             selectedValue={backLib.additionalProficiency}
             style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
@@ -101,7 +101,7 @@ const BackLibCreator: React.FC = ({ navigation }) => {
         </View>
 
         <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
-          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Back Library Name')}</Text>
+          <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Back Library Name')}</Text>
           <TextInput
             style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
             placeholder={t('Enter back library name')}
@@ -111,7 +111,7 @@ const BackLibCreator: React.FC = ({ navigation }) => {
         </View>
 
         <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
-          <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Back Library Description')}</Text>
+          <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Back Library Description')}</Text>
           <TextInput
             style={[styles.inputItemCreator, { height: 100 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
             multiline

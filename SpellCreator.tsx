@@ -69,9 +69,9 @@ const SpellCreator: React.FC = ({ navigation }) => {
       <View style = {styles.containerSpellCreator}>
         <View style={styles.rowContainer}>
           <View style={styles.column}>
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
             <TextInput
-              style={[styles.inputSpellCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
+              style={[styles.inputSpellCreatorA, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               placeholder={t('Enter Spell Name')}
               value={spell.name}
               onChangeText={(text) => handleInputChange('name', text)}
@@ -79,7 +79,7 @@ const SpellCreator: React.FC = ({ navigation }) => {
           </View>
 
           <View style={styles.column}>
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Level')}</Text>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Level')}</Text>
             <Picker
               selectedValue={level}
               style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
@@ -101,7 +101,7 @@ const SpellCreator: React.FC = ({ navigation }) => {
 
         <View style={styles.rowContainer}>
           <View style={styles.column}>
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Casting Time')}</Text>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Casting Time')}</Text>
             <Picker
               selectedValue={castingTime}
             style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
@@ -120,7 +120,7 @@ const SpellCreator: React.FC = ({ navigation }) => {
           </View>
 
           <View style={styles.column}>
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('School')}</Text>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('School')}</Text>
             <Picker
               selectedValue={school}
               style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
@@ -154,30 +154,40 @@ const SpellCreator: React.FC = ({ navigation }) => {
           </View>
 
         <View style={styles.rowContainerA}>
-          <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Components')}</Text>
+          <Text style={[styles.labelCheck, { fontSize: fontSize, color: theme.textColor }]}>{t('Components')}:</Text>
           <CheckBox
             value={verbal}
             onValueChange={setVerbal}
-            tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
+                tintColors={{
+                  true: theme.checkboxActive || '#4caf50',
+                  false: theme.checkboxInactive || '#f44336',
+                }}
           />
-          <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Verbal')}</Text>
+          <Text style={[styles.labelCheck, { fontSize: fontSize, color: theme.textColor }]}>{t('Verbal')}</Text>
 
           <CheckBox
             value={somatic}
             onValueChange={setSomatic}
-            tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
+                tintColors={{
+                  true: theme.checkboxActive || '#4caf50',
+                  false: theme.checkboxInactive || '#f44336',
+                }}
           />
-          <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Somatic')}</Text>
-
+          <Text style={[styles.labelCheck, { fontSize: fontSize, color: theme.textColor }]}>{t('Somatic')}</Text>
+        </View>
+        <View style={styles.rowContainerA}>
           <CheckBox
             value={material}
             onValueChange={(value) => {
               setMaterial(value);
               setShowMaterialInput(value);
             }}
-            tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
+                tintColors={{
+                  true: theme.checkboxActive || '#4caf50',
+                  false: theme.checkboxInactive || '#f44336',
+                }}
           />
-          <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Material')}</Text>
+          <Text style={[styles.labelCheck, { fontSize: fontSize, color: theme.textColor }]}>{t('Material')}</Text>
         </View>
 
           <View style={styles.column}>
@@ -193,7 +203,7 @@ const SpellCreator: React.FC = ({ navigation }) => {
 
         <View style={styles.rowContainer}>
           <View style={styles.column}>
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Duration')}</Text>
+            <Text style={[styles.labelItemCreAB, { fontSize: fontSize, color: theme.textColor }]}>{t('Duration')}</Text>
             <Picker
               selectedValue={duration}
               style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
@@ -209,13 +219,18 @@ const SpellCreator: React.FC = ({ navigation }) => {
             </Picker>
 
           </View>
+        </View>
+          <View style={styles.rowContainer}>
 
           <CheckBox
             value={concentration}
             onValueChange={setConcentration}
-            tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
+                tintColors={{
+                  true: theme.checkboxActive || '#4caf50',
+                  false: theme.checkboxInactive || '#f44336',
+                }}
           />
-          <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Is Concentration?')}</Text>
+          <Text style={[styles.labelCheck, { fontSize: fontSize, color: theme.textColor }]}>{t('Is Concentration?')}</Text>
         </View>
 
           <View style={styles.column}>
@@ -235,7 +250,7 @@ const SpellCreator: React.FC = ({ navigation }) => {
 
         <View style={styles.rowContainer}>
           <View style={styles.column}>
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Area Type')}</Text>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Area Type')}</Text>
             <Picker
               selectedValue={areaType}
               style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
@@ -254,9 +269,9 @@ const SpellCreator: React.FC = ({ navigation }) => {
           </View>
 
           <View style={styles.column}>
-            <Text style={[styles.label, { fontSize: fontSize, color: theme.textColor }]}>{t('Range')}</Text>
+            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Range')}</Text>
             <TextInput
-              style={[styles.inputSpellCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
+              style={[styles.inputSpellCreatorA, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               placeholder={t('Enter range')}
               value={range}
               onChangeText={(text) => {
@@ -286,7 +301,7 @@ const SpellCreator: React.FC = ({ navigation }) => {
 
         <View style={styles.centeredBlockDescription}>
           <View style={styles.centeredBlockMagicItemCont}>
-            <Text style={[styles.labelMagicItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Spell description')}</Text>
+            <Text style={[styles.labelMagicItemCreA, { fontSize: fontSize, color: theme.textColor }]}>{t('Spell description')}</Text>
             <TextInput
               style={[styles.inputItemCreator, { height: 100 * scaleFactor, width: 300 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               multiline
@@ -297,7 +312,7 @@ const SpellCreator: React.FC = ({ navigation }) => {
           </View>
 
           <View style={styles.centeredBlockA}>
-            <Text style={[styles.labelMagicItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Attunement description')}</Text>
+            <Text style={[styles.labelMagicItemCreA, { fontSize: fontSize, color: theme.textColor }]}>{t('Attunement description')}</Text>
             <TextInput
               style={[styles.inputItemCreator, { width: 300 * scaleFactor, height: 100 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               multiline
@@ -308,7 +323,7 @@ const SpellCreator: React.FC = ({ navigation }) => {
           </View>
 
           <View style={styles.centeredBlockMagicItemCont}>
-            <Text style={[styles.labelMagicItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Classes description')}</Text>
+            <Text style={[styles.labelMagicItemCreA, { fontSize: fontSize, color: theme.textColor }]}>{t('Classes description')}</Text>
             <TextInput
               style={[styles.inputItemCreator, { height: 100 * scaleFactor, width: 300 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               multiline

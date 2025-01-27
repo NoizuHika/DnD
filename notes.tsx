@@ -17,13 +17,12 @@ roll dice style
 
 DM change session
 
-документация, Расширить больше вклад власны. То есть все тесты, все,
-что касалось документация, проекта, имплементаций
+документация, Расширить больше вклад власны. То есть все тесты
+тесты в документации, мануально как-то описать.
 
-тесты все,
-
-перевод всего приложения. Оптимизация всех видоков
-
+библиография в стиле
+[2] What has caused the surge in popularity of Dungeons and Dragons? Blog na platformie tabletopdominion.com, 2023,
+https://tabletopdominion.com/blogs/news/what-has-caused-the-surge-in-popularity-of-dungeons-and-dragons (dostęp 25.11.2024).
 
       <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
@@ -37,11 +36,14 @@ DM change session
 
       onPress={() => navigation.goBack()}>
 
-Локализация, виды до конца (спелы итд), автоматическое поберание экрана,
-НПС креатор
+      textAlign: 'center',
+      fontSize: 16,
+      color: '#d6d6d6',
+      width: '80%',
+      backgroundColor: 'rgba(0,0,0,0.8)',
+      padding: 20,
 
-маг. пре
-комон итд с большой
+НПС креатор
 
 Перевод в персонаже и кампании. Энкаунтеры итд
 Креаторы стили на ясном фоне

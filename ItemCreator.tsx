@@ -75,7 +75,7 @@ const ItemCreator: React.FC = ({ navigation }) => {
       </View>
 
           <View style={[styles.centeredBlock, { marginTop: 40 * scaleFactor }]}>
-            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
+            <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
             <TextInput
               style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               placeholder={t('Enter item name')}
@@ -123,7 +123,7 @@ const ItemCreator: React.FC = ({ navigation }) => {
           </View>
 
           <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
-            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Weight')}</Text>
+            <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Weight')}</Text>
             <TextInput
               style={[styles.inputItemCreatorSmall, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               placeholder={t('Enter item weight')}
@@ -172,10 +172,10 @@ const ItemCreator: React.FC = ({ navigation }) => {
          </View>
 
           <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
-           <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Rarity')}</Text>
+           <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Rarity')}</Text>
            <Picker
              selectedValue={selectedRarity}
-             style={[styles.pickerMagicItemCre, { width: 300 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
+             style={[styles.pickerMagicItemCre, { width: 250 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
              onValueChange={(value) => setSelectedRarity(value)}
            >
              {rarities.map((rarity) => (
@@ -185,7 +185,7 @@ const ItemCreator: React.FC = ({ navigation }) => {
          </View>
 
           <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
-            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Description')}</Text>
+            <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Description')}</Text>
             <TextInput
               style={[styles.inputItemCreator, { height: 100 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               multiline
