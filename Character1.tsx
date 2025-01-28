@@ -31,7 +31,7 @@ const Character1: React.FC = ({ route,navigation }) => {
   const maxHP = character.playerClasses[0].maxHP
 
   const handleGoBack = () => {
-    navigation.navigate('Characters');
+    navigation.goBack();
   };
 
   const handleRollDice = () => {
@@ -211,7 +211,7 @@ const Character1: React.FC = ({ route,navigation }) => {
           <View style={styles.powerLevels}>
             {['Cantrip','I', 'II', 'III', 'IV', 'V', 'VI'].map((label, index) => (
               <TouchableOpacity key={index} style={styles.rightButton}>
-                <Text style={styles.buttonTextCharacter}>{label}</Text>
+                <Text style={styles.buttonTextCharacterA}>{label}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -239,7 +239,7 @@ const Character1: React.FC = ({ route,navigation }) => {
           <View style={styles.powerLevels}>
             {['Cantrip','I', 'II', 'III', 'IV', 'V', 'VI'].map((label, index) => (
               <TouchableOpacity key={index} style={styles.rightButton}>
-                <Text style={styles.buttonTextCharacter}>{label}</Text>
+                <Text style={styles.buttonTextCharacterA}>{label}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -267,7 +267,7 @@ const Character1: React.FC = ({ route,navigation }) => {
           <View style={styles.powerLevels}>
             {['Cantrip','I', 'II', 'III', 'IV', 'V', 'VI'].map((label, index) => (
               <TouchableOpacity key={index} style={styles.rightButton}>
-                <Text style={styles.buttonTextCharacter}>{label}</Text>
+                <Text style={styles.buttonTextCharacterA}>{label}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -338,7 +338,9 @@ const Character1: React.FC = ({ route,navigation }) => {
           <Text style={[styles.healthText, { fontSize: fontSize }]}>{t('Heal')}</Text>
         </TouchableOpacity>
         <View style={{ alignItems: 'center' }}>
-            <Text style={[styles.statText, { fontSize: fontSize }]}>{'\n'}{t('Health')}: {health}</Text>
+            <View style={styles.healthBarA}>
+              <Text style={[styles.statTextA, { fontSize: fontSize }]}>{'\n'}{t('Health')}: {health}</Text>
+            </View>
             <View style={styles.healthBar}>
               <View style={[styles.healthFill, { width: `${(health / maxHP) * 100}%` }]} />
             </View>
@@ -416,10 +418,10 @@ const Character1: React.FC = ({ route,navigation }) => {
       {skillsVisible && (
         <View style={styles.skillsWindow}>
           <View style={styles.skillRow}>
-            <Text style={[styles.headerText, { fontSize: fontSize, right: '70%' }]}>{t('Prof')}.</Text>
-            <Text style={[styles.headerText, { fontSize: fontSize, right: '150%' }]}>{t('Mod')}.</Text>
-            <Text style={[styles.headerText, { fontSize: fontSize, right: '60%' }]}>{t('Skill')}</Text>
-            <Text style={[styles.headerText, { fontSize: fontSize, left: '320%' }]}>{t('Bonus')}</Text>
+            <Text style={[styles.headerText, { fontSize: fontSize, flex: 0.15 }]}>{t('Prof')}</Text>
+            <Text style={[styles.headerText, { fontSize: fontSize, flex: 0.15 }]}>{t('Mod')}</Text>
+            <Text style={[styles.headerText, { fontSize: fontSize, flex: 0.30 }]}>{t('Skill')}</Text>
+            <Text style={[styles.headerText, { fontSize: fontSize, flex: 0.45 }]}>{t('Bonus')}</Text>
           </View>
           <ScrollView style={{ height: 300 * scaleFactor * 1.4 }}>
             {skills.map((skill, index) => (

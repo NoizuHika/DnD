@@ -172,6 +172,15 @@ const styles = StyleSheet.create({
     color: '#7F7F7F',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
+  CampNameA: {
+    textAlign: 'center',
+    fontSize: 24,
+    color: '#7F7F7F',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingHorizontal: 20,
+    paddingVertical: 1,
+    borderRadius: 10,
+  },
   button: {
     alignItems: 'center',
     textAlign: 'center',
@@ -279,6 +288,11 @@ const styles = StyleSheet.create({
   buttonTextCharacter: {
     fontSize: 16,
     color: '#d6d6d6',
+  },
+  buttonTextCharacterA: {
+    fontSize: 16,
+    color: '#d6d6d6',
+    padding: 5,
   },
   buttonTextCamp: {
     fontSize: 16,
@@ -433,7 +447,6 @@ const styles = StyleSheet.create({
   },
   editTextCamp: {
     color: 'yellow',
-    marginHorizontal: 5,
   },
   EditText: {
     fontSize: 10,
@@ -527,6 +540,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginHorizontal: 0,
     marginLeft: 0,
+  },
+  inputMonCreStatA: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 50,
   },
   inputInventory: {
     borderBottomWidth: 1,
@@ -645,6 +662,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: 'rgba(0,0,0,0.8)',
     paddingVertical: 3,
+  },
+  labelItemCreC: {
+    alignItems: 'center',
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#d6d6d6',
+    width: '100%',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingVertical: 3,
+    marginTop: 7,
   },
   labelNameItemCre: {
     alignItems: 'center',
@@ -909,6 +936,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     borderColor: '#7F7F7F',
   },
+  addButtonImageA: {
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    textAlignVertical: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: '#7F7F7F',
+  },
   addButtonCamp: {
     borderColor: '#7F7F7F',
     borderWidth: 1.5,
@@ -916,6 +952,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     alignItems: 'center',
+    marginTop: 10,
+    paddingVertical: 4,
   },
   playerPanel: {
     height: 95,
@@ -1005,6 +1043,9 @@ const styles = StyleSheet.create({
   statText: {
     color: '#d6d6d6',
   },
+  statTextA: {
+    color: '#ffd700',
+  },
   circleBox: {
     width: 70,
     height: 70,
@@ -1043,10 +1084,13 @@ const styles = StyleSheet.create({
   healthBar: {
     width: '120%',
     height: 15,
-    backgroundColor: '#555',
     borderRadius: 10,
     overflow: 'hidden',
     marginVertical: 10,
+  },
+  healthBarA: {
+    alignItems: 'center',
+    marginTop: 10,
   },
   healthText: {
     color: 'green',
@@ -1173,6 +1217,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     backgroundColor: 'rgba(0,0,0,0.8)',
     padding: 10,
+    borderRadius: 10,
   },
   rightContainer: {
     position: 'absolute',
@@ -2006,12 +2051,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 25,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   encounterNameA: {
     alignItems: 'center',
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 25,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   encounterNameB: {
     marginTop: '30%',
@@ -2019,6 +2066,14 @@ const styles = StyleSheet.create({
     marginTop: '20%',
   },
   monsterText: {
+    flex: 1,
+    fontSize: 16,
+    color: '#d6d6d6',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    textAlign: 'center',
+    paddingVertical: 3,
+  },
+  monsterTextA: {
     flex: 1,
     fontSize: 16,
     color: '#d6d6d6',
@@ -2053,6 +2108,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ddd',
     marginBottom: 10,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingLeft: 10,
   },
   controlButton: {
     fontSize: 18,
@@ -2110,7 +2167,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     backgroundColor: '#222',
-    padding: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    paddingHorizontal: 30,
     borderWidth: 1,
     borderColor: '#444',
   },
@@ -2166,7 +2227,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   cellAvatarEncounterRun: {
-    flex: 0.6,
+    flex: 0.7,
     textAlign: 'center',
   },
   cellNameEncounterRun: {
@@ -2386,7 +2447,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20,
   },
   infoColumn: {
     flex: 1,
@@ -3033,7 +3093,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     fontSize: 33,
     fontWeight: 'bold',
-    color: '#d6d6d6',
   },
   diceRzut: {
     width: 65,
@@ -3093,7 +3152,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   diceRollLabelText: {
-    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
     textTransform: 'uppercase',
@@ -3326,6 +3384,12 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
+  buttonContainerCampA: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   buttonTextPlus: {
     color: 'green',
     justifyContent: 'center',
@@ -3424,6 +3488,8 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 1,
     textAlign: 'center',
+    textAlignVertical: 'center',
+    textAlignVertical: 'center',
   },
   playerSessionDetailStatAC: {
     fontSize: 14,
@@ -3432,6 +3498,8 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 1,
     textAlign: 'center',
+    justifyContent: 'center',
+    textAlignVertical: 'center',
   },
   playerSessionDetailAvatarContainer: {
     alignItems: 'center',

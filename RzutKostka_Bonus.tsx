@@ -107,7 +107,7 @@ useEffect(() => {
             source={theme.icons.d20}
             style={[styles.diceKostka, { transform: [{ rotate: spin }], width: 200 * scaleFactor, height: 200 * scaleFactor }]}
           />
-          {diceValue !== null && <Text style={[styles.diceValue, { color: theme.textColor, fontSize: fontSize * 1.5 }]}>{diceValue}</Text>}
+          {diceValue !== null && <Text style={[styles.diceValue, { color: theme.diceColor, fontSize: fontSize * 1.5 }]}>{diceValue}</Text>}
         </TouchableOpacity>
       </View>
 

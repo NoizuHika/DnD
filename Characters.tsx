@@ -68,7 +68,7 @@ const Characters: React.FC = ({ navigation }) => {
 
       <View style={styles.characterRow}>
               {characters.map((character, index) => (
-              <View key={index} style={styles.buttonContainerCamp}>
+              <View key={index} style={styles.buttonContainerCampA}>
                 <TouchableOpacity style={styles.button} onPress={() => handleCharacterPress(character)}>
                   <ImageBackground
                                     source={{uri: character.image }}

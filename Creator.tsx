@@ -34,6 +34,10 @@ const Creator: React.FC = ({ navigation }) => {
     navigation.navigate('FeatsCreator');
   };
 
+  const handleNPCCreatorScreen = () => {
+    navigation.navigate('CreatorNPC');
+  };
+
   const handleBackLibScreen = () => {
     navigation.navigate('BackLibCreator');
   };
@@ -95,6 +99,17 @@ const Creator: React.FC = ({ navigation }) => {
       </View>
 
       <View style={[styles.buttonContainerUsu, { bottom: '30%' }]}>
+        <TouchableOpacity style={styles.button} onPress={handleNPCCreatorScreen}>
+          <ImageBackground source={theme.backgroundButton} style={[styles.buttonBackground, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}>
+            <Image source={theme.icons.npcCreator} style={[styles.icons, { height: 40 * scaleFactor, width: 40 * scaleFactor }]} />
+            <Text style={[styles.buttonText, { color: theme.fontColor, fontSize: fontSize, textAlign: theme.textAlign }]}>
+              {t('NPC Creator')}
+            </Text>
+          </ImageBackground>
+        </TouchableOpacity>
+      </View>
+
+      <View style={[styles.buttonContainerUsu, { bottom: '20%' }]}>
         <TouchableOpacity style={styles.button} onPress={handleFeatsCreatorScreen}>
           <ImageBackground source={theme.backgroundButton} style={[styles.buttonBackground, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}>
             <Image source={theme.icons.featsFeats} style={[styles.icons, { height: 40 * scaleFactor, width: 40 * scaleFactor }]} />
@@ -105,7 +120,7 @@ const Creator: React.FC = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.buttonContainerUsu, { bottom: '20%' }]}>
+      <View style={[styles.buttonContainerUsu, { bottom: '10%' }]}>
         <TouchableOpacity style={styles.button} onPress={handleBackLibScreen}>
           <ImageBackground source={theme.backgroundButton} style={[styles.buttonBackground, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}>
             <Image source={theme.icons.backLib} style={[styles.icons, { height: 40 * scaleFactor, width: 40 * scaleFactor }]} />

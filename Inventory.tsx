@@ -32,6 +32,19 @@ const Inventory: React.FC = ({ route,navigation }) => {
     }
   };
 
+  const handleAddItemsFromJSON = () => {
+    const updatedItems = [...items];
+    sampleItems.items.forEach(sampleItem => {
+      const existingItemIndex = updatedItems.findIndex(item => item.name === sampleItem.name);
+      if (existingItemIndex >= 0) {
+        updatedItems[existingItemIndex].quantity += sampleItem.quantity;
+      } else {
+        updatedItems.push(sampleItem);
+      }
+    });
+    setItems(updatedItems);
+  };
+
   const handleItemPress = (item) => {
     setSelectedItem(item);
   };
@@ -129,7 +142,7 @@ const Inventory: React.FC = ({ route,navigation }) => {
       </ScrollView>
 
       <View style={styles.goldBar}>
-        <Text style={[styles.goldText, { fontSize: fontSize }]}>{t('Gold')}: {gold} {t('gold')}</Text>
+        <Text style={[styles.goldText, { fontSize: fontSize }]}>{t('Gold')}: {gold}</Text>
       </View>
 
       {/* items list */}
@@ -137,8 +150,8 @@ const Inventory: React.FC = ({ route,navigation }) => {
         <View style={styles.tableHeader}>
           <Text style={[styles.tableHeaderText, styles.nameColumn, { fontSize: fontSize * 0.9 }]}>{t('Name')}</Text>
           <Text style={[styles.tableHeaderText, styles.weightColumn, { fontSize: fontSize * 0.9 }]}>{t('Weight')}</Text>
-          <Text style={[styles.tableHeaderText, styles.quantityColumn, { fontSize: fontSize * 0.9 }]}>{t('Quantity')}</Text>
-          <Text style={[styles.tableHeaderText, styles.costColumn, { fontSize: fontSize * 0.9 }]}>{t('Cost')}</Text>
+          <Text style={[styles.tableHeaderText, styles.quantityColumn, { fontSize: fontSize * 0.9 }]}>{t('QuantityInv')}</Text>
+          <Text style={[styles.tableHeaderText, styles.costColumn, { fontSize: fontSize * 0.9 }]}>{t('CostInv')}</Text>
           <Text style={[styles.tableHeaderText, styles.actionsColumn, { fontSize: fontSize * 0.9 }]}>{t('Actions')}</Text>
         </View>
         {filteredItems.map((item, index) => (

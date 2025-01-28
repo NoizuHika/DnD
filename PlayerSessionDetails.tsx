@@ -257,7 +257,7 @@ return (
 
      <View style={styles.CampaignOneContainerMainA}>
       <View style={styles.CampaignOneContainerMain}>
-        <Text style={[styles.CampName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>{campaign.title}</Text>
+        <Text style={[styles.CampNameA, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>{campaign.title}</Text>
 
       </View>
 
@@ -298,7 +298,7 @@ return (
                  </View>
                ))
              ) : (
-               <Text style={styles.emptyResultText}>{t('No notes available')}</Text>
+               <Text style={styles.resultText}>{t('No notes available')}</Text>
              )}
 
         {selectedNote && (
@@ -419,7 +419,7 @@ return (
                <Text style={styles.diceResult}>{"\n\n"}</Text>
              </>
                ) : (
-             <Text style={styles.emptyResultText}>{t('No logs available')}</Text>
+             <Text style={styles.resultText}>{t('No logs available')}</Text>
            )}
           </ScrollView>
         </View>

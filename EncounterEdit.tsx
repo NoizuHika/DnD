@@ -175,7 +175,7 @@ const setUpdate = async (updatedEncounter) => {
       </View>
 
      <View style={styles.encounterNameB}>
-      <Text style={[styles.encounterName, { color: theme.fontColor, textAlign: 'center', fontSize: fontSize * 1.5 }]}>{encounter.title}</Text>
+      <Text style={[styles.encounterName, { color: theme.fontColor, textAlign: 'center', fontSize: fontSize * 1.5 }]}>{encounter.name}</Text>
       <Text style={[styles.encounterNameA, { color: theme.fontColor, textAlign: 'center', fontSize: fontSize }]}>{t('Recommended level')}: {encounter.level}</Text>
      </View>
 
@@ -186,7 +186,7 @@ const setUpdate = async (updatedEncounter) => {
           keyExtractor={(item, index) => `${item.name}-${index}`}
           renderItem={({ item, index }) => (
             <View style={styles.monsterRow}>
-              <Text style={[styles.monsterText, { fontSize: fontSize }]}>{item.base.name}</Text>
+              <Text style={[styles.monsterTextA, { fontSize: fontSize }]}>{item.base.name}</Text>
 
               <TouchableOpacity onPress={() => deleteMonster(index)}>
                 <Text style={[styles.deleteButtonNewColor, { fontSize: fontSize }]}>{t('Delete')}</Text>
@@ -207,8 +207,8 @@ const setUpdate = async (updatedEncounter) => {
       </TouchableOpacity>
 
       <TextInput
-        style={[styles.searchInputEncounters, { height: 50 * scaleFactor, fontSize: fontSize }]}
-        placeholder="Search monsters..."
+        style={[styles.searchInputEncounters, { height: 40 * scaleFactor, fontSize: fontSize }]}
+        placeholder={t('Search monsters...')}
         placeholderTextColor="#fff"
         value={searchText}
         onChangeText={(text) => {
@@ -223,7 +223,7 @@ const setUpdate = async (updatedEncounter) => {
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => (
           <View style={styles.monsterRow}>
-            <Text style={[styles.monsterText, { fontSize: fontSize }]}>{item.name}</Text>
+            <Text style={[styles.monsterTextA, { fontSize: fontSize }]}>{item.name}</Text>
             <TouchableOpacity onPress={() => addMonster(item)}>
               <Text style={[styles.controlButton, { fontSize: fontSize }]}>{t('Add')}</Text>
             </TouchableOpacity>
@@ -248,14 +248,14 @@ const setUpdate = async (updatedEncounter) => {
          <View style={styles.column}>
           <TextInput
             style={[styles.filterInput, { height: 40 * scaleFactor, fontSize: fontSize }]}
-            placeholder="Min CR (e.g., 1/4)"
+            placeholder={t('Min CR (e.g., 1/4)')}
             value={minCr}
             placeholderTextColor="#808080"
             onChangeText={setMinCr}
           />
           <TextInput
             style={[styles.filterInput, { height: 40 * scaleFactor, fontSize: fontSize }]}
-            placeholder="Max CR (e.g., 2)"
+            placeholder={t('Max CR (e.g., 2)')}
             value={maxCr}
             placeholderTextColor="#808080"
             onChangeText={setMaxCr}
@@ -264,14 +264,14 @@ const setUpdate = async (updatedEncounter) => {
          <View style={styles.column}>
           <TextInput
             style={[styles.filterInput, { height: 40 * scaleFactor, fontSize: fontSize }]}
-            placeholder="Type (e.g., Beast)"
+            placeholder={t('Type (e.g., Beast)')}
             value={typeFilter}
             placeholderTextColor="#808080"
             onChangeText={setTypeFilter}
           />
           <TextInput
             style={[styles.filterInput, { height: 40 * scaleFactor, fontSize: fontSize }]}
-            placeholder="Environment (e.g., Forest)"
+            placeholder={t('Environment (e.g., Forest)')}
             value={environmentFilter}
             placeholderTextColor="#808080"
             onChangeText={setEnvironmentFilter}
