@@ -6,6 +6,7 @@ import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
 import { UserData } from './UserData';
+import { EncounterDto } from './dataModels/encounterDto'
 
 Appearance.setColorScheme('light');
 
@@ -18,6 +19,7 @@ const EncounterEdit: React.FC = ({ route, navigation }) => {
   const { encounter } = route.params;
   const [bestiary,setBestiary]= useState({});
   const [monsters, setMonsters] = useState(encounter.entities || []);
+  const [monstersEXP, setMonstersEXP] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [filteredMonsters, setFilteredMonsters] = useState({});
   const [filterModalVisible, setFilterModalVisible] = useState(false);
@@ -33,13 +35,28 @@ const EncounterEdit: React.FC = ({ route, navigation }) => {
         fetchData();
       }, []);
 
+const getChallengeRating = (baseID) => {
+    if (!bestiary || !Array.isArray(bestiary)) {
+        return null;
+          }
+      const monster = bestiary.find(m => m.id === baseID);
+      return monster ? monster.challengeRating : null;
+};
+
+useEffect(() => {
+    const newMonsterEXP = encounter.entities.map(entity => {
+      const challengeRating = getChallengeRating(entity.baseID);
+      return challengeRating !== null ? challengeRating : 0;
+    });
+    setMonstersEXP(newMonsterEXP);
+  }, []);
 
   const applyFilters = () => {
     let filtered = bestiary;
 
     if (minCr || maxCr) {
       filtered = filtered.filter((bestiary) => {
-        const crValue = parseFloat(bestiary.challangeRating.replace('/', '.'));
+        const crValue = parseFloat(bestiary.challengeRating.replace('/', '.'));
         const min = minCr ? parseFloat(minCr.replace('/', '.')) : -Infinity;
         const max = maxCr ? parseFloat(maxCr.replace('/', '.')) : Infinity;
         return crValue >= min && crValue <= max;
@@ -95,35 +112,47 @@ const fetchData = async () => {
     setSearchText('');
     setFilteredMonsters(bestiary);
   };
+
+
 const setUpdate = async (updatedEncounter) => {
   try {
+     console.log(JSON.stringify(updatedEncounter));
     const response = await fetch(`http://${ipv4}:8000/encounters/update`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: {
-        item_id: updatedEncounter.id,
-        item: updatedEncounter.toString(),
-      },
+
+      body: JSON.stringify(updatedEncounter),
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch data');
+      throw new Error(`Failed to fetch data: ${response.status}`);
     }
 
     const result = await response.json();
-
+    console.log(updatedEncounter)
     console.log('Updated encounter:', result);
 
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error('Error fetching data:', error.message);
   }
 };
 
 
   const updateEncounters=()=>{
-      const updatedEncounter = { ...encounter, entities: monsters };
+      const players = encounter.players == null ? [] : encounter.players;
+      const { adjustedXP } = calculateEncounterXP();
+      const updatedEncounter = {
+          id: encounter.id,
+          title: encounter.title,
+          entities: monsters,
+          players: players,
+          campaignID: encounter.campaignID,
+          ownerID: encounter.ownerID,
+          XP:adjustedXP
+        };
+
       setUpdate(updatedEncounter)
       navigation.navigate('Encounters',{campaign:campaign});
       };
@@ -132,27 +161,53 @@ const setUpdate = async (updatedEncounter) => {
     navigation.goBack();
   };
 
-  const addMonster = (monster) => {
-      const newEntity = {
-            base: monster,
-            actualHP: parseInt(monster.averageHitPoints),
-            effects: [],
-          };
-          setMonsters([...monsters, newEntity]);
+const calculateEncounterXP = () => {
+      if (!monstersEXP || monstersEXP === 0) {
+          return { totalXP: 0, adjustedXP: 0, multiplier: 1 };
+        }
+
+    let totalXP = 0;
+    monstersEXP.forEach((entity) => {
+      const challengeRating = entity;
+       if (challengeRating && typeof challengeRating === 'string') {
+      const xpStr = challengeRating.split("(")[1].replace("xp)", "").trim();
+      totalXP += parseInt(xpStr, 10);
+      }
+    });
+    const numEntities = monstersEXP.length;
+    let multiplier = 1;
+
+    if (numEntities === 2) multiplier = 1.5;
+    else if (numEntities >= 3 && numEntities <= 6) multiplier = 2;
+    else if (numEntities >= 7 && numEntities <= 10) multiplier = 2.5;
+    else if (numEntities >= 11 && numEntities <= 14) multiplier = 3;
+    else if (numEntities >= 15) multiplier = 4;
+
+    const adjustedXP = totalXP * multiplier;
+
+    return { totalXP, adjustedXP, multiplier };
   };
 
-  const updateMonsterCount = (name, delta) => {
-    const updated = monsters.map((monster) =>
-      monster.name === name
-        ? { ...monster, count: Math.max(1, monster.count + delta) }
-        : monster
-    );
-    setMonsters(updated);
+
+  const addMonster = (monster) => {
+      const newEntity = {
+            baseID: monster.id,
+            actualHP: monster.averageHitPoints,
+            effects: [],
+            name: monster.name,
+          };
+          const newChallengeRating = getChallengeRating(newEntity.baseID);
+
+        setMonstersEXP(prevMonsterEXP => [...prevMonsterEXP, newChallengeRating]);
+        setMonsters([...monsters, newEntity]);
+
   };
 
   const deleteMonster = (index) => {
     const updated = monsters.filter((_, i) => i !== index);
+    const updated2 = monstersEXP.filter((_, i) => i !== index);
     setMonsters(updated);
+    setMonstersEXP(updated2)
   };
 
   const applySearch = (text) => {
@@ -186,7 +241,7 @@ const setUpdate = async (updatedEncounter) => {
           keyExtractor={(item, index) => `${item.name}-${index}`}
           renderItem={({ item, index }) => (
             <View style={styles.monsterRow}>
-              <Text style={[styles.monsterText, { fontSize: fontSize }]}>{item.base.name}</Text>
+              <Text style={[styles.monsterText, { fontSize: fontSize }]}>{item.name}</Text>
 
               <TouchableOpacity onPress={() => deleteMonster(index)}>
                 <Text style={[styles.deleteButtonNewColor, { fontSize: fontSize }]}>{t('Delete')}</Text>

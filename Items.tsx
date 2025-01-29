@@ -80,15 +80,13 @@ const Items = ({ navigation }) => {
     console.log(selectedSubtype)
 if (selectedSubtype && selectedSubtype !== 'Subtype') {
   filtered = filtered.filter((item) => {
-    // Sprawdź, czy itemType istnieje i jest tablicą
+
     if (!item.itemType) return false;
 
-    // Zbierz itemType w jedno ciąg oddzielone przecinkiem i normalizuj
     const normalizedItemTypes = Array.isArray(item.itemType)
-      ? item.itemType.map((s) => s.trim().toLowerCase()).join(',')  // Znormalizowana lista itemType oddzielona przecinkiem
-      : item.itemType.trim().toLowerCase();                          // Jeśli to nie jest tablica, znormalizuj bez przecinka
+      ? item.itemType.map((s) => s.trim().toLowerCase()).join(',')
+      : item.itemType.trim().toLowerCase();
 
-    // Sprawdź, czy selectedSubtype znajduje się w znormalizowanej tablicy itemType
     return normalizedItemTypes.split(',').includes(selectedSubtype.trim().toLowerCase());
   });
 }

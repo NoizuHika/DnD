@@ -17,7 +17,7 @@ export const UserProvider = ({ children }) => {
         email: email,
         password: password,
       };
-      const response = await fetch('http://192.168.0.54.1:8000/register', {
+      const response = await fetch(`http://${ipv4}:8000/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

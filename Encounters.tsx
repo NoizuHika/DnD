@@ -79,30 +79,7 @@ const thresholdsXP = {
       ]
     );
   };
-  const calculateEncounterXP = (encounter) => {
-      if (!encounter.entities || encounter.entities.length === 0) {
-          return { totalXP: 0, adjustedXP: 0, multiplier: 1 };
-        }
 
-    let totalXP = 0;
-    encounter.entities.forEach((entity) => {
-      const challengeRating = entity.bestiary.challengeRating;
-      const xpStr = challengeRating.split("(")[1].replace("xp)", "").trim();
-      totalXP += parseInt(xpStr, 10);
-    });
-    const numEntities = encounter.entities.length;
-    let multiplier = 1;
-
-    if (numEntities === 2) multiplier = 1.5;
-    else if (numEntities >= 3 && numEntities <= 6) multiplier = 2;
-    else if (numEntities >= 7 && numEntities <= 10) multiplier = 2.5;
-    else if (numEntities >= 11 && numEntities <= 14) multiplier = 3;
-    else if (numEntities >= 15) multiplier = 4;
-
-    const adjustedXP = totalXP * multiplier;
-
-    return { totalXP, adjustedXP, multiplier };
-  };
     const calculatePartyThresholds = (campaign) => {
       const thresholds = { easy: 0, medium: 0, hard: 0, deadly: 0 };
 
@@ -159,8 +136,8 @@ const partyThresholds = calculatePartyThresholds(campaign);
         </View>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           {encounters.map((encounter) => {
-              const { totalXP, adjustedXP, multiplier } = calculateEncounterXP(encounter);
-                      const difficulty = getEncounterDifficulty(adjustedXP, partyThresholds);
+
+                      const difficulty = getEncounterDifficulty(encounter.XP, partyThresholds);
             return(
             <View key={encounter.id} style={styles.tableRow}>
               <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.title}</Text>

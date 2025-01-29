@@ -117,26 +117,49 @@ const Spells = ({ navigation }) => {
     }));
   };
 
-  const updateSpell = (updatedSpell) => {
-    setSpells((prevSpells) =>
-      prevSpells.map((spell) =>
-        spell.id === updatedSpell.id ? updatedSpell : spell
-      )
-    );
-  };
+const setUpdate = async (spellDto) => {
+  try {
+    const response = await fetch(`http://${ipv4}:8000/spells/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(spellDto),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Updated spell:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+};
+
 
   const saveSpellChanges = () => {
     if (!editedSpell) return;
-
-    const updatedSpell = { ...editedSpell };
-
-    setSpells((prevSpells) =>
-      prevSpells.map((spell) =>
-        spell.id === updatedSpell.id ? updatedSpell : spell
-      )
-    );
-
-    setSelectedSpell(updatedSpell);
+    const spellDto = {
+              id: editedSpell.id,
+              name: editedSpell.name,
+              level: editedSpell.level,
+              castingTime: editedSpell.castingTime,
+              duration: editedSpell.duration,
+              components: editedSpell.components,
+              description: editedSpell.description,
+              atHigherLevels: editedSpell.atHigherLevels,
+              range: editedSpell.range,
+              school:editedSpell.school,
+              classes: editedSpell.classes,
+              source: editedSpell.source,
+              ownerID: editedSpell.ownerID,
+            };
+         setUpdate(spellDto)
+    setSelectedSpell(editedSpell);
     setIsEditing(false);
   };
 
@@ -247,16 +270,8 @@ const Spells = ({ navigation }) => {
                   {t('Range: \n')} {selectedSpell.range}
                 </Text>
 
-                <Text style={styles.modalDetailsSpells}>
-                  {t('Attack/Save: \n')} {selectedSpell.attackSave}
-                </Text>
-
           </View>
             <View style={styles.columnSpells}>
-
-                <Text style={styles.modalDetailsSpells}>
-                  {t('Area: \n')} {selectedSpell.area}
-                </Text>
 
                 <Text style={styles.modalDetailsSpells}>
                   {t('Components: \n')} {selectedSpell.components.join(', ')}
@@ -266,8 +281,8 @@ const Spells = ({ navigation }) => {
 
                 <Text style={styles.itemDescriptionSpell}>{selectedSpell.description}</Text>
 
-                {selectedSpell.upgrade && (
-                  <Text style={styles.itemDescription}>{t('Upgrade')}: {selectedSpell.upgrade}</Text>
+                {selectedSpell.atHigherLevels && selectedSpell.atHigherLevels !=" " &&(
+                  <Text style={styles.itemDescription}>{t('At Higher Levels')}: {selectedSpell.atHigherLevels}</Text>
                 )}
 
                 <View style={styles.modalButtons}>
@@ -290,15 +305,22 @@ const Spells = ({ navigation }) => {
 
           <View style={styles.twoColumnContainer}>
             <View style={styles.columnSpells}>
-
-                <TextInput
-                  style={styles.modalDetails}
-                  value={String(editedSpell.level)}
-                  onChangeText={(value) => handleEditChange('level', value)}
-                  placeholder={t('Level')}
-                  placeholderTextColor="#808080"
-                />
-
+                <Picker
+                  selectedValue={editedSpell.level}
+                  onValueChange={(value) => handleEditChange('level', value)}
+                  style={styles.pickerItemsA}
+                >
+                  <Picker.Item label={t('Cantrip')} value="Cantrip" />
+                  <Picker.Item label={t('1st')} value="1st" />
+                  <Picker.Item label={t('2nd')} value="2nd" />
+                  <Picker.Item label={t('3rd')} value="3rd" />
+                  <Picker.Item label={t('4th')} value="4th" />
+                  <Picker.Item label={t('5th')} value="5th" />
+                  <Picker.Item label={t('6th')} value="6th" />
+                  <Picker.Item label={t('7th')} value="7th" />
+                  <Picker.Item label={t('8th')} value="8th" />
+                  <Picker.Item label={t('9th')} value="9th" />
+                </Picker>
                 <Picker
                   selectedValue={editedSpell.school}
                   onValueChange={(value) => handleEditChange('school', value)}
@@ -341,24 +363,10 @@ const Spells = ({ navigation }) => {
                   placeholder={t('Range')}
                   placeholderTextColor="#808080"
                 />
-                <TextInput
-                  style={styles.modalDetails}
-                  value={editedSpell.attackSave}
-                  onChangeText={(value) => handleEditChange('attackSave', value)}
-                  placeholder={t('Attack/Save')}
-                  placeholderTextColor="#808080"
-                />
 
           </View>
             <View style={styles.columnSpells}>
 
-                <TextInput
-                  style={styles.modalDetails}
-                  value={editedSpell.area}
-                  onChangeText={(value) => handleEditChange('area', value)}
-                  placeholder={t('Area')}
-                  placeholderTextColor="#808080"
-                />
                 <TextInput
                   style={styles.modalDetails}
                   value={editedSpell.components ? editedSpell.components.join(', ') : ''}
@@ -378,12 +386,12 @@ const Spells = ({ navigation }) => {
                   placeholderTextColor="#808080"
                   multiline
                 />
-                {editedSpell.upgrade && (
+                {editedSpell.atHigherLevels && (
                   <TextInput
                     style={styles.itemDescription}
-                    value={editedSpell.upgrade}
-                    onChangeText={(value) => handleEditChange('upgrade', value)}
-                    placeholder={t('Upgrade')}
+                    value={editedSpell.atHigherLevels}
+                    onChangeText={(value) => handleEditChange('atHigherLevels', value)}
+                    placeholder={t('At Higher Levels')}
                     placeholderTextColor="#808080"
                     multiline
                   />

@@ -40,6 +40,31 @@ const Feats = ({ navigation }) => {
       }
     };
 
+const setUpdate = async (updatedEncounter) => {
+  try {
+     console.log(JSON.stringify(updatedEncounter));
+    const response = await fetch(`http://${ipv4}:8000/feats/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(updatedEncounter),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(updatedEncounter)
+    console.log('Updated encounter:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+};
+
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -79,7 +104,7 @@ const Feats = ({ navigation }) => {
         feat.name === selectedFeat.name ? editedFeat : feat
       )
     );
-
+    setUpdate(editedFeat);
     setSelectedFeat(editedFeat);
     setIsEditing(false);
   };
@@ -97,7 +122,7 @@ const Feats = ({ navigation }) => {
       <ScrollView style={styles.tableContainer}>
         <View style={styles.tableHeader}>
           <Text style={[styles.tableHeaderText]}>{t('Name')}</Text>
-          <Text style={[styles.tableHeaderText]}>{t('Prerequisite')}</Text>
+          <Text style={[styles.tableHeaderText]}>{t('Requirements')}</Text>
           <Text style={[styles.tableHeaderText]}>{t('Source')}</Text>
           <Text style={[styles.tableHeaderText]}>{t('Details')}</Text>
         </View>
@@ -127,7 +152,7 @@ const Feats = ({ navigation }) => {
               <View style={styles.itemModal}>
                 <Text style={styles.itemTitle}>{selectedFeat.name}</Text>
                 <Text style={styles.itemDescriptionAttune}>
-                  {t('Prerequisite')}: {selectedFeat.requirements || t('None')}
+                  {t('Requirements')}: {selectedFeat.requirements || t('None')}
                 </Text>
                 <Text style={styles.itemDescription}>{selectedFeat.description}</Text>
                 <View style={styles.modalButtons}>
@@ -150,14 +175,8 @@ const Feats = ({ navigation }) => {
                 <TextInput
                   style={styles.itemDescriptionAttune}
                   value={editedFeat.requirements}
-                  onChangeText={(value) => handleEditChange('prerequisite', value)}
-                  placeholder={t('Prerequisite')}
-                />
-                <TextInput
-                  style={styles.itemDescriptionAttune}
-                  value={editedFeat.prerequisiteDesc}
-                  onChangeText={(value) => handleEditChange('prerequisiteDesc', value)}
-                  placeholder={t('Prerequisite Description')}
+                  onChangeText={(value) => handleEditChange('requirements', value)}
+                  placeholder={t('Requirements')}
                 />
                 <TextInput
                   style={styles.itemDescription}

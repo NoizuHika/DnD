@@ -106,6 +106,7 @@ const Character1: React.FC = ({ route,navigation }) => {
     } else {
         handleRomanNumeralPress(level);
       setRomanVisible(true);
+      setSelectedLevel(level);
       setSkillsVisible(false);
       setActionVisible(false);
       setBonusVisible(false);

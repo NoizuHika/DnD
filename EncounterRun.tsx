@@ -22,7 +22,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
 
   const { encounter } = route.params || {};
   const players = encounter?.players || [];
-  const monsters = encounter?.monsters || [];
+  const monsters = encounter?.entities || [];
 
 // Dla Kuby
 //   const addPlayer = (newPlayer) => {
@@ -126,11 +126,11 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
             <View style={[styles.cellEncounterRun, styles.cellNameEncounterRun]}>
               <Text style={[styles.monsterTextEncRun, { fontSize: fontSize, color: theme.fontColor }]}>{monster.name}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Text style={[styles.acEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('AC')}: {monster.ac}</Text>
-                <Text style={[styles.crEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('CR')}: {monster.cr}</Text>
+                <Text style={[styles.acEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('AC')}: {monster.armorClass}</Text>
+                <Text style={[styles.crEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('CR')}: {monster.challengeRating}</Text>
               </View>
             </View>
-            <Text style={[styles.cellEncounterRun, styles.cellCountEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>x{monster.count}</Text>
+            <Text style={[styles.cellEncounterRun, styles.cellCountEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>1</Text>
           </View>
         ))}
 
