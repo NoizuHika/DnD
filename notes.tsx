@@ -43,17 +43,8 @@ https://tabletopdominion.com/blogs/news/what-has-caused-the-surge-in-popularity-
       backgroundColor: 'rgba(0,0,0,0.8)',
       padding: 20,
 
-НПС креатор
-
-Страницу Креатор Неписей
-
-
-add item from json - инвентарь игрока
-Итемс - если предмет тип оружие - дополнительные поля в деталях diceNumber/diceType Damage Type ///Specification
-а если броня, то дополнительные поля dexBonus/stealthDisadvantage ///Properties
 
 Перевод
 
-NPC Creator
 
 https://www.w3schools.com/css/css_examples.asp

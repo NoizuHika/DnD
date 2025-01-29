@@ -411,8 +411,8 @@ const Character1: React.FC = ({ route,navigation }) => {
       </View>
 
 
-      <TouchableOpacity style={[styles.Skills, { height: 70 * scaleFactor, width: 70 * scaleFactor }]} onPress={toggleSkills}>
-        <Text style={[styles.SkillsText, { fontSize: fontSize }]}>{t('Skills')}</Text>
+      <TouchableOpacity style={[styles.Skills, { height: 73 * scaleFactor, width: 73 * scaleFactor }]} onPress={toggleSkills}>
+        <Text style={[styles.SkillsText, { fontSize: fontSize * 0.8}]}>{t('Skills')}</Text>
       </TouchableOpacity>
 
       {skillsVisible && (

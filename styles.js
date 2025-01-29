@@ -693,12 +693,10 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
   },
   labelMagicItemCreA: {
-    width: '100%',
     textAlign: 'center',
     paddingLeft: 0,
     marginLeft: 0,
     color: '#d6d6d6',
-    width: '100%',
     backgroundColor: 'rgba(0,0,0,0.8)',
     paddingVertical: 3,
     paddingHorizontal: 20,
@@ -3297,6 +3295,7 @@ const styles = StyleSheet.create({
     borderColor: '#7F7F7F',
     padding: 10,
     overflow: 'hidden',
+    zIndex: 10,
   },
   CharacterSpellCard: {
     width: '100%',

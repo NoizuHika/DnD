@@ -18,7 +18,7 @@ const CharacterDetail: React.FC = ({ navigation }) => {
   const { theme } = useContext(ThemeContext);
 
   const handleGoBack = () => {
-     navigation.navigate('Characters');
+    navigation.goBack();
   };
 
   return (

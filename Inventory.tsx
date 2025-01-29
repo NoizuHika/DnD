@@ -53,7 +53,7 @@ const Inventory: React.FC = ({ route,navigation }) => {
   };
 
   const handleGoBack = () => {
-    navigation.navigate('Characters');
+    navigation.goBack();
   };
 
   const calculateTotalWeight = () => {

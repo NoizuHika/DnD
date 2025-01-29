@@ -200,7 +200,7 @@ const Spells: React.FC = ({ navigation }) => {
               style={[
                 styles.tableCell,
                 styles.schoolColumn,
-                { color: schoolColors[spell.school] || '#000', fontSize: fontSize },
+                { color: schoolColors[spell.school] || '#000', fontSize: fontSize * 0.9 },
               ]}
             >
               {spell.school}
@@ -299,7 +299,7 @@ const Spells: React.FC = ({ navigation }) => {
                       <Picker
                         selectedValue={editedSpell.school}
                         onValueChange={(value) => handleEditChange('school', value)}
-                        style={[styles.pickerItemsA, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
+                        style={[styles.pickerItemsA, { width: 150 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
                       >
                         <Picker.Item label={t('Evocation')} value="Evocation" />
                         <Picker.Item label={t('Necromancy')} value="Necromancy" />

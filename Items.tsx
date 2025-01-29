@@ -186,9 +186,9 @@ const Items: React.FC = ({ navigation }) => {
           filteredItems.map((item, index) => (
             <View key={index} style={[styles.tableRow, { paddingVertical: 10 * scaleFactor }]}>
               <Text style={[styles.tableCell, { fontSize: fontSize }]}>{item.name}</Text>
-              <Text style={[styles.tableCell, { fontSize: fontSize }]}>{item.rarity}</Text>
+              <Text style={[styles.tableCell, { fontSize: fontSize * 0.9 }]}>{item.rarity}</Text>
               <Text style={[styles.tableCell, { fontSize: fontSize }]}>{item.type}</Text>
-              <Text style={[styles.tableCell, { fontSize: fontSize }]}>{item.itemType.join(', ')}</Text>
+              <Text style={[styles.tableCell, { fontSize: fontSize }]}>{item.itemType.slice(0, 2).join(', ')}</Text>
               <TouchableOpacity
                 style={styles.tableCell}
                 onPress={() => handleItemPress(item)}
@@ -213,12 +213,58 @@ const Items: React.FC = ({ navigation }) => {
                   <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Subtype')}: {Array.isArray(selectedItem.itemType) ? selectedItem.itemType.join(', ') : selectedItem.itemType}</Text>
                 </View>
                 <View style={styles.itemsDetails}>
-                <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Rarity')}: {selectedItem.rarity}</Text>
+                  <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Rarity')}: {selectedItem.rarity}</Text>
                 </View>
                 <View style={styles.itemsDetails}>
                   <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Price')}: {selectedItem.value} gp</Text>
                   <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Weight')}: {selectedItem.weight} lb</Text>
                 </View>
+
+                {selectedItem.type === 'weapon' && (
+                  <View style={styles.itemsDetails}>
+                    <Text style={[styles.itemCategory, { fontSize: fontSize }]}>
+                      {t('Dice Number/Dice Type')}: {selectedItem.diceNumber}/{selectedItem.diceType}
+                    </Text>
+                  </View>
+                )}
+                {selectedItem.type === 'weapon' && (
+                  <View style={styles.itemsDetails}>
+                    <Text style={[styles.itemCategory, { fontSize: fontSize }]}>
+                      {t('Damage Type')}: {selectedItem.damageType}
+                    </Text>
+                  </View>
+                )}
+                {selectedItem.type === 'weapon' && (
+                  <View style={styles.itemsDetails}>
+                    <Text style={[styles.itemCategory, { fontSize: fontSize }]}>
+                      {t('Specification')}: {selectedItem.specification}
+                    </Text>
+                  </View>
+                )}
+
+
+                {selectedItem.type === 'armor' && (
+                  <View style={styles.itemsDetails}>
+                    <Text style={[styles.itemCategory, { fontSize: fontSize }]}>
+                      {t('Dexterity Bonus')}: {selectedItem.dexBonus}
+                    </Text>
+                  </View>
+                )}
+                {selectedItem.type === 'armor' && (
+                  <View style={styles.itemsDetails}>
+                    <Text style={[styles.itemCategory, { fontSize: fontSize }]}>
+                      {t('Stealth Disadvantage')}: {selectedItem.stealthDisadvantage ? t('Yes') : t('No')}
+                    </Text>
+                  </View>
+                )}
+                {selectedItem.type === 'armor' && (
+                  <View style={styles.itemsDetails}>
+                    <Text style={[styles.itemCategory, { fontSize: fontSize }]}>
+                      {t('Properties')}: {selectedItem.properties}
+                    </Text>
+                  </View>
+                )}
+
                 <Text style={[styles.itemDescription, { fontSize: fontSize }]}>{selectedItem.description}</Text>
                 <View style={styles.modalButtons}>
                   <TouchableOpacity
@@ -254,10 +300,8 @@ const Items: React.FC = ({ navigation }) => {
                       <Picker.Item key={category} label={t(category)} value={category} style={{ fontSize: fontSize }} />
                     ))}
                   </Picker>
-
                 </View>
                 <View style={styles.itemsDetails}>
-
                   {editedItem.type !== 'Type' && (
                     <Picker
                       selectedValue={editedItem.subtype}
@@ -266,14 +310,12 @@ const Items: React.FC = ({ navigation }) => {
                     >
                       <Picker.Item label={t('Subtype')} value="Subtype" style={{ fontSize: fontSize }} />
                       {handleSubtypePicker(editedItem.itemType).map((itemType) => (
-                        <Picker.Item key={itemType} label={t(subtype)} value={itemType} style={{ fontSize: fontSize }} />
+                        <Picker.Item key={itemType} label={t(itemType)} value={itemType} style={{ fontSize: fontSize }} />
                       ))}
                     </Picker>
                   )}
-
                 </View>
                 <View style={styles.itemsDetails}>
-
                   <Picker
                     selectedValue={editedItem.rarity}
                     onValueChange={(value) => handleEditChange('rarity', value)}
@@ -283,10 +325,8 @@ const Items: React.FC = ({ navigation }) => {
                       <Picker.Item key={rarity} label={t(rarity)} value={rarity} style={{ fontSize: fontSize }} />
                     ))}
                   </Picker>
-
                 </View>
                 <View style={styles.itemsDetails}>
-
                   <TextInput
                     style={[styles.itemCategory, { fontSize: fontSize }]}
                     value={String(editedItem.value)}
@@ -304,6 +344,81 @@ const Items: React.FC = ({ navigation }) => {
                     keyboardType="numeric"
                   />
                 </View>
+
+                {editedItem.type === 'weapon' && (
+                  <>
+                    <View style={styles.itemsDetails}>
+                      <TextInput
+                        style={[styles.itemCategory, { fontSize: fontSize }]}
+                        value={String(editedItem.diceNumber)}
+                        onChangeText={(value) => handleEditChange('diceNumber', value)}
+                        placeholder={t('Dice Number')}
+                        placeholderTextColor="#b5b5b5"
+                        keyboardType="numeric"
+                      />
+                    </View>
+                    <View style={styles.itemsDetails}>
+                      <TextInput
+                        style={[styles.itemCategory, { fontSize: fontSize }]}
+                        value={editedItem.diceType}
+                        onChangeText={(value) => handleEditChange('diceType', value)}
+                        placeholder={t('Dice Type')}
+                        placeholderTextColor="#b5b5b5"
+                      />
+                    </View>
+                    <View style={styles.itemsDetails}>
+                      <TextInput
+                        style={[styles.itemCategory, { fontSize: fontSize }]}
+                        value={editedItem.damageType}
+                        onChangeText={(value) => handleEditChange('damageType', value)}
+                        placeholder={t('Damage Type')}
+                        placeholderTextColor="#b5b5b5"
+                      />
+                    </View>
+                    <View style={styles.itemsDetails}>
+                      <TextInput
+                        style={[styles.itemCategory, { fontSize: fontSize }]}
+                        value={editedItem.specification}
+                        onChangeText={(value) => handleEditChange('specification', value)}
+                        placeholder={t('Specification')}
+                        placeholderTextColor="#b5b5b5"
+                      />
+                    </View>
+                  </>
+                )}
+                {editedItem.type === 'armor' && (
+                  <>
+                    <View style={styles.itemsDetails}>
+                      <TextInput
+                        style={[styles.itemCategory, { fontSize: fontSize }]}
+                        value={String(editedItem.dexBonus)}
+                        onChangeText={(value) => handleEditChange('dexBonus', value)}
+                        placeholder={t('Dexterity Bonus')}
+                        placeholderTextColor="#b5b5b5"
+                        keyboardType="numeric"
+                      />
+                    </View>
+                    <View style={styles.itemsDetails}>
+                      <TextInput
+                        style={[styles.itemCategory, { fontSize: fontSize }]}
+                        value={String(editedItem.stealthDisadvantage)}
+                        onChangeText={(value) => handleEditChange('stealthDisadvantage', value)}
+                        placeholder={t('Stealth Disadvantage')}
+                        placeholderTextColor="#b5b5b5"
+                      />
+                    </View>
+                    <View style={styles.itemsDetails}>
+                      <TextInput
+                        style={[styles.itemCategory, { fontSize: fontSize }]}
+                        value={editedItem.properties}
+                        onChangeText={(value) => handleEditChange('properties', value)}
+                        placeholder={t('Properties')}
+                        placeholderTextColor="#b5b5b5"
+                      />
+                    </View>
+                  </>
+                )}
+
                 <TextInput
                   style={[styles.itemDescription, { fontSize: fontSize }]}
                   value={editedItem.description}
