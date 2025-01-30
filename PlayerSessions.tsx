@@ -80,7 +80,7 @@ const PlayerSessions: React.FC = () => {
                     keyExtractor={(item) => item}
                     renderItem={({ item }) => (
                         <TouchableOpacity
-                            style={[styles.inputCampNote, { padding: 10 * scaleFactor, marginVertical: 5 * scaleFactor }]}
+                            style={[styles.inputCampNote, { padding: 10 * scaleFactor, marginVertical: 5 * scaleFactor, borderColor: theme.borderColor, borderWidth: 2 }]}
                             onPress={() => openSessionDetails(item)}
                         >
                             <Text style={[styles.sessionName, { fontSize: fontSize }]}>{item[1].title}</Text>
