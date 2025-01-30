@@ -369,6 +369,14 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 10,
   },
+  modalButtonSession: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#444',
+    borderRadius: 10,
+    paddingHorizontal: 30,
+    marginHorizontal: 20,
+  },
   modalCloseButton: {
     marginTop: 20,
   },
@@ -380,6 +388,11 @@ const styles = StyleSheet.create({
     paddingTop: '20%',
     paddingHorizontal: 20,
     paddingBottom: 100,
+  },
+  scrollContainerSession: {
+    flex: 1,
+    padding: 20,
+    paddingTop: '25%',
   },
   scrollContainerCamp: {
     paddingTop: '40%',
@@ -792,11 +805,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
+  addButtonPlayerSession: {
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: '4%',
+    marginHorizontal: '30%',
+  },
   addButtonText: {
     color: 'white',
   },
   autoAddButtonText: {
-    color: 'white',
     fontSize: 16,
   },
   newNoteImage: {
