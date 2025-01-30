@@ -143,6 +143,22 @@ const Spells: React.FC = ({ navigation }) => {
     setIsEditing(false);
   };
 
+  const deleteSpell = async () => {
+    try {
+      const response = await fetch(`/api/items/${item.id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        alert(t('Item deleted successfully'));
+      } else {
+        alert(t('Failed to delete item'));
+      }
+    } catch (error) {
+      console.error(error);
+      alert(t('Error deleting item'));
+    }
+  };
+
 
   return (
     <ImageBackground source={theme.background} style={styles.container}>
@@ -269,9 +285,11 @@ const Spells: React.FC = ({ navigation }) => {
                   )}
 
                   <View style={styles.modalButtons}>
+                  {user.id === item.ownerID && (
                     <TouchableOpacity onPress={() => setIsEditing(true)} style={[styles.editButton, { padding: 10 * scaleFactor }]}>
                       <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
                     </TouchableOpacity>
+                  )}
                     <TouchableOpacity onPress={closeSpellModal} style={[styles.closeButtonItem, { padding: 10 * scaleFactor }]}>
                       <Text style={[styles.closeButtonText, { fontSize: fontSize }]}>{t('Close')}</Text>
                     </TouchableOpacity>
@@ -382,6 +400,9 @@ const Spells: React.FC = ({ navigation }) => {
                   <View style={styles.modalButtons}>
                     <TouchableOpacity onPress={() => setIsEditing(false)} style={[styles.closeButtonItem, { padding: 10 * scaleFactor }]}>
                       <Text style={[styles.closeButtonText, { fontSize: fontSize }]}>{t('Cancel')}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={deleteSpell} style={[styles.deleteButtonSpell, { padding: 10 * scaleFactor }]}>
+                      <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Delete')}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={saveSpellChanges} style={[styles.editButton, { padding: 10 * scaleFactor }]}>
                       <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Save')}</Text>

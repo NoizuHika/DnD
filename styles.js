@@ -2504,6 +2504,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
+  deleteButtonSpell: {
+    backgroundColor: 'red',
+    borderRadius: 4,
+    padding: 10,
+    flex: 1,
+    alignItems: 'center',
+    marginRight: 8,
+  },
   editButtonText: {
     color: '#fff',
     fontWeight: 'bold',
