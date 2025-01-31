@@ -549,5 +549,8 @@
   "No": "Nie",
   "Dice Number": "Liczba kości",
   "Enter Code": "Wpisz kod",
-  "Confirm": "Potwierdź"
+  "Confirm": "Potwierdź",
+  "Item deleted successfully": "Przedmiot został pomyślnie usunięty",
+  "Failed to delete item": "Nie udało się usunąć przedmiotu",
+  "Error deleting item": "Błąd przy usuwaniu przedmiotu"
 }

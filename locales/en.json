@@ -549,5 +549,8 @@
   "No": "No",
   "Dice Number": "Dice Number",
   "Enter Code": "Enter Code",
-  "Confirm": "Confirm"
+  "Confirm": "Confirm",
+  "Item deleted successfully": "Item deleted successfully",
+  "Failed to delete item": "Failed to delete item",
+  "Error deleting item": "Error deleting item"
 }

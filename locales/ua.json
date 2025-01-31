@@ -549,5 +549,8 @@
   "No": "Ні",
   "Dice Number": "Кількість кубиків",
   "Enter Code": "Введіть код",
-  "Confirm": "Підтвердити"
+  "Confirm": "Підтвердити",
+  "Item deleted successfully": "Предмет успішно видалено",
+  "Failed to delete item": "Не вдалося видалити предмет",
+  "Error deleting item": "Помилка при видаленні предмета"
 }

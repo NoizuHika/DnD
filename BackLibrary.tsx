@@ -60,7 +60,7 @@ const BackLibrary: React.FC = ({ navigation }) => {
     setEditedItem({ ...item });
   };
 
-  const closeItemModal = () => {
+  const closeBackItemModal = () => {
     setSelectedItem(null);
     setEditedItem(null);
     setIsEditing(false);
@@ -73,7 +73,7 @@ const BackLibrary: React.FC = ({ navigation }) => {
     }));
   };
 
-  const saveItemChanges = () => {
+  const saveBackItemChanges = () => {
     if (!editedItem) return;
 
     setBackLibrary((prevBackLibrary) =>
@@ -84,6 +84,22 @@ const BackLibrary: React.FC = ({ navigation }) => {
 
     setSelectedItem(editedItem);
     setIsEditing(false);
+  };
+
+  const deleteBackItem = async () => {
+    try {
+      const response = await fetch(`/api/items/${item.id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        alert(t('Item deleted successfully'));
+      } else {
+        alert(t('Failed to delete item'));
+      }
+    } catch (error) {
+      console.error(error);
+      alert(t('Error deleting item'));
+    }
   };
 
   return (
@@ -129,26 +145,24 @@ const BackLibrary: React.FC = ({ navigation }) => {
       {selectedItem && (
         <Modal visible={true} transparent={true} animationType="fade">
           <ScrollView contentContainerStyle={styles.modalOverlaySpells}>
+          {!isEditing ? (
             <View style={[styles.itemModal, { padding: 20 * scaleFactor }]}>
               <Text style={[styles.itemTitle, { fontSize: fontSize * 1.2 }]}>{selectedItem.name}</Text>
               <Text style={[styles.itemDescriptionAttune, { fontSize: fontSize }]}>
                 {t('Skill Proficiencies')}: {selectedItem.skillProficiencies.join(', ') || t('None')}
               </Text>
               <Text style={[styles.itemDescription, { fontSize: fontSize }]}>
-                {t('Languages')}:{' '}
-                {Array.isArray(selectedItem.languages) && selectedItem.languages.length > 0
+                {t('Languages')}: {Array.isArray(selectedItem.languages) && selectedItem.languages.length > 0
                   ? selectedItem.languages.join(', ')
                   : t('None')}
               </Text>
               <Text style={[styles.itemDescription, { fontSize: fontSize }]}>
-                {t('Tool Proficiencies')}:{' '}
-                {Array.isArray(selectedItem.toolProficiencies) && selectedItem.toolProficiencies.length > 0
+                {t('Tool Proficiencies')}: {Array.isArray(selectedItem.toolProficiencies) && selectedItem.toolProficiencies.length > 0
                   ? selectedItem.toolProficiencies.join(', ')
                   : t('None')}
               </Text>
               <Text style={[styles.itemDescription, { fontSize: fontSize }]}>
-                {t('Equipment')}: {' '}
-                {Array.isArray(selectedItem.equipments) && selectedItem.equipments.length > 0
+                {t('Equipment')}: {Array.isArray(selectedItem.equipments) && selectedItem.equipments.length > 0
                   ? selectedItem.equipments.join(', ')
                   : t('None')}
               </Text>
@@ -156,7 +170,7 @@ const BackLibrary: React.FC = ({ navigation }) => {
                 {t('Feature')}: {'\n'}
                 {Array.isArray(selectedItem.features) && selectedItem.features.length > 0
                   ? selectedItem.features.map((feature, index) => (
-                    <Text key={index} style={[styles.featureItem, { fontSize: fontSize }]}>
+                    <Text key={index} style={[styles.itemDescription, { fontSize: fontSize }]}>
                       {feature.name}{':\n'}
                       {feature.description}
                     </Text>
@@ -165,11 +179,93 @@ const BackLibrary: React.FC = ({ navigation }) => {
               </Text>
               <Text style={[styles.itemDescription, { fontSize: fontSize }]}>{selectedItem.description}</Text>
               <View style={styles.modalButtons}>
-                <TouchableOpacity onPress={closeItemModal} style={[styles.closeButtonItem, { padding: 10 * scaleFactor }]}>
+                {user.id === backLibItem.ownerID && (
+                  <TouchableOpacity onPress={() => setIsEditing(true)} style={[styles.editButton, { padding: 10 * scaleFactor }]}>
+                    <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity onPress={closeBackItemModal} style={[styles.closeButtonItem, { padding: 10 * scaleFactor }]}>
                   <Text style={[styles.closeButtonText, { fontSize: fontSize }]}>{t('Close')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
+          ) : (
+            <View style={[styles.itemModal, { padding: 20 * scaleFactor }]}>
+            <TextInput
+              style={[styles.itemTitle, { fontSize: fontSize * 1.2 }]}
+              value={editedItem.name}
+              onChangeText={(value) => handleEditChange('name', value)}
+              placeholder={t('Name')}
+              placeholderTextColor="#808080"
+            />
+            <TextInput
+              style={[styles.itemDescription, { fontSize: fontSize }]}
+              value={(editedItem.skillProficiencies || []).join(', ')}
+              onChangeText={(value) => handleEditChange('skillProficiencies', value ? value.split(', ') : [])}
+              placeholder={t('Skill Proficiencies')}
+              placeholderTextColor="#808080"
+            />
+            <TextInput
+              style={[styles.itemDescription, { fontSize: fontSize }]}
+              value={(editedItem.languages || []).join(', ')}
+              onChangeText={(value) => handleEditChange('languages', value ? value.split(', ') : [])}
+              placeholder={t('Languages')}
+              placeholderTextColor="#808080"
+            />
+            <TextInput
+              style={[styles.itemDescription, { fontSize: fontSize }]}
+              value={(editedItem.toolProficiencies || []).join(', ')}
+              onChangeText={(value) => handleEditChange('toolProficiencies', value ? value.split(', ') : [])}
+              placeholder={t('Tool Proficiencies')}
+              placeholderTextColor="#808080"
+            />
+            <TextInput
+              style={[styles.itemDescription, { fontSize: fontSize }]}
+              value={(editedItem.equipments || []).join(', ')}
+              onChangeText={(value) => handleEditChange('equipments', value ? value.split(', ') : [])}
+              placeholder={t('Equipment')}
+              placeholderTextColor="#808080"
+            />
+            {(editedItem.features || []).map((feature, index) => (
+              <View key={index}>
+                <TextInput
+                  style={[styles.itemDescription, { fontSize: fontSize }]}
+                  value={feature.name || ''}
+                  onChangeText={(value) => {
+                    const newFeatures = [...editedItem.features];
+                    newFeatures[index].name = value;
+                    handleEditChange('features', newFeatures);
+                  }}
+                  placeholder={t('Feature Name')}
+                  placeholderTextColor="#808080"
+                />
+                <TextInput
+                  style={[styles.itemDescription, { fontSize: fontSize }]}
+                  value={feature.description || ''}
+                  onChangeText={(value) => {
+                    const newFeatures = [...editedItem.features];
+                    newFeatures[index].description = value;
+                    handleEditChange('features', newFeatures);
+                  }}
+                  placeholder={t('Feature Description')}
+                  placeholderTextColor="#808080"
+                  multiline
+                />
+              </View>
+            ))}
+              <View style={styles.modalButtons}>
+                <TouchableOpacity onPress={() => setIsEditing(false)} style={[styles.closeButtonItem, { padding: 10 * scaleFactor }]}>
+                  <Text style={[styles.closeButtonText, { fontSize: fontSize }]}>{t('Cancel')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={deleteBackItem} style={[styles.deleteButtonSpell, { padding: 10 * scaleFactor }]}>
+                  <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Delete')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={saveBackItemChanges} style={[styles.editButton, { padding: 10 * scaleFactor }]}>
+                  <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Save')}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
           </ScrollView>
         </Modal>
       )}
