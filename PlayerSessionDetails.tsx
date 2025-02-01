@@ -411,7 +411,7 @@ return (
           <ScrollView style={styles.rightCampaignContainerScrollArea} ref={scrollViewRef}>
           {actualSession?.logs?.length > 0 ? (
             <>
-              {actualSession.logs.map((logs, index) => (
+              {actualSession.logs.reverse().map((logs, index) => (
                 <Text key={index} style={[styles.diceResult, { fontSize: fontSize }]}>
                     {logs}
                 </Text>

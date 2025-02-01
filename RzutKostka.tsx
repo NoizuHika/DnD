@@ -46,17 +46,18 @@ const RzutKostka: React.FC = ({ route,navigation }) => {
     const forFetchResult = [];
 
     selectedDice.forEach(({ index, count }) => {
-      const diceResults = [];
-      for (let i = 0; i < count; i++) {
-        const randomValue = Math.floor(Math.random() * diceTypes[index].sides) + 1;
-        diceResults.push(randomValue);
-      }
+      const diceResults = Array.from({ length: count }, () =>
+        Math.floor(Math.random() * diceTypes[index].sides) + 1
+      );
+
       newDiceValues.push({ index, results: diceResults });
-        resultsSummary.push(`roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
-        if (player) {
-                forFetchResult.push(`${player.name} roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
-                    fetchData(resultsSummary);
-                };
+      resultsSummary.push(`roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
+
+      if (player) {
+        forFetchResult.push(`${player.name} roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
+      }
+
+
       Animated.timing(rotateValues[index], {
         toValue: 1,
         duration: 1000,
@@ -66,6 +67,11 @@ const RzutKostka: React.FC = ({ route,navigation }) => {
         rotateValues[index].setValue(0);
       });
     });
+
+
+    if (forFetchResult.length > 0) {
+      fetchData(forFetchResult);
+    }
 
 
 

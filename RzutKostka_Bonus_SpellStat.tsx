@@ -27,58 +27,67 @@ const RzutKostka_Bonus_SpellStat: React.FC = ({ route, navigation }) => {
   const { ipv4 } = useContext(UserData);
   const [answer, setAnswer] = useState(null);
 
-  const handleRollDice = () => {
-    setDiceValue(null);
-    setResult(null);
-    console.log(statValue)
-    const randomValue = Math.floor(Math.random() * 20) + 1;
+const handleRollDice = () => {
+  setDiceValue(null);
+  setResult(null);
 
-    Animated.timing(rotateValue, {
-      toValue: 1,
-      duration: 1000,
-      easing: Easing.linear,
-      useNativeDriver: true,
-    }).start(() => {
-      rotateValue.setValue(0);
-      setTimeout(() => {
-        setDiceValue(randomValue);
-        const finalStatValue = isNaN(statValue) || statValue === 'None' ? null : parseInt(statValue);
+  console.log(statValue);
 
-        if (finalStatValue !== null) {
-          setResult(randomValue + finalStatValue);
-          if (session !== null && session !== undefined && Object.keys(session).length > 0) {
-              setAnswer(`${player.name} roll for ${spell.name} ${result}`)
-              fetchData();
-            }
-        } else {
-          setResult(null);
-        }
-      }, 200);
+  const randomValue = Math.floor(Math.random() * 20) + 1;
+
+  Animated.timing(rotateValue, {
+    toValue: 1,
+    duration: 1000,
+    easing: Easing.linear,
+    useNativeDriver: true,
+  }).start(() => {
+    rotateValue.setValue(0);
+
+    setTimeout(() => {
+
+      setDiceValue(randomValue);
+
+     const finalResult = statValue && statValue !== 'None' && !isNaN(statValue)
+             ? randomValue + parseInt(statValue)
+             : randomValue;
+      setResult(finalResult);
+
+
+      if (session && Object.keys(session).length > 0) {
+
+        const answerMessage = `${player.name} rolls for ${spell.name}: ${finalResult}`;
+        setAnswer(answerMessage);
+
+        fetchData(answerMessage);
+      }
+    }, 200);
+  });
+};
+
+const fetchData = async (answerMessage) => {
+  try {
+    console.log(answerMessage);
+    const sessionResponse = await fetch(`http://${ipv4}:8000/sessions/addToLogs`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'accept': 'application/json',
+      },
+      body: JSON.stringify({
+        token: token.toString(),
+        log: answerMessage,
+        sessionID: session.id,
+      }),
     });
-  };
 
-  const fetchData = async () => {
-    try {
-        console.log(answer)
-        const sessionResponse = await fetch(`http://${ipv4}:8000/sessions/addToLogs`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'accept': 'application/json'
-                    },
-                    body: JSON.stringify({ token: token.toString(),log:`${answer}`,sessionID:session.id }),
-                });
-
-
-        if (!sessionResponse.ok) {
-            throw new Error('Failed to fetch data');
-        }
-
-            const ans = await sessionResponse.json();
-
-    } catch (error) {
-        console.error('Error fetching data:', error);
+    if (!sessionResponse.ok) {
+      throw new Error('Failed to fetch data');
     }
+
+    const ans = await sessionResponse.json();
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
 };
 
   const spin = rotateValue.interpolate({
@@ -109,7 +118,7 @@ const RzutKostka_Bonus_SpellStat: React.FC = ({ route, navigation }) => {
       {result !== null && (
         <View style={styles.resultContainer}>
           <Text style={[styles.resultTextKostka, { fontSize: fontSize * 1.2 }]}>
-            {`${t('Result')}: ${diceValue} ${statValue >= 0 ? '+' : ''}${statValue} = ${result}`}
+            {`${t('Result')}: ${diceValue} ${statValue && statValue !== 'None' && !isNaN(statValue) ? (statValue >= 0 ? '+' : '') + statValue : ''} = ${result}`}
           </Text>
         </View>
       )}

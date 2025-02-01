@@ -98,8 +98,33 @@ const Bestiary = ({ navigation }) => {
     setSelectedFeat(null);
   };
 
+const setUpdate = async (bestiaryDto) => {
+  try {
+      console.log(bestiaryDto);
+    const response = await fetch(`http://${ipv4}:8000/bestiaries/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(bestiaryDto),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Updated Bestiary:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+};
+
+
   const handleEditFeat = (feat) => {
-    setEditedFeat(feat);
+      setEditedFeat(feat);
     setIsEditing(true);
   };
 
@@ -111,11 +136,41 @@ const Bestiary = ({ navigation }) => {
   };
 
   const saveFeatChanges = () => {
-    const index = feats.findIndex((feat) => feat.id === editedFeat.id);
-    if (index !== -1) {
-      feats[index] = { ...editedFeat };
-    }
-
+    const bestiaryDto = {
+                id:editedFeat.id,
+                name : editedFeat.name,
+                challengeRating : editedFeat.challengeRating,
+                armorClass : editedFeat.armorClass,
+                hitPointDiceCount : editedFeat.hitPointDiceCount,
+                hitPointModifier : editedFeat.hitPointModifier,
+                averageHitPoints : editedFeat.averageHitPoints,
+                passivePerception : editedFeat.passivePerception,
+                strScore : editedFeat.strScore,
+                dexScore : editedFeat.dexScore,
+                intScore : editedFeat.intScore,
+                wisScore : editedFeat.wisScore,
+                chaScore : editedFeat.chaScore,
+                conScore : editedFeat.conScore,
+                languageNoteOverride : editedFeat.languageNoteOverride,
+                lairDescription : editedFeat.lairDescription,
+                legendaryActionDescription : editedFeat.legendaryActionDescription,
+                mythicActionDescription : editedFeat.mythicActionDescription,
+                actionDescription : editedFeat.actionDescription,
+                monsterDescription : editedFeat.monsterDescription,
+                alignment : editedFeat.alignment,
+                savingThrowProficiencies : editedFeat.savingThrowProficiencies,
+                damageAdjustment: Array.isArray(editedFeat.damageAdjustment) ? editedFeat.damageAdjustment : [],
+                conditionImmunities : editedFeat.conditionImmunities,
+                environments : editedFeat.environments,
+                hitPointDiceType : editedFeat.hitPointDiceType,
+                monsterType : editedFeat.monsterType,
+                monsterSubType : editedFeat.monsterSubType,
+                size : editedFeat.size,
+                speed : editedFeat.size,
+                skills : editedFeat.skills,
+                source: editedFeat.source,
+              };
+          setUpdate(bestiaryDto);
     setIsEditing(false);
     setSelectedFeat(editedFeat);
       if (!editedFeat.name || editedFeat.name.trim() === '') {
@@ -236,7 +291,7 @@ const Bestiary = ({ navigation }) => {
                         <TextInput
                           style={styles.modalSubTitleFeats}
                           value={editedFeat?.challengeRating?.toString() || ''}
-                          onChangeText={(value) => handleEditChange('cr', value)}
+                          onChangeText={(value) => handleEditChange('challengeRating', value)}
                           keyboardType="numeric"
                         />
                   </View>
@@ -265,7 +320,7 @@ const Bestiary = ({ navigation }) => {
                         <TextInput
                           style={styles.statValue}
                           value={editedFeat?.averageHitPoints?.toString() + ' (' + editedFeat?.averageHitPoints?.toString() + ' ' + editedFeat?.hitPointDiceCount?.toString() + ' ' + editedFeat?.hitPointDiceType?.toString() + ' + ' + editedFeat?.hitPointModifier?.toString() + ')'  || ''}
-                          onChangeText={(value) => handleEditChange('hp', value)}
+                          onChangeText={(value) => handleEditChange('averageHitPoints', value)}
                           keyboardType="numeric"
                         />
                       </View>
@@ -274,8 +329,7 @@ const Bestiary = ({ navigation }) => {
                         <TextInput
                           style={styles.statValue}
                           value={editedFeat?.armorClass || ''}
-                          onChangeText={(value) => handleEditChange('ac', value)}
-                          keyboardType="numeric"
+                          onChangeText={(value) => handleEditChange('armorClass', value)}
                         />
                       </View>
                     </View>
@@ -285,7 +339,7 @@ const Bestiary = ({ navigation }) => {
                       <TextInput
                         style={styles.featStatSmall}
                         value={editedFeat?.monsterType || ''}
-                        onChangeText={(value) => handleEditChange('type', value)}
+                        onChangeText={(value) => handleEditChange('monsterType', value)}
                       />
                     </View>
                     </View>
@@ -344,48 +398,29 @@ const Bestiary = ({ navigation }) => {
                   <TextInput
                     style={styles.actionDescription}
                     value={editedFeat?.passivePerception || ''}
-                    onChangeText={(value) => handleEditChange('senses', value)}
+                    onChangeText={(value) => handleEditChange('passivePerception', value)}
                   />
                 </View>
                 <View style={styles.additionalInfo}>
                   <Text style={styles.actionDescription}>{t('Languages')}: </Text>
                   <TextInput
                     style={styles.actionDescription}
-                    value={editedFeat?.languageNoteOverride || ''}
-                    onChangeText={(value) => handleEditChange('languages', value)}
+                    value={editedFeat?.languageNoteOverride.join(', ') || ''}
+                    onChangeText={(value) => handleEditChange(
+                                                     'languageNoteOverride',
+                                                     value.split(',').map(item => item.trim())
+                                                   )
+                                                 }
                   />
                 </View>
 
                 <View style={styles.additionalInfo}>
-                  <Text style={styles.actionName}>{t('Actions')}:</Text>
-                  {editedFeat?.actions.map((action, index) => (
-                    <View key={index} style={styles.actionContainer}>
-                      <Text style={styles.actionName}>{action.name}:</Text>
-                      <TextInput
-                        style={styles.actionDescription}
-                        value={action.description}
-                        onChangeText={(value) => handleActionChange(index, value)}
-                        placeholder={t('Description')}
-                        multiline
-                      />
-                    </View>
-                  ))}
-                </View>
-
-                <View style={styles.additionalInfo}>
-                  <Text style={styles.actionName}>{t('Features')}:</Text>
-                  {editedFeat?.features.map((feature, index) => (
-                    <View key={index} style={styles.featureContainerFeats}>
-                      <Text style={styles.featureName}>{feature.name}:</Text>
-                      <TextInput
-                        style={styles.featureDescription}
-                        value={feature.description}
-                        onChangeText={(value) => handleFeatureChange(index, value)}
-                        placeholder={t('Description')}
-                        multiline
-                      />
-                    </View>
-                  ))}
+                  <Text style={styles.actionDescription}>{t('Actions')}: </Text>
+                  <TextInput
+                    style={styles.actionDescription}
+                    value={editedFeat?.actionDescription || ''}
+                    onChangeText={(value) => handleEditChange('actionDescription', value)}
+                  />
                 </View>
 
                 <View style={styles.modalButtons}>

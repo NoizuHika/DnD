@@ -39,28 +39,31 @@ useEffect(() => {
     CHA: t('Charisma'),
   };
 
-  const handleRollDice = () => {
-    setDiceValue(null);
-    setResult(null);
+const handleRollDice = () => {
+  setDiceValue(null);
+  setResult(null);
 
-    const randomValue = Math.floor(Math.random() * 20) + 1;
 
-    setDiceValue(randomValue);
+  Animated.timing(rotateValue, {
+    toValue: 1,
+    duration: 1000,
+    easing: Easing.linear,
+    useNativeDriver: true,
+  }).start(() => {
+    rotateValue.setValue(0);
+  });
 
-    const finalStatValue = isNaN(statValue) || statValue === 'None' ? 0 : parseInt(statValue);
-    setResult(diceValue + finalStatValue);
 
-    setAnswer(`${player.name} roll for ${statName} ${result} (${diceValue}${statValue >= 0 ? '+' : ''}${statValue})`)
-    Animated.timing(rotateValue, {
-      toValue: 1,
-      duration: 1000,
-      easing: Easing.linear,
-      useNativeDriver: true,
-    }).start(() => {
-      rotateValue.setValue(0);
+  const randomValue = Math.floor(Math.random() * 20) + 1;
+  setDiceValue(randomValue);
 
-    });
-  };
+  const finalStatValue = isNaN(statValue) || statValue === 'None' ? 0 : parseInt(statValue);
+
+  const finalResult = randomValue + finalStatValue;
+  setResult(finalResult);
+
+  setAnswer(`${player.name} rolls for ${statName}: ${finalResult} (${randomValue}${finalStatValue >= 0 ? '+' : ''}${finalStatValue})`);
+};
 
   const fetchData = async (answer) => {
             try {

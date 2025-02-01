@@ -104,11 +104,11 @@ const getEncounterDifficulty = (adjustedXP, partyThresholds) => {
 };
 
   const handleEditEncounter = (encounter) => {
-    navigation.navigate('EncounterEdit', { encounter,campaign });
+    navigation.navigate('EncounterEdit', { encounter, campaign });
   };
 
   const handleRunEncounter = (encounter) => {
-    navigation.navigate('EncounterRun', { encounter });
+    navigation.navigate('EncounterRun', { encounter, campaign });
   };
 
   const handleGoBack = () => {
