@@ -151,14 +151,44 @@ const CampaignOne: React.FC = ({ route,navigation }) => {
     navigation.goBack();
   };
 
+const addNewSession = async (newSessionContent,newSessionName) => {
+  try {
+         const requestBody = {
+             campaignID: campaign.id,
+             sessionName: newSessionName,
+             SessionDescription: newSessionContent};
+    const response = await fetch(`http://${ipv4}:8000/sessions/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New session:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+  fetchData();
+};
+
   const handleAddSession = () => {
     if (newSessionName && newSessionContent) {
-      const updatedSessions = [...sessions, { name: newSessionName, description: newSessionContent }];
-      saveSessions(updatedSessions);
+        addNewSession(newSessionContent,newSessionName);
+         const updatedSessions = [...sessions, { name: newSessionName, description: newSessionContent }];
+              saveSessions(updatedSessions);
       setNewSessionName('');
       setNewSessionContent('');
       setAddingNewSession(false);
-      setActiveSessionIndex(updatedSessions.length - 1);
+       setActiveSessionIndex(updatedSessions.length - 1);
     } else {
       Alert.alert(t('Please enter both name and description for the session.'));
     }
@@ -345,6 +375,14 @@ const CampaignOne: React.FC = ({ route,navigation }) => {
 
         {addingNewSession && (
           <View style={styles.sessionContainer}>
+          <TextInput
+                        style={[styles.inputContent, styles.textArea, { fontSize: fontSize }]}
+                        value={newSessionName}
+                        onChangeText={setNewSessionName}
+                        placeholder={t('Enter session Name')}
+                        placeholderTextColor="#d6d6d6"
+                        multiline
+                      />
             <TextInput
               style={[styles.inputContent, styles.textArea, { fontSize: fontSize }]}
               value={newSessionContent}

@@ -77,6 +77,7 @@ const addCampaign = async (newCampaign) => {
   } catch (error) {
     console.error('Error fetching data:', error.message);
   }
+  fetchData();
 };
 
 
@@ -100,6 +101,7 @@ const deleteCampaign = async (campaign) => {
   } catch (error) {
     console.error('Error fetching data:', error.message);
   }
+  fetchData();
 };
 
 
