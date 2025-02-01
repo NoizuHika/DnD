@@ -1,5 +1,5 @@
-import React, { useState, useContext } from 'react';
-import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, Image, Modal, TouchableWithoutFeedback } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { Dimensions, ImageBackground, StyleSheet, View, Text, TouchableOpacity, Image, Modal, TouchableWithoutFeedback } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
@@ -15,21 +15,37 @@ const languages = [
   { code: 'ru', label: 'Русский', flag: require('./assets/flags/russia.png') }
 ];
 
-const themes = [
-  { name: 'theme1', label: 'Dark', preview: require('./assets/font/theme1.png') },
-  { name: 'theme2', label: 'Light', preview: require('./assets/font/theme2.png') }
-];
-
 const HomeScreen: React.FC = ({ navigation }) => {
-  const { fontSize, scaleFactor } = useContext(SettingsContext);
+  const { setFontSize, setScaleFactor, fontSize, scaleFactor } = useContext(SettingsContext);
 
   const { t, i18n } = useTranslation();
+
+  const themes = [
+    { name: 'theme1', label: t('Dark'), preview: require('./assets/font/theme1.png') },
+    { name: 'theme2', label: t('Light'), preview: require('./assets/font/theme2.png') }
+  ];
+
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [isThemeDropdownVisible, setThemeDropdownVisible] = useState(false);
   const [settingsModalVisible, setSettingsModalVisible] = useState(false);
   const [currentLang, setCurrentLang] = useState(i18n.language);
   const { theme, changeTheme } = useContext(ThemeContext);
   const [themeModalVisible, setThemeModalVisible] = useState(false);
+
+  useEffect(() => {
+    const screenWidth = Dimensions.get('window').width;
+
+    if (screenWidth < 400) {
+      setFontSize(12);
+      setScaleFactor(0.8);
+    } else if (screenWidth < 720) {
+      setFontSize(15);
+      setScaleFactor(1.0);
+    } else {
+      setFontSize(18);
+      setScaleFactor(1.2);
+    }
+  }, []);
 
   const changeLanguage = (code) => {
     i18n.changeLanguage(code);
@@ -57,14 +73,6 @@ const HomeScreen: React.FC = ({ navigation }) => {
   return (
     <ImageBackground source={theme.background} style={styles.container}>
       <Text style={[styles.appName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>DMBook</Text>
-
-      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
-        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
-          </ImageBackground>
-        </TouchableOpacity>
-      </View>
 
       <View style={styles.buttonContainerUsu}>
         <TouchableOpacity style={[styles.button, { height: 50 * scaleFactor }]} onPress={handleLoginPress}>

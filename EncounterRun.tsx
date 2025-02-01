@@ -35,6 +35,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
                         });
 
 
+
                     if (!response.ok) {
                         throw new Error('Failed to fetch data');
                     }
@@ -246,7 +247,9 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
               <Text style={[styles.monsterTextEncRun, { fontSize: fontSize, color: theme.fontColor }]}>{player.name}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text style={[styles.acEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('AC')}: {player.armorClass}</Text>
+
                 <Text style={[styles.crEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Level')}: {player.playerClasses[0].level || 'N/A'}</Text>
+
               </View>
             </View>
             <TouchableOpacity style={[styles.startEncounterButton, { height: 50 * scaleFactor, width: 150 * scaleFactor }]} onPress={() => removePlayerFromEncounter(player)}>

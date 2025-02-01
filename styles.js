@@ -172,6 +172,15 @@ const styles = StyleSheet.create({
     color: '#7F7F7F',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
+  CampNameA: {
+    textAlign: 'center',
+    fontSize: 24,
+    color: '#7F7F7F',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    paddingHorizontal: 20,
+    paddingVertical: 1,
+    borderRadius: 10,
+  },
   button: {
     alignItems: 'center',
     textAlign: 'center',
@@ -225,6 +234,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 35,
   },
+  columnTopAB: {
+    flex: 1,
+    marginHorizontal: 2,
+  },
   columnAdding: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -238,6 +251,9 @@ const styles = StyleSheet.create({
     color: 'white',
     marginVertical: 5,
     marginBottom: 5,
+    paddingLeft: 10,
+    width: '30%',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   labelMonCreHitPoint: {
     fontSize: 16,
@@ -272,6 +288,11 @@ const styles = StyleSheet.create({
   buttonTextCharacter: {
     fontSize: 16,
     color: '#d6d6d6',
+  },
+  buttonTextCharacterA: {
+    fontSize: 16,
+    color: '#d6d6d6',
+    padding: 5,
   },
   buttonTextCamp: {
     fontSize: 16,
@@ -348,6 +369,14 @@ const styles = StyleSheet.create({
     width: '100%',
     borderRadius: 10,
   },
+  modalButtonSession: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#444',
+    borderRadius: 10,
+    paddingHorizontal: 30,
+    marginHorizontal: 20,
+  },
   modalCloseButton: {
     marginTop: 20,
   },
@@ -359,6 +388,11 @@ const styles = StyleSheet.create({
     paddingTop: '20%',
     paddingHorizontal: 20,
     paddingBottom: 100,
+  },
+  scrollContainerSession: {
+    flex: 1,
+    padding: 20,
+    paddingTop: '25%',
   },
   scrollContainerCamp: {
     paddingTop: '40%',
@@ -426,7 +460,6 @@ const styles = StyleSheet.create({
   },
   editTextCamp: {
     color: 'yellow',
-    marginHorizontal: 5,
   },
   EditText: {
     fontSize: 10,
@@ -521,6 +554,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     marginLeft: 0,
   },
+  inputMonCreStatA: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 50,
+  },
   inputInventory: {
     borderBottomWidth: 1,
     marginBottom: 10,
@@ -567,6 +604,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 60,
     marginLeft: 5,
   },
+  inputSpellCreatorA: {
+    backgroundColor: '#fff',
+    padding: 10,
+    marginTop: 3,
+    marginLeft: 5,
+  },
   noteHeader: {
     borderColor: '#7F7F7F',
     borderWidth: 1.5,
@@ -607,13 +650,70 @@ const styles = StyleSheet.create({
   },
   labelItemCre: {
     alignItems: 'center',
-    textAlign: "center",
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#d6d6d6',
+    width: '100%',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingVertical: 3,
+  },
+  labelItemCreAB: {
+    alignItems: 'center',
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#d6d6d6',
+    width: '50%',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingVertical: 3,
+  },
+  labelItemCreA: {
+    alignItems: 'center',
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#d6d6d6',
+    width: '100%',
+    borderRadius: 8,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingVertical: 3,
+  },
+  labelItemCreC: {
+    alignItems: 'center',
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#d6d6d6',
+    width: '100%',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingVertical: 3,
+    marginTop: 7,
+  },
+  labelNameItemCre: {
+    alignItems: 'center',
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#d6d6d6',
+    width: '40%',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingVertical: 3,
   },
   labelMagicItemCre: {
     width: '100%',
-    textAlign: 'left',
+    textAlign: 'center',
     paddingLeft: 0,
     marginLeft: 0,
+    color: '#d6d6d6',
+    width: '100%',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingVertical: 3,
+  },
+  labelMagicItemCreA: {
+    textAlign: 'center',
+    paddingLeft: 0,
+    marginLeft: 0,
+    color: '#d6d6d6',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingVertical: 3,
+    paddingHorizontal: 20,
+    paddingLeft: 20,
   },
   inputItemCreator: {
     textAlign: "center",
@@ -705,11 +805,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
+  addButtonPlayerSession: {
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    borderRadius: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: '4%',
+    marginHorizontal: '30%',
+  },
   addButtonText: {
     color: 'white',
   },
   autoAddButtonText: {
-    color: 'white',
     fontSize: 16,
   },
   newNoteImage: {
@@ -847,6 +956,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 40,
     borderColor: '#7F7F7F',
   },
+  addButtonImageA: {
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    justifyContent: 'center',
+    textAlignVertical: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: '#7F7F7F',
+  },
   addButtonCamp: {
     borderColor: '#7F7F7F',
     borderWidth: 1.5,
@@ -854,6 +972,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     alignItems: 'center',
+    marginTop: 10,
+    paddingVertical: 4,
   },
   playerPanel: {
     height: 95,
@@ -943,6 +1063,9 @@ const styles = StyleSheet.create({
   statText: {
     color: '#d6d6d6',
   },
+  statTextA: {
+    color: '#ffd700',
+  },
   circleBox: {
     width: 70,
     height: 70,
@@ -981,10 +1104,13 @@ const styles = StyleSheet.create({
   healthBar: {
     width: '120%',
     height: 15,
-    backgroundColor: '#555',
     borderRadius: 10,
     overflow: 'hidden',
     marginVertical: 10,
+  },
+  healthBarA: {
+    alignItems: 'center',
+    marginTop: 10,
   },
   healthText: {
     color: 'green',
@@ -1109,6 +1235,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#7F7F7F',
     textAlign: 'center',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    padding: 10,
+    borderRadius: 10,
   },
   rightContainer: {
     position: 'absolute',
@@ -1399,6 +1528,12 @@ const styles = StyleSheet.create({
   },
   modalOverlayItems: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  modalOverlaySpells: {
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
@@ -1936,12 +2071,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 25,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   encounterNameA: {
     alignItems: 'center',
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 25,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   encounterNameB: {
     marginTop: '30%',
@@ -1949,6 +2086,14 @@ const styles = StyleSheet.create({
     marginTop: '20%',
   },
   monsterText: {
+    flex: 1,
+    fontSize: 16,
+    color: '#d6d6d6',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    textAlign: 'center',
+    paddingVertical: 3,
+  },
+  monsterTextA: {
     flex: 1,
     fontSize: 16,
     color: '#d6d6d6',
@@ -1983,6 +2128,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#ddd',
     marginBottom: 10,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingLeft: 10,
   },
   controlButton: {
     fontSize: 18,
@@ -2040,7 +2187,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     backgroundColor: '#222',
-    padding: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+    paddingHorizontal: 30,
     borderWidth: 1,
     borderColor: '#444',
   },
@@ -2096,7 +2247,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   cellAvatarEncounterRun: {
-    flex: 0.6,
+    flex: 0.7,
     textAlign: 'center',
   },
   cellNameEncounterRun: {
@@ -2218,15 +2369,13 @@ const styles = StyleSheet.create({
   },
   statLeft: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    paddingLeft: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   statRight: {
     flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-    paddingRight: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   dividerStats: {
     height: '100%',
@@ -2318,7 +2467,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20,
   },
   infoColumn: {
     flex: 1,
@@ -2355,6 +2503,14 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 1,
     alignItems: 'center',
+  },
+  deleteButtonSpell: {
+    backgroundColor: 'red',
+    borderRadius: 4,
+    padding: 10,
+    flex: 1,
+    alignItems: 'center',
+    marginRight: 8,
   },
   editButtonText: {
     color: '#fff',
@@ -2593,9 +2749,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   resetForgotPassContainer: {
-    alignItems: 'flex-start',
+    alignItems: 'center',
     marginTop: 20,
     marginBottom: 10,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    padding: 10,
   },
   resetForgotPass: {
     fontSize: 22,
@@ -2836,6 +2994,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     marginRight: 10,
   },
+  labelCheck: {
+    color: '#d6d6d6',
+    fontSize: 16,
+      textAlign: 'center',
+      backgroundColor: 'rgba(0,0,0,0.8)',
+      paddingHorizontal: 10,
+  },
   emailInput: {
     borderWidth: 1,
     backgroundColor: 'white',
@@ -2956,7 +3121,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     fontSize: 33,
     fontWeight: 'bold',
-    color: '#d6d6d6',
   },
   diceRzut: {
     width: 65,
@@ -3016,7 +3180,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   diceRollLabelText: {
-    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
     textTransform: 'uppercase',
@@ -3162,6 +3325,7 @@ const styles = StyleSheet.create({
     borderColor: '#7F7F7F',
     padding: 10,
     overflow: 'hidden',
+    zIndex: 10,
   },
   CharacterSpellCard: {
     width: '100%',
@@ -3248,6 +3412,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1.5,
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  },
+  buttonContainerCampA: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   buttonTextPlus: {
     color: 'green',
@@ -3347,6 +3517,8 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 1,
     textAlign: 'center',
+    textAlignVertical: 'center',
+    textAlignVertical: 'center',
   },
   playerSessionDetailStatAC: {
     fontSize: 14,
@@ -3355,6 +3527,8 @@ const styles = StyleSheet.create({
     padding: 10,
     flex: 1,
     textAlign: 'center',
+    justifyContent: 'center',
+    textAlignVertical: 'center',
   },
   playerSessionDetailAvatarContainer: {
     alignItems: 'center',

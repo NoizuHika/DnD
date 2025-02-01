@@ -72,6 +72,7 @@ import BackLibrary from './BackLibrary';
 import FeatsCreator from './FeatsCreator';
 import BackLibCreator from './BackLibCreator';
 import SetupHome from './SetupHome';
+import CreatorNPC from './CreatorNPC';
 
 const Stack = createStackNavigator();
 
@@ -83,7 +84,7 @@ const App = () => {
     <UserProvider>
     <AuthProvider>
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="SetupHome">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="SetupHome" component={SetupHome} options={{ headerShown: false }} />
         <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="LogIn" component={LogInScreen} options={{ headerShown: false }} />
@@ -135,6 +136,7 @@ const App = () => {
         <Stack.Screen name="BackLibrary" component={BackLibrary} options={{ headerShown: false }} />
         <Stack.Screen name="FeatsCreator" component={FeatsCreator} options={{ headerShown: false }} />
         <Stack.Screen name="BackLibCreator" component={BackLibCreator} options={{ headerShown: false }} />
+        <Stack.Screen name="CreatorNPC" component={CreatorNPC} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
     </AuthProvider>

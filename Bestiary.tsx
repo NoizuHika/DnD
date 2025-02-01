@@ -1,4 +1,4 @@
-import React, { useState, useContext,useEffect } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { ImageBackground, View, Text, TouchableOpacity, ScrollView, TextInput, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
@@ -6,15 +6,14 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { UserData } from './UserData';
+import { SettingsContext } from './SettingsContext';
 
 Appearance.setColorScheme('light');
 
-
-
-const Bestiary = ({ navigation }) => {
+const Bestiary: React.FC = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
-
+  const { fontSize, scaleFactor } = useContext(SettingsContext);
   const [searchText, setSearchText] = useState('');
   const [selectedCR, setSelectedCR] = useState('All');
   const [selectedType, setSelectedType] = useState('All');
@@ -57,6 +56,7 @@ const Bestiary = ({ navigation }) => {
           }
         };
 
+
   const handleGoBack = () => {
     navigation.goBack();
   };
@@ -71,7 +71,6 @@ const Bestiary = ({ navigation }) => {
     }
 
     if (selectedCR !== 'All') {
-
       filtered = filtered.filter((feat) => feat.challengeRating.split(" ")[0] === selectedCR);
     }
 
@@ -173,10 +172,10 @@ const setUpdate = async (bestiaryDto) => {
           setUpdate(bestiaryDto);
     setIsEditing(false);
     setSelectedFeat(editedFeat);
-      if (!editedFeat.name || editedFeat.name.trim() === '') {
-        alert(t('Name cannot be empty!'));
-        return;
-      }
+    if (!editedFeat.name || editedFeat.name.trim() === '') {
+      alert(t('Name cannot be empty!'));
+      return;
+    }
   };
 
   const handleActionChange = (index, value) => {
@@ -191,19 +190,35 @@ const setUpdate = async (bestiaryDto) => {
     setEditedFeat({ ...editedFeat, features: updatedFeatures });
   };
 
+  const deleteBesti = async () => {
+    try {
+      const response = await fetch(`/api/items/${item.id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        alert(t('Item deleted successfully'));
+      } else {
+        alert(t('Failed to delete item'));
+      }
+    } catch (error) {
+      console.error(error);
+      alert(t('Error deleting item'));
+    }
+  };
+
   return (
     <ImageBackground source={theme.background} style={styles.container}>
-      <View style={styles.GoBack}>
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={styles.GoBackText}>{t('Go_back')}</Text>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
           </ImageBackground>
         </TouchableOpacity>
       </View>
 
       <TextInput
-        style={styles.searchInput}
-        placeholder={t('Search feats')}
+        style={[styles.searchInput, { fontSize: fontSize, height: 40 * scaleFactor }]}
+        placeholder={t('Search monster')}
         placeholderTextColor="#7F7F7F"
         value={searchText}
         onChangeText={setSearchText}
@@ -212,157 +227,169 @@ const setUpdate = async (bestiaryDto) => {
       <View style={styles.pickerItemsContainer}>
         <Picker
           selectedValue={selectedType}
-          style={styles.pickerItems}
+          style={[styles.pickerItems, { width: 135 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
           onValueChange={(value) => setSelectedType(value)}
         >
-          <Picker.Item label={t('Type')} value={'All'} />
+
+          <Picker.Item label={t('Type')} value={'All'} style={{ fontSize: fontSize }} />
           {typeOptions.map((monsterType) => (
-            <Picker.Item key={monsterType.id} label={t(monsterType.name)} value={monsterType.name} />
+            <Picker.Item key={monsterType.id} label={t(monsterType.name)} value={monsterType.name} style={{ fontSize: fontSize }} />
+
           ))}
         </Picker>
 
         <Picker
           selectedValue={selectedCR}
-          style={styles.pickerItems}
+          style={[styles.pickerItems, { width: 135 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
           onValueChange={(value) => setSelectedCR(value)}
         >
-          <Picker.Item label={t('CR')} value={'All'} />
+          <Picker.Item label={t('CR')} value={'All'} style={{ fontSize: fontSize }} />
           {crOptions.map((cr) => (
-            <Picker.Item key={cr} label={t('CR') + ' ' + cr} value={cr} />
+            <Picker.Item key={cr} label={t('CR') + ' ' + cr} value={cr} style={{ fontSize: fontSize }} />
           ))}
         </Picker>
 
         <Picker
           selectedValue={selectedEnvironment}
-          style={styles.pickerItems}
+          style={[styles.pickerItems, { width: 135 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
           onValueChange={(value) => setSelectedEnvironment(value)}
         >
-         <Picker.Item label={t('Environment')} value={'All'} />
-           {environmentOptions.map((env) => (
-             <Picker.Item key={env.id} label={t(env.name)} value={env.name} />
-         ))}
+
+          <Picker.Item label={t('Environment')} value={'All'} style={{ fontSize: fontSize }} />
+          {environmentOptions.map((env) => (
+            <Picker.Item key={env.id} label={t(env.name)} value={env.name} style={{ fontSize: fontSize }} />
+          ))}
+
         </Picker>
       </View>
 
       <ScrollView style={styles.tableContainer}>
-        <View style={styles.tableHeader}>
-          <Text style={[styles.tableHeaderText]}>{t('Name')}</Text>
-          <Text style={[styles.tableHeaderText]}>{t('Type')}</Text>
-          <Text style={[styles.tableHeaderText]}>{t('CR')}</Text>
-          <Text style={[styles.tableHeaderText]}>{t('Source')}</Text>
-          <Text style={[styles.tableHeaderText]}>{t('Details')}</Text>
+        <View style={[styles.tableHeader, { paddingVertical: 10 * scaleFactor }]}>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Name')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Type')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('CR')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Source')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Details')}</Text>
         </View>
         {filteredFeats.length === 0 ? (
-          <Text style={styles.noResultsText}>{t('No feats found')}</Text>
+          <Text style={[styles.noResultsText, { fontSize: fontSize }]}>{t('No monsters found')}</Text>
         ) : (
           filteredFeats.map((feat, index) => (
-          <View key={index} style={styles.tableRow}>
-            <Text style={styles.tableCell}>{feat.name}</Text>
-            <Text style={styles.tableCell}>{feat.monsterType}</Text>
-            <Text style={styles.tableCell}>{feat.challengeRating}</Text>
-            <Text style={styles.tableCell}>{feat.source}</Text>
-            <TouchableOpacity
-              style={[styles.tableCell, styles.actionsColumn]}
-              onPress={() => handleFeatPress(feat)}
-            >
-              <Text style={styles.actionText}>{t('Details')}</Text>
-            </TouchableOpacity>
-          </View>
-        ))
-      )}
-    </ScrollView>
+
+            <View key={index} style={[styles.tableRow, { paddingVertical: 10 * scaleFactor }]}>
+              <Text style={[styles.tableCell, { fontSize: fontSize }]}>{feat.name}</Text>
+              <Text style={[styles.tableCell, { fontSize: fontSize }]}>{feat.monsterType}</Text>
+              <Text style={[styles.tableCell, { fontSize: fontSize }]}>{feat.challengeRating}</Text>
+              <Text style={[styles.tableCell, { fontSize: fontSize }]}>{feat.source}</Text>
+              <TouchableOpacity
+                style={[styles.tableCell, styles.actionsColumn]}
+                onPress={() => handleFeatPress(feat)}
+              >
+                <Text style={[styles.actionText, { fontSize: fontSize }]}>{t('Details')}</Text>
+              </TouchableOpacity>
+            </View>
+          ))
+        )}
+      </ScrollView>
+
 
       <Modal visible={!!selectedFeat} transparent={true} animationType="slide" onRequestClose={closeFeatModal}>
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContentFeats}>
+          <View style={[styles.modalContentFeats, { padding: 20 * scaleFactor }]}>
             {isEditing ? (
               <ScrollView>
                 <View style={styles.rowContainer}>
                   <View style={styles.additionalInfoTitleA}>
                     <TextInput
-                      style={styles.modalSubTitleFeats}
+                      style={[styles.modalSubTitleFeats, { fontSize: fontSize * 1.2 }]}
                       value={editedFeat?.name || ''}
                       onChangeText={(value) => handleEditChange('name', value)}
                     />
                   </View>
                   <View style={styles.additionalInfoTitleA}>
                     <View style={styles.rowContainer}>
-                        <Text style={styles.modalSubTitleFeats}>{t('CR')}: </Text>
-                        <TextInput
-                          style={styles.modalSubTitleFeats}
-                          value={editedFeat?.challengeRating?.toString() || ''}
-                          onChangeText={(value) => handleEditChange('challengeRating', value)}
-                          keyboardType="numeric"
-                        />
-                  </View>
+
+                      <Text style={[styles.modalSubTitleFeats, { fontSize: fontSize * 1.2 }]}>{t('CR')}: </Text>
+                      <TextInput
+                        style={[styles.modalSubTitleFeats, { fontSize: fontSize * 1.2 }]}
+                        value={editedFeat?.challengeRating?.toString() || ''}
+                        onChangeText={(value) => handleEditChange('challengeRating', value)}
+                        keyboardType="numeric"
+                      />
+                    </View>
                   </View>
                   <View style={styles.additionalInfoTitleA}>
                     <View style={styles.rowContainer}>
-                    <Text style={styles.modalSubTitleFeats}>{t('Initiative')}: </Text>
-                    <TextInput
-                      style={styles.modalSubTitleFeats}
-                      value={editedFeat?.initiative?.toString() || '5'}
-                      onChangeText={(value) => handleEditChange('initiative', value)}
-                      keyboardType="numeric"
-                    />
-                  </View>
+                      <Text style={[styles.modalSubTitleFeats, { fontSize: fontSize * 1.2 }]}>{t('Initiative')}: </Text>
+                      <TextInput
+                        style={[styles.modalSubTitleFeats, { fontSize: fontSize * 1.2 }]}
+                        value={editedFeat?.initiative?.toString() || '5'}
+                        onChangeText={(value) => handleEditChange('initiative', value)}
+                        keyboardType="numeric"
+                      />
+                    </View>
                   </View>
                 </View>
 
                 <View style={styles.rowContainer}>
                   {selectedFeat?.image && (
-                    <ImageBackground source={{ uri: selectedFeat.image }} style={styles.modalImage} />
+                    <ImageBackground source={{ uri: selectedFeat.image }} style={[styles.modalImage, { height: 150 * scaleFactor, width: 150 * scaleFactor }]} />
                   )}
                   <View style={styles.infoColumn}>
                     <View style={styles.statsRow}>
-                      <Text style={styles.statValue}>{t('HP')}</Text>
-                      <View style={styles.statCircleA}>
+                      <Text style={[styles.statValue, { fontSize: fontSize }]}>{t('HP')}</Text>
+                      <View style={[styles.statCircleA, { width: 50 * scaleFactor, height: 50 * scaleFactor }]}>
                         <TextInput
-                          style={styles.statValue}
-                          value={editedFeat?.averageHitPoints?.toString() + ' (' + editedFeat?.averageHitPoints?.toString() + ' ' + editedFeat?.hitPointDiceCount?.toString() + ' ' + editedFeat?.hitPointDiceType?.toString() + ' + ' + editedFeat?.hitPointModifier?.toString() + ')'  || ''}
+
+                          style={[styles.statValue, { fontSize: fontSize }]}
+                          value={editedFeat?.averageHitPoints?.toString() + ' (' + editedFeat?.averageHitPoints?.toString() + ' ' + editedFeat?.hitPointDiceCount?.toString() + ' ' + editedFeat?.hitPointDiceType?.toString() + ' + ' + editedFeat?.hitPointModifier?.toString() + ')' || ''}
                           onChangeText={(value) => handleEditChange('averageHitPoints', value)}
+
                           keyboardType="numeric"
                         />
                       </View>
-                      <Text style={styles.statValue}>{t('AC')}</Text>
-                      <View style={styles.statCircleA}>
+                      <Text style={[styles.statValue, { fontSize: fontSize }]}>{t('AC')}</Text>
+                      <View style={[styles.statCircleA, { width: 50 * scaleFactor, height: 50 * scaleFactor }]}>
                         <TextInput
-                          style={styles.statValue}
+
+                          style={[styles.statValue, { fontSize: fontSize }]}
                           value={editedFeat?.armorClass || ''}
                           onChangeText={(value) => handleEditChange('armorClass', value)}
+
                         />
                       </View>
                     </View>
                     <View style={styles.additionalInfoA}>
                       <View style={styles.rowContainer}>
-                      <Text style={styles.featStatSmall}>{t('Type')}: </Text>
-                      <TextInput
-                        style={styles.featStatSmall}
-                        value={editedFeat?.monsterType || ''}
-                        onChangeText={(value) => handleEditChange('monsterType', value)}
-                      />
-                    </View>
-                    </View>
-                    <View style={styles.additionalInfoA}>
-                      <View style={styles.rowContainer}>
-                      <Text style={styles.featStatSmall}>{t('Alignment')}: </Text>
-                      <TextInput
-                        style={styles.featStatSmall}
-                        value={editedFeat?.alignment || ''}
-                        onChangeText={(value) => handleEditChange('alignment', value)}
-                      />
-                    </View>
+
+                        <Text style={[styles.featStatSmall, { fontSize: fontSize }]}>{t('Type')}: </Text>
+                        <TextInput
+                          style={[styles.featStatSmall, { fontSize: fontSize }]}
+                          value={editedFeat?.monsterType || ''}
+                          onChangeText={(value) => handleEditChange('monsterType', value)}
+                        />
+                      </View>
                     </View>
                     <View style={styles.additionalInfoA}>
                       <View style={styles.rowContainer}>
-                      <Text style={styles.featStatSmall}>{t('Speed')}: </Text>
-                      <TextInput
-                        style={styles.featStatSmall}
-                        value={editedFeat?.speed?.toString() || ''}
-                        onChangeText={(value) => handleEditChange('speed', value)}
-                        keyboardType="numeric"
-                      />
+                        <Text style={[styles.featStatSmall, { fontSize: fontSize }]}>{t('Alignment')}: </Text>
+                        <TextInput
+                          style={[styles.featStatSmall, { fontSize: fontSize }]}
+                          value={editedFeat?.alignment || ''}
+                          onChangeText={(value) => handleEditChange('alignment', value)}
+                        />
+                      </View>
                     </View>
+                    <View style={styles.additionalInfoA}>
+                      <View style={styles.rowContainer}>
+                        <Text style={[styles.featStatSmall, { fontSize: fontSize }]}>{t('Speed')}: </Text>
+                        <TextInput
+                          style={[styles.featStatSmall, { fontSize: fontSize }]}
+                          value={editedFeat?.speed?.toString() || ''}
+                          onChangeText={(value) => handleEditChange('speed', value)}
+                          keyboardType="numeric"
+                        />
+                      </View>
                     </View>
                   </View>
                 </View>
@@ -372,9 +399,10 @@ const setUpdate = async (bestiaryDto) => {
                     {['strScore', 'dexScore', 'conScore', 'intScore', 'wisScore', 'chaScore'].map((stat) => (
                       <View key={stat} style={styles.statBlock}>
                         <View style={styles.rowContainer}>
-                          <Text style={styles.statLabel}>{stat.slice(0, 3).toUpperCase()}: </Text>
+
+                          <Text style={[styles.statLabel, { fontSize: fontSize }]}>{stat.slice(0, 3).toUpperCase()}: </Text>
                           <TextInput
-                            style={styles.statLabel}
+                            style={[styles.statLabel, { fontSize: fontSize }]}
                             value={editedFeat?.[stat]?.toString() || ''}
                             onChangeText={(value) => handleEditChange(stat, value)}
                             keyboardType="numeric"
@@ -386,134 +414,142 @@ const setUpdate = async (bestiaryDto) => {
                 </View>
 
                 <View style={styles.additionalInfo}>
-                  <Text style={styles.actionDescription}>{t('Skills')}: </Text>
+                  <Text style={[styles.actionDescription, { fontSize: fontSize }]}>{t('Skills')}: </Text>
                   <TextInput
-                    style={styles.actionDescription}
+                    style={[styles.actionDescription, { fontSize: fontSize }]}
                     value={editedFeat?.skills || ''}
                     onChangeText={(value) => handleEditChange('skills', value)}
                   />
                 </View>
                 <View style={styles.additionalInfo}>
-                  <Text style={styles.actionDescription}>{t('Senses')}: </Text>
+                  <Text style={[styles.actionDescription, { fontSize: fontSize }]}>{t('Senses')}: </Text>
                   <TextInput
-                    style={styles.actionDescription}
+
+                    style={[styles.actionDescription, { fontSize: fontSize }]}
                     value={editedFeat?.passivePerception || ''}
                     onChangeText={(value) => handleEditChange('passivePerception', value)}
+
                   />
                 </View>
                 <View style={styles.additionalInfo}>
-                  <Text style={styles.actionDescription}>{t('Languages')}: </Text>
+                  <Text style={[styles.actionDescription, { fontSize: fontSize }]}>{t('Languages')}: </Text>
                   <TextInput
-                    style={styles.actionDescription}
+                    style={styles.actionDescription, { fontSize: fontSize }}
                     value={editedFeat?.languageNoteOverride.join(', ') || ''}
                     onChangeText={(value) => handleEditChange(
                                                      'languageNoteOverride',
                                                      value.split(',').map(item => item.trim())
                                                    )
                                                  }
+
                   />
                 </View>
 
                 <View style={styles.additionalInfo}>
-                  <Text style={styles.actionDescription}>{t('Actions')}: </Text>
+
+                  <Text style={[styles.actionName, { fontSize: fontSize }]}>{t('Actions')}: </Text>
                   <TextInput
                     style={styles.actionDescription}
                     value={editedFeat?.actionDescription || ''}
                     onChangeText={(value) => handleEditChange('actionDescription', value)}
                   />
+
                 </View>
 
                 <View style={styles.modalButtons}>
                   <TouchableOpacity onPress={() => setIsEditing(false)} style={styles.closeButtonItem}>
-                    <Text style={styles.closeButtonText}>{t('Cancel')}</Text>
+                    <Text style={[styles.closeButtonText, { fontSize: fontSize }]}>{t('Cancel')}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={deleteBesti} style={[styles.deleteButtonSpell, { padding: 10 * scaleFactor }]}>
+                    <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Delete')}</Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={saveFeatChanges} style={styles.editButton}>
-                    <Text style={styles.editButtonText}>{t('Save')}</Text>
+                    <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Save')}</Text>
                   </TouchableOpacity>
                 </View>
               </ScrollView>
             ) : (
               <ScrollView>
                 <View style={styles.featsContainerColumn}>
-              <View style={styles.additionalInfoTitle}>
-                <Text style={styles.modalSubTitleFeats}>{selectedFeat?.name}</Text>
-                </View>
-              <View style={styles.additionalInfoTitle}>
-                <Text style={styles.modalSubTitleFeats}>{t('CR')}: {selectedFeat?.challengeRating}</Text>
-                </View>
-              <View style={styles.additionalInfoTitle}>
-                <Text style={styles.modalSubTitleFeats}>{t('Initiative')}: {selectedFeat?.initiative}</Text>
-                </View>
+                  <View style={styles.additionalInfoTitle}>
+                    <Text style={[styles.modalSubTitleFeats, { fontSize: fontSize * 1.2 }]}>{selectedFeat?.name}</Text>
+                  </View>
+                  <View style={styles.additionalInfoTitle}>
+                    <Text style={[styles.modalSubTitleFeats, { fontSize: fontSize * 1.2 }]}>{t('CR')}: {selectedFeat?.challengeRating}</Text>
+                  </View>
+                  <View style={styles.additionalInfoTitle}>
+                    <Text style={[styles.modalSubTitleFeats, { fontSize: fontSize * 1.2 }]}>{t('Initiative')}: {selectedFeat?.initiative}</Text>
+                  </View>
                 </View>
 
-
-                  <View style={styles.rowContainer}>
-                    {selectedFeat?.image && (
-                      <ImageBackground source={{ uri: selectedFeat.image }} style={styles.modalImage} />
-                    )}
-
-                    <View style={styles.infoColumn}>
-                      <View style={styles.statsRow}>
-                        <View style={styles.statCircle}>
-                          <Text style={styles.statValue}>{t('HP')}</Text>
-                          <Text style={styles.statValue}>{selectedFeat?.averageHitPoints}</Text>
-                        </View>
-                        <View style={styles.statCircle}>
-                          <Text style={styles.statValue}>{t('AC')}</Text>
-                          <Text style={styles.statValue}>{selectedFeat?.armorClass}</Text>
-                        </View>
+                <View style={styles.rowContainer}>
+                  {selectedFeat?.image && (
+                    <ImageBackground source={{ uri: selectedFeat.image }} style={[styles.modalImage, { height: 150 * scaleFactor, width: 150 * scaleFactor }]} />
+                  )}
+                  <View style={styles.infoColumn}>
+                    <View style={styles.statsRow}>
+                      <View style={styles.statLeft}>
+                        <Text style={[styles.statValue, { fontSize: fontSize }]}>{t('HP')}</Text>
+                        <Text style={[styles.statValue, { fontSize: fontSize }]}>{selectedFeat?.averageHitPoints}</Text>
                       </View>
-                 <View style={styles.additionalInfo}>
-                      <Text style={styles.featStatSmall}>{selectedFeat?.monsterType}</Text>
+                      <View style={styles.dividerStats} />
+                      <View style={styles.statRight}>
+                        <Text style={[styles.statValue, { fontSize: fontSize }]}>{t('AC')}</Text>
+                        <Text style={[styles.statValue, { fontSize: fontSize }]}>{selectedFeat?.armorClass}</Text>
+                      </View>
                     </View>
-                <View style={styles.additionalInfo}>
-                      <Text style={styles.featStatSmall}>{selectedFeat?.alignment}</Text>
+                    <View style={styles.additionalInfo}>
+                      <Text style={[styles.featStatSmall, { fontSize: fontSize }]}>{selectedFeat?.monsterType}</Text>
                     </View>
-                <View style={styles.additionalInfo}>
-                      <Text style={styles.featStatSmall}>{t('Speed')}: {selectedFeat?.speed}</Text>
+                    <View style={styles.additionalInfo}>
+                      <Text style={[styles.featStatSmall, { fontSize: fontSize }]}>{selectedFeat?.alignment}</Text>
                     </View>
+                    <View style={styles.additionalInfo}>
+                      <Text style={[styles.featStatSmall, { fontSize: fontSize }]}>{t('Speed')}: {selectedFeat?.speed}</Text>
                     </View>
                   </View>
+                </View>
 
 
                 <View style={styles.statsContainerFeatsB}>
-                <View style={styles.statsContainerFeatsA}>
-                  {['strScore', 'dexScore', 'conScore', 'intScore', 'wisScore', 'chaScore'].map((statbonus) => (
-                    <View key={statbonus} style={styles.statBlock}>
-                      <Text style={styles.statValue}>{Math.floor((selectedFeat?.[statbonus]-10)/2)}</Text>
-                          </View>
-                  ))}
-                </View>
-                <View style={styles.statsContainerFeats}>
-                  {['strScore', 'dexScore', 'conScore', 'intScore', 'wisScore', 'chaScore'].map((stat) => (
-                    <View key={stat} style={styles.statBlock}>
-                      <Text style={styles.statLabel}>{stat.slice(0, 3).toUpperCase()}: {selectedFeat?.[stat]}</Text>
-                    </View>
-                  ))}
-                </View>
-                </View>
-
-                <View style={styles.additionalInfo}>
-                  <Text style={styles.actionDescription}>{t('Skills')}: {selectedFeat?.skills}</Text>
-                </View>
-                <View style={styles.additionalInfo}>
-                  <Text style={styles.actionDescription}>{t('Senses')}: {selectedFeat?.passivePerception}</Text>
-                </View>
-                <View style={styles.additionalInfo}>
-                  <Text style={styles.actionDescription}>{t('Languages')}: {selectedFeat?.languageNoteOverride.join(', ')}</Text>
+                  <View style={styles.statsContainerFeatsA}>
+                    {['strScore', 'dexScore', 'conScore', 'intScore', 'wisScore', 'chaScore'].map((statbonus) => (
+                      <View key={statbonus} style={styles.statBlock}>
+                        <Text style={[styles.statValue, { fontSize: fontSize }]}>{Math.floor((selectedFeat?.[statbonus] - 10) / 2)}</Text>
+                      </View>
+                    ))}
+                  </View>
+                  <View style={styles.statsContainerFeats}>
+                    {['strScore', 'dexScore', 'conScore', 'intScore', 'wisScore', 'chaScore'].map((stat) => (
+                      <View key={stat} style={styles.statBlock}>
+                        <Text style={[styles.statLabel, { fontSize: fontSize }]}>{stat.slice(0, 3).toUpperCase()}: {selectedFeat?.[stat]}</Text>
+                      </View>
+                    ))}
+                  </View>
                 </View>
 
                 <View style={styles.additionalInfo}>
-                      <Text style={styles.actionDescription}>{selectedFeat?.actionDescription}</Text>
+                  <Text style={[styles.actionDescription, { fontSize: fontSize }]}>{t('Skills')}: {selectedFeat?.skills}</Text>
+                </View>
+                <View style={styles.additionalInfo}>
+                  <Text style={[styles.actionDescription, { fontSize: fontSize }]}>{t('Senses')}: {selectedFeat?.passivePerception}</Text>
+                </View>
+                <View style={styles.additionalInfo}>
+                  <Text style={[styles.actionDescription, { fontSize: fontSize }]}>{t('Languages')}: {selectedFeat?.languageNoteOverride.join(', ')}</Text>
+                </View>
+
+                <View style={styles.additionalInfo}>
+                  <Text style={[styles.actionDescription, { fontSize: fontSize }]}>{selectedFeat?.actionDescription}</Text>
                 </View>
 
                 <View style={styles.modalButtons}>
+                {user.id === bestiaries.ownerID && (
                   <TouchableOpacity onPress={() => handleEditFeat(selectedFeat)} style={styles.editButton}>
-                    <Text style={styles.editButtonText}>{t('Edit')}</Text>
+                    <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
                   </TouchableOpacity>
-
+                )}
                   <TouchableOpacity onPress={closeFeatModal} style={styles.closeButtonItem}>
-                    <Text style={styles.closeButtonText}>{t('Close')}</Text>
+                    <Text style={[styles.closeButtonText, { fontSize: fontSize }]}>{t('Close')}</Text>
                   </TouchableOpacity>
                 </View>
               </ScrollView>
@@ -521,9 +557,8 @@ const setUpdate = async (bestiaryDto) => {
           </View>
         </View>
       </Modal>
-
     </ImageBackground>
   );
 };
 
-export default Bestiary
+export default Bestiary;

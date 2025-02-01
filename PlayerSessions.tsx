@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { ImageBackground, TouchableOpacity, Text, View, Button, StyleSheet, ScrollView, TextInput, FlatList } from 'react-native';
+import { ImageBackground, TouchableOpacity, Text, View, Button, StyleSheet, ScrollView, TextInput, FlatList, Modal } from 'react-native';
 import { useNavigation, HeaderBackButton } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +21,9 @@ const PlayerSessions: React.FC = () => {
     const { theme } = useContext(ThemeContext);
     const { ipv4 } = useContext(UserData);
     const { token } = useAuth();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [code, setCode] = useState('');
+
 
     useEffect(() => {
          fetchData();
@@ -52,6 +55,16 @@ const PlayerSessions: React.FC = () => {
 
     const openSessionDetails = (item) => {
         navigation.navigate('PlayerSessionDetails', {campaign: item[1], player:item[0],session:item[1].sessions[item[1].sessions.length - 1] });
+
+    };
+
+    const addSession = () => {
+        if (code.trim() === '') return;
+        const newSession = { title: `${code}`, sessions: [] };
+        setResult([...result, [code, newSession]]);
+        setModalVisible(false);
+        setCode('');
+
     };
 
     return (
@@ -60,7 +73,7 @@ const PlayerSessions: React.FC = () => {
              source={theme.background}
         resizeMode="cover">
 
-        <View style={styles.scrollContainer}>
+        <View style={[styles.scrollContainerSession, { flex: 1 }]}>
 
             <Text style={[styles.headerTextCamp, { color: theme.fontColor, fontSize: fontSize }]}>{t('Your Sessions')}</Text>
 
@@ -69,14 +82,56 @@ const PlayerSessions: React.FC = () => {
                     keyExtractor={(item) => item}
                     renderItem={({ item }) => (
                         <TouchableOpacity
-                            style={[styles.inputCampNote, { padding: 10 * scaleFactor, marginVertical: 5 * scaleFactor }]}
+                            style={[styles.inputCampNote, { padding: 10 * scaleFactor, marginVertical: 5 * scaleFactor, borderColor: theme.borderColor, borderWidth: 2 }]}
                             onPress={() => openSessionDetails(item)}
                         >
                             <Text style={[styles.sessionName, { fontSize: fontSize }]}>{item[1].title}</Text>
                         </TouchableOpacity>
                     )}
             />
+
+            <TouchableOpacity
+                style={[styles.addButtonPlayerSession, { borderColor: theme.borderColor, borderWidth: 2 }]}
+                onPress={() => setModalVisible(true)}
+            >
+                <Text style={[styles.autoAddButtonText, { color: theme.fontColor, fontSize: fontSize * 0.8 }]}>{t('Add Session')}</Text>
+            </TouchableOpacity>
+
         </View>
+
+
+
+        <Modal transparent={true} visible={modalVisible} animationType="slide">
+            <View style={styles.modalContainerMonCre}>
+                <View style={styles.modalContentMonCre}>
+                    <Text style={[styles.modalTitleMonCre, { fontSize: fontSize }]}>{t('Enter Code')}</Text>
+                    <TextInput
+                        style={[styles.modalInputEncounter, { fontSize: fontSize }]}
+                        keyboardType="numeric"
+                        value={code}
+                        onChangeText={setCode}
+                        onChangeText={(text) => setCode(text.replace(/[^0-9]/g, ''))}
+                        placeholder={t('Enter Code')}
+                        placeholderTextColor="#808080"
+                        maxLength={6}
+                    />
+                  <View style={styles.rowContainer}>
+                    <TouchableOpacity
+                        style={[styles.modalButtonSession, { padding: 10 * scaleFactor, backgroundColor: 'green' }]}
+                        onPress={addSession}
+                    >
+                        <Text style={[styles.modalCloseButtonText, { fontSize: fontSize * 0.8 }]}>{t('Confirm')}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.modalButtonSession, { padding: 10 * scaleFactor, backgroundColor: 'red' }]}
+                        onPress={() => setModalVisible(false)}
+                    >
+                        <Text style={[styles.modalCloseButtonText, { fontSize: fontSize * 0.8 }]}>{t('Cancel')}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+            </View>
+        </Modal>
 
 
       <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>

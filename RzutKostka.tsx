@@ -26,6 +26,7 @@ const RzutKostka: React.FC = ({ route,navigation }) => {
   const { theme, addDiceResult } = useContext(ThemeContext);
   const { player={}, session={} } = route?.params || {};
 
+
   const [selectedDice, setSelectedDice] = useState([]);
   const [diceValues, setDiceValues] = useState([]);
   const [rotateValues] = useState(diceTypes.map(() => new Animated.Value(0)));
@@ -52,7 +53,6 @@ const RzutKostka: React.FC = ({ route,navigation }) => {
 
       newDiceValues.push({ index, results: diceResults });
       resultsSummary.push(`roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
-
       if (player) {
         forFetchResult.push(`${player.name} roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
       }
@@ -72,8 +72,6 @@ const RzutKostka: React.FC = ({ route,navigation }) => {
     if (forFetchResult.length > 0) {
       fetchData(forFetchResult);
     }
-
-
 
     setDiceValues(newDiceValues);
     addDiceResult(resultsSummary.join(' | Dice '));

@@ -257,7 +257,9 @@ return (
 
      <View style={styles.CampaignOneContainerMainA}>
       <View style={styles.CampaignOneContainerMain}>
-        <Text style={[styles.CampName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>{campaign.title}</Text>
+
+        <Text style={[styles.CampNameA, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>{campaign.title}</Text>
+
 
       </View>
 
@@ -298,7 +300,9 @@ return (
                  </View>
                ))
              ) : (
-               <Text style={styles.emptyResultText}>No notes available</Text>
+
+               <Text style={styles.resultText}>{t('No notes available')}</Text>
+
              )}
 
         {selectedNote && (
@@ -411,7 +415,9 @@ return (
           <ScrollView style={styles.rightCampaignContainerScrollArea} ref={scrollViewRef}>
           {actualSession?.logs?.length > 0 ? (
             <>
+
               {actualSession.logs.reverse().map((logs, index) => (
+
                 <Text key={index} style={[styles.diceResult, { fontSize: fontSize }]}>
                     {logs}
                 </Text>
@@ -419,7 +425,9 @@ return (
                <Text style={styles.diceResult}>{"\n\n"}</Text>
              </>
                ) : (
-             <Text style={styles.emptyResultText}>No logs available</Text>
+
+             <Text style={styles.resultText}>{t('No logs available')}</Text>
+
            )}
           </ScrollView>
         </View>

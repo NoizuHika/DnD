@@ -51,27 +51,27 @@ const MonsterCreationDescription: React.FC = ({ navigation }) => {
     <ImageBackground source={theme.background} style={styles.containerMonCre}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
        <View style={styles.columnDescr}>
-        <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Monster Description')}</Text>
+        <Text style={[styles.labelMagicItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Monster Description')}</Text>
         <TouchableOpacity style={styles.inputMonCre} onPress={() => openDescriptionModal('monsterDescription')}>
           <Text style={[styles.TextMonCre, { fontSize: fontSize }]}> {monsterDescriptions.monsterDescription || t('Enter monster description')}</Text>
         </TouchableOpacity>
 
-        <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Actions Description')}</Text>
+        <Text style={[styles.labelMagicItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Actions Description')}</Text>
         <TouchableOpacity style={styles.inputMonCre} onPress={() => openDescriptionModal('actionsDescription')}>
           <Text style={[styles.TextMonCre, { fontSize: fontSize }]}> {monsterDescriptions.actionsDescription || t('Enter actions description')}</Text>
         </TouchableOpacity>
 
-        <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Bonus Action Description')}</Text>
+        <Text style={[styles.labelMagicItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Bonus Action Description')}</Text>
         <TouchableOpacity style={styles.inputMonCre} onPress={() => openDescriptionModal('bonusActionsDescription')}>
           <Text style={[styles.TextMonCre, { fontSize: fontSize }]}> {monsterDescriptions.bonusActionsDescription || t('Enter bonus action description')}</Text>
         </TouchableOpacity>
 
-        <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Reactions Description')}</Text>
+        <Text style={[styles.labelMagicItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Reactions Description')}</Text>
         <TouchableOpacity style={styles.inputMonCre} onPress={() => openDescriptionModal('reactionsDescription')}>
           <Text style={[styles.TextMonCre, { fontSize: fontSize }]}> {monsterDescriptions.reactionsDescription || t('Enter reactions description')}</Text>
         </TouchableOpacity>
 
-        <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Special Traits Description')}</Text>
+        <Text style={[styles.labelMagicItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Special Traits Description')}</Text>
         <TouchableOpacity style={styles.inputMonCre} onPress={() => openDescriptionModal('specialTraitsDescription')}>
           <Text style={[styles.TextMonCre, { fontSize: fontSize }]}> {monsterDescriptions.specialTraitsDescription || t('Enter special traits description')}</Text>
         </TouchableOpacity>
@@ -86,13 +86,13 @@ const MonsterCreationDescription: React.FC = ({ navigation }) => {
               }}
               tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
             />
-            <Text style={[styles.label, { fontSize: fontSize * 1.2 }]}>{t('Legendary?')}</Text>
+            <Text style={[styles.labelCheck, { fontSize: fontSize * 1.2 }]}>{t('Legendary?')}</Text>
           </View>
         </View>
 
         {isLegendary && (
           <View>
-            <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Legendary Action Description')}</Text>
+            <Text style={[styles.labelMagicItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Legendary Action Description')}</Text>
             <TouchableOpacity
               style={styles.inputMonCre}
               onPress={() => openDescriptionModal('legendaryActionsDescription')}

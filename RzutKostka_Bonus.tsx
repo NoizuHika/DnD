@@ -44,6 +44,7 @@ const handleRollDice = () => {
   setResult(null);
 
 
+
   Animated.timing(rotateValue, {
     toValue: 1,
     duration: 1000,
@@ -64,6 +65,30 @@ const handleRollDice = () => {
 
   setAnswer(`${player.name} rolls for ${statName}: ${finalResult} (${randomValue}${finalStatValue >= 0 ? '+' : ''}${finalStatValue})`);
 };
+
+  const fetchData = async (answer) => {
+            try {
+                console.log(answer)
+                const sessionResponse = await fetch(`http://${ipv4}:8000/sessions/addToLogs`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'accept': 'application/json'
+                            },
+                            body: JSON.stringify({ token: token.toString(),log:answer,sessionID:session.id }),
+                        });
+
+
+                if (!sessionResponse.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+
+                    const ans = await sessionResponse.json();
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+  };
 
   const fetchData = async (answer) => {
             try {
@@ -110,7 +135,7 @@ const handleRollDice = () => {
             source={theme.icons.d20}
             style={[styles.diceKostka, { transform: [{ rotate: spin }], width: 200 * scaleFactor, height: 200 * scaleFactor }]}
           />
-          {diceValue !== null && <Text style={[styles.diceValue, { color: theme.textColor, fontSize: fontSize * 1.5 }]}>{diceValue}</Text>}
+          {diceValue !== null && <Text style={[styles.diceValue, { color: theme.diceColor, fontSize: fontSize * 1.5 }]}>{diceValue}</Text>}
         </TouchableOpacity>
       </View>
 
