@@ -5,12 +5,12 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { UserData } from './UserData';
 import { SettingsContext } from './SettingsContext';
-
+import { useAuth } from './AuthContext';
 const BackLibrary: React.FC = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const { fontSize, scaleFactor } = useContext(SettingsContext);
-
+  const { token } = useAuth();
   const { ipv4 } = useContext(UserData);
   const [backLibrary, setBackLibrary] = useState([]);
   const [searchText, setSearchText] = useState('');
@@ -18,7 +18,7 @@ const BackLibrary: React.FC = ({ navigation }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedItem, setEditedItem] = useState(null);
   const [feats, setFeats] = useState([]);
-
+  const [userID, setUserID] = useState(null);
   useEffect(() => {
     fetchData();
   }, []);
@@ -32,11 +32,21 @@ const BackLibrary: React.FC = ({ navigation }) => {
           'accept': 'application/json'
         }
       });
+      const meResponse = await fetch(`http://${ipv4}:8000/me`,{
+         method: 'GET',
+         headers: {
+             'Content-Type': 'application/json',
+             'accept': 'application/json',
+              "Authorization": `Bearer ${token}`
+         }
 
-      if (!backgroundResponse.ok) {
+     });
+      if (!backgroundResponse.ok || !meResponse.ok) {
         throw new Error('Failed to fetch data');
       }
-
+        const userID = await meResponse.json();
+                console.log(userID);
+                setUserID(userID.id);
       const backgrounds = await backgroundResponse.json();
       setBackLibrary(backgrounds);
     } catch (error) {
@@ -182,7 +192,7 @@ const BackLibrary: React.FC = ({ navigation }) => {
               </Text>
               <Text style={[styles.itemDescription, { fontSize: fontSize }]}>{selectedItem.description}</Text>
               <View style={styles.modalButtons}>
-                {user.id === backLibItem.ownerID && (
+                {userID === selectedItem.ownerID && (
                   <TouchableOpacity onPress={() => setIsEditing(true)} style={[styles.editButton, { padding: 10 * scaleFactor }]}>
                     <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
                   </TouchableOpacity>

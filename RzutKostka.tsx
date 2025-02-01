@@ -69,9 +69,10 @@ const RzutKostka: React.FC = ({ route,navigation }) => {
     });
 
 
-    if (forFetchResult.length > 0) {
+    if (session && Object.keys(session).length > 0 && Array.isArray(forFetchResult) && forFetchResult.length > 0) {
       fetchData(forFetchResult);
     }
+
 
     setDiceValues(newDiceValues);
     addDiceResult(resultsSummary.join(' | Dice '));

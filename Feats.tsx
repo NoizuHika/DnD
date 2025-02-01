@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { UserData } from './UserData';
-
+import { useAuth } from './AuthContext';
 import { SettingsContext } from './SettingsContext';
 
 
@@ -16,21 +16,30 @@ const Feats: React.FC = ({ navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
 
   const { ipv4 } = useContext(UserData);
-
+  const { token } = useAuth();
   const [feats, setFeats] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [selectedFeat, setSelectedFeat] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedFeat, setEditedFeat] = useState(null);
-
+  const [userID, setUserID] = useState(null);
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-        const [featsResponse] = await Promise.all([
+        const [featsResponse,meResponse] = await Promise.all([
           fetch(`http://${ipv4}:8000/feats/all`),
+          fetch(`http://${ipv4}:8000/me`,{
+                              method: 'GET',
+                              headers: {
+                                  'Content-Type': 'application/json',
+                                  'accept': 'application/json',
+                                   "Authorization": `Bearer ${token}`
+                              }
+
+                          }),
         ]);
 
         if (!featsResponse.ok) {
@@ -38,7 +47,9 @@ const Feats: React.FC = ({ navigation }) => {
         }
 
         const feats = await featsResponse.json();
-
+        const userID = await meResponse.json();
+        console.log(userID);
+        setUserID(userID.id);
         setFeats(feats);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -116,7 +127,7 @@ const setUpdate = async (updatedEncounter) => {
 
   const deleteFeats = async () => {
     try {
-      const response = await fetch(`/api/items/${item.id}`, {
+      const response = await fetch(`http://${ipv4}:8000/feats/delete/${item.id}`, {
         method: 'DELETE',
       });
       if (response.ok) {
@@ -183,7 +194,7 @@ const setUpdate = async (updatedEncounter) => {
                 </Text>
                 <Text style={[styles.itemDescription, { fontSize: fontSize }]}>{selectedFeat.description}</Text>
                 <View style={styles.modalButtons}>
-                {user.id === feats.ownerID && (
+                {userID === selectedFeat.ownerID && (
                   <TouchableOpacity onPress={() => setIsEditing(true)} style={[styles.editButton, { padding: 10 * scaleFactor }]}>
                     <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
                   </TouchableOpacity>

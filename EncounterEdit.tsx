@@ -144,39 +144,6 @@ const setUpdate = async (updatedEncounter) => {
 
 
   const updateEncounters=()=>{
-      const updatedEncounter = { ...encounter, entities: monsters };
-      setUpdate(updatedEncounter)
-      navigation.navigate('Encounters',{campaign:campaign});
-      };
-
-
-const setUpdate = async (updatedEncounter) => {
-  try {
-     console.log(JSON.stringify(updatedEncounter));
-    const response = await fetch(`http://${ipv4}:8000/encounters/update`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-
-      body: JSON.stringify(updatedEncounter),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch data: ${response.status}`);
-    }
-
-    const result = await response.json();
-    console.log(updatedEncounter)
-    console.log('Updated encounter:', result);
-
-  } catch (error) {
-    console.error('Error fetching data:', error.message);
-  }
-};
-
-
-  const updateEncounters=()=>{
       const players = encounter.players == null ? [] : encounter.players;
       const { adjustedXP } = calculateEncounterXP();
       const updatedEncounter = {

@@ -38,24 +38,6 @@ const RulesGloss: React.FC = ({ navigation }) => {
            }
          };
 
-
-  const fetchData = async () => {
-    try {
-      const [rulesResponse] = await Promise.all([
-        fetch(`http://${ipv4}:8000/rules/all`)
-      ]);
-
-      if (!rulesResponse.ok) {
-        throw new Error('Failed to fetch data');
-      }
-
-      const rules = await rulesResponse.json();
-      setRulesGloss(rules);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-
   const handleGoBack = () => {
     navigation.goBack();
   };

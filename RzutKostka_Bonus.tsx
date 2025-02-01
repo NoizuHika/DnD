@@ -90,29 +90,6 @@ const handleRollDice = () => {
             }
   };
 
-  const fetchData = async (answer) => {
-            try {
-                console.log(answer)
-                const sessionResponse = await fetch(`http://${ipv4}:8000/sessions/addToLogs`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'accept': 'application/json'
-                            },
-                            body: JSON.stringify({ token: token.toString(),log:answer,sessionID:session.id }),
-                        });
-
-
-                if (!sessionResponse.ok) {
-                    throw new Error('Failed to fetch data');
-                }
-
-                    const ans = await sessionResponse.json();
-
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-  };
 
   const spin = rotateValue.interpolate({
     inputRange: [0, 1],

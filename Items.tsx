@@ -7,7 +7,7 @@ import styles from './styles';
 import { Appearance } from 'react-native';
 import { UserData } from './UserData';
 import { SettingsContext } from './SettingsContext';
-
+import { useAuth } from './AuthContext';
 Appearance.setColorScheme('light');
 
 const Items: React.FC = ({ navigation }) => {
@@ -23,9 +23,11 @@ const Items: React.FC = ({ navigation }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedItem, setEditedItem] = useState(null);
+  const { token } = useAuth();
   const { ipv4 } = useContext(UserData);
   const categories = ['Type', 'weapon', 'armor', 'adventuring_gear', 'consumable', 'magic', 'other'];
   const rarities = ['Rarity', 'common', 'uncommon', 'rare', 'very rare', 'legendary'];
+  const [userID, setUserID] = useState(null);
 
   const handleSubtypePicker = (type) => {
     if (!subTypes || subTypes.length === 0) return [];
@@ -43,43 +45,35 @@ const Items: React.FC = ({ navigation }) => {
   }, []);
   const fetchData = async () => {
           try {
-              const [itemsResponse, itemTypesResponse] = await Promise.all([
+              const [itemsResponse, itemTypesResponse,meResponse] = await Promise.all([
                 fetch(`http://${ipv4}:8000/items/all`),
                 fetch(`http://${ipv4}:8000/itemTypes/all`),
+                fetch(`http://${ipv4}:8000/me`,{
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'accept': 'application/json',
+                         "Authorization": `Bearer ${token}`
+                    }
+
+                }),
               ]);
 
-              if (!itemsResponse.ok || !itemTypesResponse.ok) {
+              if (!itemsResponse.ok || !itemTypesResponse.ok || !meResponse.ok) {
                 throw new Error('Failed to fetch data');
               }
 
               const itemsData = await itemsResponse.json();
               const itemTypesData = await itemTypesResponse.json();
+              const userID = await meResponse.json();
               setItems(itemsData);
-              setSubTypes(itemTypesData)
+              setSubTypes(itemTypesData);
+              console.log(userID);
+              setUserID(userID.id);
             } catch (error) {
               console.error('Error fetching data:', error);
             }
           };
-
-  const fetchData = async () => {
-    try {
-      const [itemsResponse, itemTypesResponse] = await Promise.all([
-        fetch(`http://${ipv4}:8000/items/all`),
-        fetch(`http://${ipv4}:8000/itemTypes/all`),
-      ]);
-
-      if (!itemsResponse.ok || !itemTypesResponse.ok) {
-        throw new Error('Failed to fetch data');
-      }
-
-      const itemsData = await itemsResponse.json();
-      const itemTypesData = await itemTypesResponse.json();
-      setItems(itemsData);
-      setSubTypes(itemTypesData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -99,7 +93,7 @@ const Items: React.FC = ({ navigation }) => {
     if (selectedType && selectedType !== 'Type') {
       filtered = filtered.filter((item) => item.type.includes(selectedType));
     }
-    console.log(selectedSubtype)
+
 if (selectedSubtype && selectedSubtype !== 'Subtype') {
   filtered = filtered.filter((item) => {
 
@@ -320,7 +314,7 @@ if (selectedSubtype && selectedSubtype !== 'Subtype') {
 
                 <Text style={[styles.itemDescription, { fontSize: fontSize }]}>{selectedItem.description}</Text>
                 <View style={styles.modalButtons}>
-                {user.id === spell.ownerID && (
+                {userID === selectedItem.ownerID && (
                   <TouchableOpacity onPress={() => setIsEditing(true)} style={[styles.editButton, { padding: 10 * scaleFactor }]}>
                     <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
                   </TouchableOpacity>

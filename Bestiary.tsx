@@ -7,6 +7,7 @@ import styles from './styles';
 import { Appearance } from 'react-native';
 import { UserData } from './UserData';
 import { SettingsContext } from './SettingsContext';
+import { useAuth } from './AuthContext';
 
 Appearance.setColorScheme('light');
 
@@ -22,35 +23,66 @@ const Bestiary: React.FC = ({ navigation }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedFeat, setEditedFeat] = useState(null);
   const [feats,setFeats]= useState([]);
+  const { token } = useAuth();
   const { ipv4 } = useContext(UserData);
+  const [userID, setUserID] = useState(null);
   const crOptions = ["0", "1/8", "1/4", "1/2", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
                       "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
                       "23", "24", "25", "26", "27", "28", "29", "30"];
   const [typeOptions,setTypeOptions] = useState([]);
   const [environmentOptions,setEnvironmentOptions] = useState([]);
-
+    const extractActions = (text) => {
+        const actionRegex = /(\w+)\.?\s(.+?)(?=(?:\n|Javelin|Summon Air Elemental|\n\n|$))/g;
+        let matches = [];
+        let match;
+        while ((match = actionRegex.exec(text)) !== null) {
+          let action = {
+            name: match[1],
+            description: match[2].trim(),
+          };
+          const hitRegex = /Hit:\s*(\d+)\s*\(\d+\w+ \+\s*\d+\)/;
+          const hitMatch = hitRegex.exec(match[2]);
+          if (hitMatch) {
+            action.hit = hitMatch[0];
+          }
+          matches.push(action);
+        }
+    return matches;
+  };
   useEffect(() => {
         fetchData();
       }, []);
 
   const fetchData = async () => {
         try {
-            const [bestiariesResponse, environmentsResponse, monsterTypeResponse] = await Promise.all([
+            const [bestiariesResponse, environmentsResponse, monsterTypeResponse,meResponse] = await Promise.all([
               fetch(`http://${ipv4}:8000/bestiaries/all`),
               fetch(`http://${ipv4}:8000/environments/all`),
-              fetch(`http://${ipv4}:8000/monster_types/all`)
+              fetch(`http://${ipv4}:8000/monster_types/all`),
+              fetch(`http://${ipv4}:8000/me`,{
+                                  method: 'GET',
+                                  headers: {
+                                      'Content-Type': 'application/json',
+                                      'accept': 'application/json',
+                                       "Authorization": `Bearer ${token}`
+                                  }
+
+                              }),
             ]);
 
-            if (!bestiariesResponse.ok || !environmentsResponse.ok || !monsterTypeResponse.ok) {
+            if (!bestiariesResponse.ok || !environmentsResponse.ok || !monsterTypeResponse.ok || !meResponse) {
               throw new Error('Failed to fetch data');
             }
 
             const feats = await bestiariesResponse.json();
             const environmentData = await environmentsResponse.json();
             const typeData = await monsterTypeResponse.json();
+            const userID = await meResponse.json();
             setFeats(feats);
             setEnvironmentOptions(environmentOptions);
             setTypeOptions(typeData);
+            console.log(userID);
+            setUserID(userID.id)
           } catch (error) {
             console.error('Error fetching data:', error);
           }
@@ -538,12 +570,22 @@ const setUpdate = async (bestiaryDto) => {
                   <Text style={[styles.actionDescription, { fontSize: fontSize }]}>{t('Languages')}: {selectedFeat?.languageNoteOverride.join(', ')}</Text>
                 </View>
 
-                <View style={styles.additionalInfo}>
-                  <Text style={[styles.actionDescription, { fontSize: fontSize }]}>{selectedFeat?.actionDescription}</Text>
-                </View>
+               <View style={styles.additionalInfo}>
+                 {extractActions(selectedFeat?.actionDescription).map((action, index) => (
+                   <View key={index} style={styles.actionContainer}>
+                     <Text style={styles.actionDescription}>Name: {action.name}</Text>
+                     <Text style={styles.actionDescription}>Description: {action.description}</Text>
+                     {action.hit && (
+                       <TouchableOpacity onPress={() => roll(selectedMonster, action, session)}>
+                         <Text style={styles.actionDescription}>Hit: {action.hit}</Text>
+                       </TouchableOpacity>
+                     )}
+                   </View>
+                 ))}
+               </View>
 
                 <View style={styles.modalButtons}>
-                {user.id === bestiaries.ownerID && (
+                {userID === selectedFeat?.ownerID && (
                   <TouchableOpacity onPress={() => handleEditFeat(selectedFeat)} style={styles.editButton}>
                     <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
                   </TouchableOpacity>
