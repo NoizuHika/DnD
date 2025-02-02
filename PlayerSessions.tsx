@@ -21,9 +21,9 @@ const PlayerSessions: React.FC = () => {
     const { theme } = useContext(ThemeContext);
     const { ipv4 } = useContext(UserData);
     const { token } = useAuth();
-
     const [modalVisible, setModalVisible] = useState(false);
     const [code, setCode] = useState('');
+
 
     useEffect(() => {
          fetchData();
@@ -55,6 +55,7 @@ const PlayerSessions: React.FC = () => {
 
     const openSessionDetails = (item) => {
         navigation.navigate('PlayerSessionDetails', {campaign: item[1], player:item[0],session:item[1].sessions[item[1].sessions.length - 1] });
+
     };
 
     const addSession = () => {
@@ -63,6 +64,7 @@ const PlayerSessions: React.FC = () => {
         setResult([...result, [code, newSession]]);
         setModalVisible(false);
         setCode('');
+
     };
 
     return (

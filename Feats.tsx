@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { UserData } from './UserData';
+import { useAuth } from './AuthContext';
 import { SettingsContext } from './SettingsContext';
+
 
 const featsData = require('./assets/Library/feats.json');
 
@@ -12,34 +14,73 @@ const Feats: React.FC = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const { fontSize, scaleFactor } = useContext(SettingsContext);
-  const { ipv4 } = useContext(UserData);
 
+  const { ipv4 } = useContext(UserData);
+  const { token } = useAuth();
   const [feats, setFeats] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [selectedFeat, setSelectedFeat] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedFeat, setEditedFeat] = useState(null);
-
+  const [userID, setUserID] = useState(null);
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-      const [featsResponse] = await Promise.all([
-        fetch(`http://${ipv4}:8000/feats/all`),
-      ]);
+        const [featsResponse,meResponse] = await Promise.all([
+          fetch(`http://${ipv4}:8000/feats/all`),
+          fetch(`http://${ipv4}:8000/me`,{
+                              method: 'GET',
+                              headers: {
+                                  'Content-Type': 'application/json',
+                                  'accept': 'application/json',
+                                   "Authorization": `Bearer ${token}`
+                              }
 
-      if (!featsResponse.ok) {
-        throw new Error('Failed to fetch data');
+                          }),
+        ]);
+
+        if (!featsResponse.ok) {
+          throw new Error('Failed to fetch data');
+        }
+
+        const feats = await featsResponse.json();
+        const userID = await meResponse.json();
+        console.log(userID);
+        setUserID(userID.id);
+        setFeats(feats);
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
+    };
 
-      const feats = await featsResponse.json();
-      setFeats(feats);
-    } catch (error) {
-      console.error('Error fetching data:', error);
+const setUpdate = async (updatedEncounter) => {
+  try {
+     console.log(JSON.stringify(updatedEncounter));
+    const response = await fetch(`http://${ipv4}:8000/feats/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(updatedEncounter),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
     }
-  };
+
+    const result = await response.json();
+    console.log(updatedEncounter)
+    console.log('Updated encounter:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+};
+
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -79,25 +120,26 @@ const Feats: React.FC = ({ navigation }) => {
         feat.name === selectedFeat.name ? editedFeat : feat
       )
     );
-
+    setUpdate(editedFeat);
     setSelectedFeat(editedFeat);
     setIsEditing(false);
   };
 
   const deleteFeats = async () => {
+      console.log(selectedFeat.id)
     try {
-      const response = await fetch(`/api/items/${item.id}`, {
+      const response = await fetch(`http://${ipv4}:8000/feats/delete/${selectedFeat.id}`, {
         method: 'DELETE',
       });
-      if (response.ok) {
-        alert(t('Item deleted successfully'));
-      } else {
-        alert(t('Failed to delete item'));
-      }
-    } catch (error) {
-      console.error(error);
-      alert(t('Error deleting item'));
-    }
+        fetchData();
+        setSelectedFeat(null);
+            setIsEditing(false);
+      if (!response.ok) {
+              throw new Error(`Failed to fetch data: ${response.status}`);
+            }
+     }catch (error) {
+          console.error('Error fetching data:', error.message);
+        }
   };
 
   return (
@@ -111,20 +153,24 @@ const Feats: React.FC = ({ navigation }) => {
       />
 
       <ScrollView style={styles.tableContainer}>
+
         <View style={[styles.tableHeader, { paddingVertical: 10 * scaleFactor }]}>
           <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Name')}</Text>
           <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Prerequisite')}</Text>
           <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Source')}</Text>
           <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Details')}</Text>
+
         </View>
         {filteredFeats.length === 0 ? (
           <Text style={[styles.noResultsText, { fontSize: fontSize }]}>{t('No feats found')}</Text>
         ) : (
           filteredFeats.map((feat, index) => (
+
             <View key={index} style={[styles.tableRow, { paddingVertical: 10 * scaleFactor }]}>
               <Text style={[styles.tableCell, styles.nameColumn, { fontSize: fontSize }]}>{feat.name}</Text>
               <Text style={[styles.tableCell, { fontSize: fontSize }]}>{feat.requirements || t('None')}</Text>
               <Text style={[styles.tableCell, { fontSize: fontSize }]}>{feat.source}</Text>
+
               <TouchableOpacity
                 style={[styles.tableCell, styles.actionsColumn]}
                 onPress={() => handleFeatPress(feat)}
@@ -140,14 +186,16 @@ const Feats: React.FC = ({ navigation }) => {
         <Modal visible={true} transparent={true} animationType="fade">
           <ScrollView contentContainerStyle={styles.modalOverlaySpells}>
             {!isEditing ? (
+
               <View style={[styles.itemModal, { padding: 20 * scaleFactor }]}>
                 <Text style={[styles.itemTitle, { fontSize: fontSize * 1.2 }]}>{selectedFeat.name}</Text>
                 <Text style={[styles.itemDescriptionAttune, { fontSize: fontSize }]}>
                   {t('Prerequisite')}: {selectedFeat.requirements || t('None')}
+
                 </Text>
                 <Text style={[styles.itemDescription, { fontSize: fontSize }]}>{selectedFeat.description}</Text>
                 <View style={styles.modalButtons}>
-                {user.id === feats.ownerID && (
+                {userID === selectedFeat.ownerID && (
                   <TouchableOpacity onPress={() => setIsEditing(true)} style={[styles.editButton, { padding: 10 * scaleFactor }]}>
                     <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
                   </TouchableOpacity>
@@ -167,17 +215,11 @@ const Feats: React.FC = ({ navigation }) => {
                   placeholderTextColor="#b5b5b5"
                 />
                 <TextInput
+
                   style={[styles.itemDescriptionAttune, { fontSize: fontSize }]}
                   value={editedFeat.requirements}
-                  onChangeText={(value) => handleEditChange('prerequisite', value)}
-                  placeholder={t('Prerequisite')}
-                  placeholderTextColor="#b5b5b5"
-                />
-                <TextInput
-                  style={[styles.itemDescriptionAttune, { fontSize: fontSize }]}
-                  value={editedFeat.prerequisiteDesc}
-                  onChangeText={(value) => handleEditChange('prerequisiteDesc', value)}
-                  placeholder={t('Prerequisite Description')}
+                  onChangeText={(value) => handleEditChange('requirements', value)}
+                  placeholder={t('Requirements')}
                   placeholderTextColor="#b5b5b5"
                 />
                 <TextInput

@@ -5,11 +5,12 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { UserData } from './UserData';
 import { SettingsContext } from './SettingsContext';
-
+import { useAuth } from './AuthContext';
 const BackLibrary: React.FC = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const { fontSize, scaleFactor } = useContext(SettingsContext);
+  const { token } = useAuth();
   const { ipv4 } = useContext(UserData);
   const [backLibrary, setBackLibrary] = useState([]);
   const [searchText, setSearchText] = useState('');
@@ -17,7 +18,7 @@ const BackLibrary: React.FC = ({ navigation }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedItem, setEditedItem] = useState(null);
   const [feats, setFeats] = useState([]);
-
+  const [userID, setUserID] = useState(null);
   useEffect(() => {
     fetchData();
   }, []);
@@ -31,11 +32,21 @@ const BackLibrary: React.FC = ({ navigation }) => {
           'accept': 'application/json'
         }
       });
+      const meResponse = await fetch(`http://${ipv4}:8000/me`,{
+         method: 'GET',
+         headers: {
+             'Content-Type': 'application/json',
+             'accept': 'application/json',
+              "Authorization": `Bearer ${token}`
+         }
 
-      if (!backgroundResponse.ok) {
+     });
+      if (!backgroundResponse.ok || !meResponse.ok) {
         throw new Error('Failed to fetch data');
       }
-
+        const userID = await meResponse.json();
+                console.log(userID);
+                setUserID(userID.id);
       const backgrounds = await backgroundResponse.json();
       setBackLibrary(backgrounds);
     } catch (error) {
@@ -52,7 +63,30 @@ const BackLibrary: React.FC = ({ navigation }) => {
       item.name.toLowerCase().includes(searchText.toLowerCase())
     );
   };
+  const setUpdate = async (backgroundDto) => {
+      console.log(backgroundDto)
+    try {
+      const response = await fetch(`http://${ipv4}:8000/backgrounds/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
 
+        body: JSON.stringify(backgroundDto),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.status}`);
+      }
+    fetchData();
+      const result = await response.json();
+      console.log('Updated spell:', result);
+
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    }
+
+  };
   const filteredBackLibrary = filterBackLibrary();
 
   const handleItemPress = (item) => {
@@ -75,31 +109,43 @@ const BackLibrary: React.FC = ({ navigation }) => {
 
   const saveBackItemChanges = () => {
     if (!editedItem) return;
-
-    setBackLibrary((prevBackLibrary) =>
-      prevBackLibrary.map((item) =>
-        item.name === selectedItem.name ? editedItem : item
-      )
-    );
-
+    const backgroundDto ={
+        id: editedItem.id,
+        name: editedItem.name,
+        skillProficiencies: editedItem.skillProficiencies,
+        toolProficiencies: editedItem.toolProficiencies,
+        equipments: editedItem.equipments,
+        languages: editedItem.languages,
+        features: editedItem.features,
+        ownerID: editedItem.ownerID,
+        source: editedItem.source
+        }
+      setUpdate(backgroundDto);
     setSelectedItem(editedItem);
     setIsEditing(false);
   };
 
   const deleteBackItem = async () => {
     try {
-      const response = await fetch(`/api/items/${item.id}`, {
-        method: 'DELETE',
+
+      const response = await fetch(`http://${ipv4}:8000/backgrounds/delete/${editedItem.id}`, {
+        method: 'Delete',
+        headers: {
+          'Content-Type': 'application/json',
+        }
       });
-      if (response.ok) {
-        alert(t('Item deleted successfully'));
-      } else {
-        alert(t('Failed to delete item'));
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.status}`);
       }
+
+      const result = await response.json();
+      console.log('New encounter:', result);
+    fetchData();
     } catch (error) {
-      console.error(error);
-      alert(t('Error deleting item'));
+      console.error('Error fetching data:', error.message);
     }
+
   };
 
   return (
@@ -123,6 +169,7 @@ const BackLibrary: React.FC = ({ navigation }) => {
           <Text style={[styles.noResultsText, { fontSize: fontSize }]}>{t('No library found')}</Text>
         ) : (
           filteredBackLibrary.map((item, index) => (
+
             <View key={index} style={[styles.tableRow, { paddingVertical: 10 * scaleFactor }]}>
               <Text style={[styles.tableCell, styles.nameColumn, { fontSize: fontSize }]}>{item.name}</Text>
               <Text style={[styles.tableCell, { fontSize: fontSize }]}>
@@ -131,6 +178,7 @@ const BackLibrary: React.FC = ({ navigation }) => {
                   : t('None')}
               </Text>
               <Text style={[styles.tableCell, { fontSize: fontSize }]}>{item.source}</Text>
+
               <TouchableOpacity
                 style={[styles.tableCell, styles.actionsColumn]}
                 onPress={() => handleItemPress(item)}
@@ -179,7 +227,7 @@ const BackLibrary: React.FC = ({ navigation }) => {
               </Text>
               <Text style={[styles.itemDescription, { fontSize: fontSize }]}>{selectedItem.description}</Text>
               <View style={styles.modalButtons}>
-                {user.id === backLibItem.ownerID && (
+                {userID === selectedItem.ownerID && (
                   <TouchableOpacity onPress={() => setIsEditing(true)} style={[styles.editButton, { padding: 10 * scaleFactor }]}>
                     <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
                   </TouchableOpacity>

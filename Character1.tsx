@@ -106,6 +106,7 @@ const Character1: React.FC = ({ route,navigation }) => {
     } else {
         handleRomanNumeralPress(level);
       setRomanVisible(true);
+      setSelectedLevel(level);
       setSkillsVisible(false);
       setActionVisible(false);
       setBonusVisible(false);
@@ -338,9 +339,11 @@ const Character1: React.FC = ({ route,navigation }) => {
           <Text style={[styles.healthText, { fontSize: fontSize }]}>{t('Heal')}</Text>
         </TouchableOpacity>
         <View style={{ alignItems: 'center' }}>
+
             <View style={styles.healthBarA}>
               <Text style={[styles.statTextA, { fontSize: fontSize }]}>{'\n'}{t('Health')}: {health}</Text>
             </View>
+
             <View style={styles.healthBar}>
               <View style={[styles.healthFill, { width: `${(health / maxHP) * 100}%` }]} />
             </View>

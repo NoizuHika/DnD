@@ -52,6 +52,59 @@ const YourCampaigns: React.FC = ({ navigation }) => {
       }
   };
 
+const addCampaign = async (newCampaign) => {
+  try {
+         const requestBody = {
+             campaign: newCampaign,
+             token: token,};
+    const response = await fetch(`http://${ipv4}:8000/campaigns/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(newCampaign)
+    console.log('New campaign:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+  fetchData();
+};
+
+
+const deleteCampaign = async (campaign) => {
+  try {
+
+    const response = await fetch(`http://${ipv4}:8000/campaigns/delete/${campaign}`, {
+      method: 'Delete',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Deleted:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+  fetchData();
+};
+
+
   const handleDeleteCampaign = (index) => {
     Alert.alert(
       t('Delete Campaign'),
@@ -65,8 +118,8 @@ const YourCampaigns: React.FC = ({ navigation }) => {
           text: t('Delete'),
           style: 'destructive',
           onPress: () => {
-            const updatedCampaigns = campaigns.filter((_, i) => i !== index);
-            saveCampaigns(updatedCampaigns);
+              deleteCampaign(index);
+
           }
         }
       ]
@@ -76,7 +129,7 @@ const YourCampaigns: React.FC = ({ navigation }) => {
   const handleAddCampaign = () => {
     if (newCampaign) {
       const updatedCampaigns = [...campaigns, newCampaign];
-      saveCampaigns(updatedCampaigns);
+      addCampaign(newCampaign)
       setNewCampaign('');
       setShowInput(false);
     }
@@ -103,7 +156,7 @@ const YourCampaigns: React.FC = ({ navigation }) => {
             <TouchableOpacity style={styles.button} onPress={() => handleCampaignPress(campaign)}>
               <Text style={[styles.buttonTextCamp, { fontSize: fontSize }]}>{campaign.title}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteCampaign(index)}>
+            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteCampaign(campaign.id)}>
               <Text style={[styles.deleteButtonText, { fontSize: fontSize }]}>{t('Delete')}</Text>
             </TouchableOpacity>
           </View>

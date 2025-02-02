@@ -196,6 +196,9 @@
   "Monster Description": "Opis potwora",
   "Enter description...": "Wprowadź opis...",
   "Enter language...": "Wprowadź język...",
+  "Enter sense...": "Wprowadź zmysł...",
+  "Enter skill...": "Wprowadź umiejętność...",
+  "Enter movement...": "Wprowadź ruch...",
   "Enter perception...": "Wprowadź percepcję...",
   "Enter action_description...": "Wprowadź opis akcji...",
   "Enter bonus_action_description...": "Wprowadź opis bonusowej akcji...",
@@ -210,10 +213,10 @@
   "Edit Hit Points": "Edytuj punkty życia",
   "Languages": "Języki",
   "Add language": "Dodaj język",
-  "Add Sense": "Dodaj zmysł",
+  "Add sense": "Dodaj zmysł",
   "Senses": "Zmysły",
-  "Add Skill": "Dodaj umiejętność",
-  "Add Movement": "Dodaj ruch",
+  "Add skill": "Dodaj umiejętność",
+  "Add movement": "Dodaj ruch",
   "Movement": "Ruch",
   "Charisma": "Charyzma",
   "Wisdom": "Mądrość",
@@ -552,5 +555,8 @@
   "Confirm": "Potwierdź",
   "Item deleted successfully": "Przedmiot został pomyślnie usunięty",
   "Failed to delete item": "Nie udało się usunąć przedmiotu",
-  "Error deleting item": "Błąd przy usuwaniu przedmiotu"
+  "Error deleting item": "Błąd przy usuwaniu przedmiotu",
+  "Hit": "Trafienie",
+  "No Image": "Brak obrazu",
+  "Add NPC": "Dodaj NPC"
 }

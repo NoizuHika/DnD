@@ -7,6 +7,7 @@ import styles from './styles';
 import { Appearance } from 'react-native';
 import { UserData } from './UserData';
 import { SettingsContext } from './SettingsContext';
+import { useAuth } from './AuthContext';
 
 Appearance.setColorScheme('light');
 
@@ -21,40 +22,72 @@ const Bestiary: React.FC = ({ navigation }) => {
   const [selectedFeat, setSelectedFeat] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedFeat, setEditedFeat] = useState(null);
-  const [feats, setFeats] = useState([]);
+  const [feats,setFeats]= useState([]);
+  const { token } = useAuth();
   const { ipv4 } = useContext(UserData);
+  const [userID, setUserID] = useState(null);
   const crOptions = ["0", "1/8", "1/4", "1/2", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10",
-    "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
-    "23", "24", "25", "26", "27", "28", "29", "30"];
-  const [typeOptions, setTypeOptions] = useState([]);
-  const [environmentOptions, setEnvironmentOptions] = useState([]);
-
+                      "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22",
+                      "23", "24", "25", "26", "27", "28", "29", "30"];
+  const [typeOptions,setTypeOptions] = useState([]);
+  const [environmentOptions,setEnvironmentOptions] = useState([]);
+    const extractActions = (text) => {
+        const actionRegex = /(\w+)\.?\s(.+?)(?=(?:\n|Javelin|Summon Air Elemental|\n\n|$))/g;
+        let matches = [];
+        let match;
+        while ((match = actionRegex.exec(text)) !== null) {
+          let action = {
+            name: match[1],
+            description: match[2].trim(),
+          };
+          const hitRegex = /Hit:\s*(\d+)\s*\(\d+\w+ \+\s*\d+\)/;
+          const hitMatch = hitRegex.exec(match[2]);
+          if (hitMatch) {
+            action.hit = hitMatch[0];
+          }
+          matches.push(action);
+        }
+    return matches;
+  };
   useEffect(() => {
-    fetchData();
-  }, []);
+        fetchData();
+      }, []);
 
   const fetchData = async () => {
-    try {
-      const [bestiariesResponse, environmentsResponse, monsterTypeResponse] = await Promise.all([
-        fetch(`http://${ipv4}:8000/bestiaries/all`),
-        fetch(`http://${ipv4}:8000/environments/all`),
-        fetch(`http://${ipv4}:8000/monster_types/all`)
-      ]);
+        try {
+            const [bestiariesResponse, environmentsResponse, monsterTypeResponse,meResponse] = await Promise.all([
+              fetch(`http://${ipv4}:8000/bestiaries/all/10`),
+              fetch(`http://${ipv4}:8000/environments/all`),
+              fetch(`http://${ipv4}:8000/monster_types/all`),
+              fetch(`http://${ipv4}:8000/me`,{
+                                  method: 'GET',
+                                  headers: {
+                                      'Content-Type': 'application/json',
+                                      'accept': 'application/json',
+                                       "Authorization": `Bearer ${token}`
+                                  }
 
-      if (!bestiariesResponse.ok || !environmentsResponse.ok || !monsterTypeResponse.ok) {
-        throw new Error('Failed to fetch data');
-      }
+                              }),
+            ]);
 
-      const feats = await bestiariesResponse.json();
-      const environmentData = await environmentsResponse.json();
-      const typeData = await monsterTypeResponse.json();
-      setFeats(feats);
-      setEnvironmentOptions(environmentData);
-      setTypeOptions(typeData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+            if (!bestiariesResponse.ok || !environmentsResponse.ok || !monsterTypeResponse.ok || !meResponse) {
+              throw new Error('Failed to fetch data');
+            }
+
+            const feats = await bestiariesResponse.json();
+            const environmentData = await environmentsResponse.json();
+            const typeData = await monsterTypeResponse.json();
+            const userID = await meResponse.json();
+            setFeats(feats);
+            setEnvironmentOptions(environmentData);
+            setTypeOptions(typeData);
+            console.log(userID);
+            setUserID(userID.id)
+          } catch (error) {
+            console.error('Error fetching data:', error);
+          }
+        };
+
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -96,8 +129,33 @@ const Bestiary: React.FC = ({ navigation }) => {
     setSelectedFeat(null);
   };
 
+const setUpdate = async (bestiaryDto) => {
+  try {
+      console.log(bestiaryDto);
+    const response = await fetch(`http://${ipv4}:8000/bestiaries/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(bestiaryDto),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Updated Bestiary:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+};
+
+
   const handleEditFeat = (feat) => {
-    setEditedFeat(feat);
+      setEditedFeat(feat);
     setIsEditing(true);
   };
 
@@ -109,11 +167,41 @@ const Bestiary: React.FC = ({ navigation }) => {
   };
 
   const saveFeatChanges = () => {
-    const index = feats.findIndex((feat) => feat.id === editedFeat.id);
-    if (index !== -1) {
-      feats[index] = { ...editedFeat };
-    }
-
+    const bestiaryDto = {
+                id:editedFeat.id,
+                name : editedFeat.name,
+                challengeRating : editedFeat.challengeRating,
+                armorClass : editedFeat.armorClass,
+                hitPointDiceCount : editedFeat.hitPointDiceCount,
+                hitPointModifier : editedFeat.hitPointModifier,
+                averageHitPoints : editedFeat.averageHitPoints,
+                passivePerception : editedFeat.passivePerception,
+                strScore : editedFeat.strScore,
+                dexScore : editedFeat.dexScore,
+                intScore : editedFeat.intScore,
+                wisScore : editedFeat.wisScore,
+                chaScore : editedFeat.chaScore,
+                conScore : editedFeat.conScore,
+                languageNoteOverride : editedFeat.languageNoteOverride,
+                lairDescription : editedFeat.lairDescription,
+                legendaryActionDescription : editedFeat.legendaryActionDescription,
+                mythicActionDescription : editedFeat.mythicActionDescription,
+                actionDescription : editedFeat.actionDescription,
+                monsterDescription : editedFeat.monsterDescription,
+                alignment : editedFeat.alignment,
+                savingThrowProficiencies : editedFeat.savingThrowProficiencies,
+                damageAdjustment: Array.isArray(editedFeat.damageAdjustment) ? editedFeat.damageAdjustment : [],
+                conditionImmunities : editedFeat.conditionImmunities,
+                environments : editedFeat.environments,
+                hitPointDiceType : editedFeat.hitPointDiceType,
+                monsterType : editedFeat.monsterType,
+                monsterSubType : editedFeat.monsterSubType,
+                size : editedFeat.size,
+                speed : editedFeat.size,
+                skills : editedFeat.skills,
+                source: editedFeat.source,
+              };
+          setUpdate(bestiaryDto);
     setIsEditing(false);
     setSelectedFeat(editedFeat);
     if (!editedFeat.name || editedFeat.name.trim() === '') {
@@ -135,20 +223,21 @@ const Bestiary: React.FC = ({ navigation }) => {
   };
 
   const deleteBesti = async () => {
-    try {
-      const response = await fetch(`/api/items/${item.id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        alert(t('Item deleted successfully'));
-      } else {
-        alert(t('Failed to delete item'));
-      }
-    } catch (error) {
-      console.error(error);
-      alert(t('Error deleting item'));
-    }
-  };
+        console.log(editedFeat.id)
+      try {
+        const response = await fetch(`http://${ipv4}:8000/bestiaries/delete/${editedFeat.id}`, {
+          method: 'DELETE',
+        });
+          fetchData();
+          setSelectedFeat(null);
+              setIsEditing(false);
+        if (!response.ok) {
+                throw new Error(`Failed to fetch data: ${response.status}`);
+              }
+       }catch (error) {
+            console.error('Error fetching data:', error.message);
+          }
+    };
 
   return (
     <ImageBackground source={theme.background} style={styles.container}>
@@ -174,9 +263,11 @@ const Bestiary: React.FC = ({ navigation }) => {
           style={[styles.pickerItems, { width: 135 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
           onValueChange={(value) => setSelectedType(value)}
         >
+
           <Picker.Item label={t('Type')} value={'All'} style={{ fontSize: fontSize }} />
           {typeOptions.map((monsterType) => (
             <Picker.Item key={monsterType.id} label={t(monsterType.name)} value={monsterType.name} style={{ fontSize: fontSize }} />
+
           ))}
         </Picker>
 
@@ -196,10 +287,12 @@ const Bestiary: React.FC = ({ navigation }) => {
           style={[styles.pickerItems, { width: 135 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
           onValueChange={(value) => setSelectedEnvironment(value)}
         >
+
           <Picker.Item label={t('Environment')} value={'All'} style={{ fontSize: fontSize }} />
           {environmentOptions.map((env) => (
             <Picker.Item key={env.id} label={t(env.name)} value={env.name} style={{ fontSize: fontSize }} />
           ))}
+
         </Picker>
       </View>
 
@@ -215,6 +308,7 @@ const Bestiary: React.FC = ({ navigation }) => {
           <Text style={[styles.noResultsText, { fontSize: fontSize }]}>{t('No monsters found')}</Text>
         ) : (
           filteredFeats.map((feat, index) => (
+
             <View key={index} style={[styles.tableRow, { paddingVertical: 10 * scaleFactor }]}>
               <Text style={[styles.tableCell, { fontSize: fontSize }]}>{feat.name}</Text>
               <Text style={[styles.tableCell, { fontSize: fontSize }]}>{feat.monsterType}</Text>
@@ -231,6 +325,7 @@ const Bestiary: React.FC = ({ navigation }) => {
         )}
       </ScrollView>
 
+
       <Modal visible={!!selectedFeat} transparent={true} animationType="slide" onRequestClose={closeFeatModal}>
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContentFeats, { padding: 20 * scaleFactor }]}>
@@ -246,11 +341,12 @@ const Bestiary: React.FC = ({ navigation }) => {
                   </View>
                   <View style={styles.additionalInfoTitleA}>
                     <View style={styles.rowContainer}>
+
                       <Text style={[styles.modalSubTitleFeats, { fontSize: fontSize * 1.2 }]}>{t('CR')}: </Text>
                       <TextInput
                         style={[styles.modalSubTitleFeats, { fontSize: fontSize * 1.2 }]}
                         value={editedFeat?.challengeRating?.toString() || ''}
-                        onChangeText={(value) => handleEditChange('cr', value)}
+                        onChangeText={(value) => handleEditChange('challengeRating', value)}
                         keyboardType="numeric"
                       />
                     </View>
@@ -277,29 +373,33 @@ const Bestiary: React.FC = ({ navigation }) => {
                       <Text style={[styles.statValue, { fontSize: fontSize }]}>{t('HP')}</Text>
                       <View style={[styles.statCircleA, { width: 50 * scaleFactor, height: 50 * scaleFactor }]}>
                         <TextInput
+
                           style={[styles.statValue, { fontSize: fontSize }]}
                           value={editedFeat?.averageHitPoints?.toString() + ' (' + editedFeat?.averageHitPoints?.toString() + ' ' + editedFeat?.hitPointDiceCount?.toString() + ' ' + editedFeat?.hitPointDiceType?.toString() + ' + ' + editedFeat?.hitPointModifier?.toString() + ')' || ''}
-                          onChangeText={(value) => handleEditChange('hp', value)}
+                          onChangeText={(value) => handleEditChange('averageHitPoints', value)}
+
                           keyboardType="numeric"
                         />
                       </View>
                       <Text style={[styles.statValue, { fontSize: fontSize }]}>{t('AC')}</Text>
                       <View style={[styles.statCircleA, { width: 50 * scaleFactor, height: 50 * scaleFactor }]}>
                         <TextInput
+
                           style={[styles.statValue, { fontSize: fontSize }]}
                           value={editedFeat?.armorClass || ''}
-                          onChangeText={(value) => handleEditChange('ac', value)}
-                          keyboardType="numeric"
+                          onChangeText={(value) => handleEditChange('armorClass', value)}
+
                         />
                       </View>
                     </View>
                     <View style={styles.additionalInfoA}>
                       <View style={styles.rowContainer}>
+
                         <Text style={[styles.featStatSmall, { fontSize: fontSize }]}>{t('Type')}: </Text>
                         <TextInput
                           style={[styles.featStatSmall, { fontSize: fontSize }]}
                           value={editedFeat?.monsterType || ''}
-                          onChangeText={(value) => handleEditChange('type', value)}
+                          onChangeText={(value) => handleEditChange('monsterType', value)}
                         />
                       </View>
                     </View>
@@ -332,6 +432,7 @@ const Bestiary: React.FC = ({ navigation }) => {
                     {['strScore', 'dexScore', 'conScore', 'intScore', 'wisScore', 'chaScore'].map((stat) => (
                       <View key={stat} style={styles.statBlock}>
                         <View style={styles.rowContainer}>
+
                           <Text style={[styles.statLabel, { fontSize: fontSize }]}>{stat.slice(0, 3).toUpperCase()}: </Text>
                           <TextInput
                             style={[styles.statLabel, { fontSize: fontSize }]}
@@ -356,50 +457,35 @@ const Bestiary: React.FC = ({ navigation }) => {
                 <View style={styles.additionalInfo}>
                   <Text style={[styles.actionDescription, { fontSize: fontSize }]}>{t('Senses')}: </Text>
                   <TextInput
+
                     style={[styles.actionDescription, { fontSize: fontSize }]}
                     value={editedFeat?.passivePerception || ''}
-                    onChangeText={(value) => handleEditChange('senses', value)}
+                    onChangeText={(value) => handleEditChange('passivePerception', value)}
+
                   />
                 </View>
                 <View style={styles.additionalInfo}>
                   <Text style={[styles.actionDescription, { fontSize: fontSize }]}>{t('Languages')}: </Text>
                   <TextInput
-                    style={[styles.actionDescription, { fontSize: fontSize }]}
-                    value={editedFeat?.languageNoteOverride || ''}
-                    onChangeText={(value) => handleEditChange('languages', value)}
+                    style={styles.actionDescription, { fontSize: fontSize }}
+                    value={editedFeat?.languageNoteOverride.join(', ') || ''}
+                    onChangeText={(value) => handleEditChange(
+                                                     'languageNoteOverride',
+                                                     value.split(',').map(item => item.trim())
+                                                   )
+                                                 }
                   />
                 </View>
 
                 <View style={styles.additionalInfo}>
-                  <Text style={[styles.actionName, { fontSize: fontSize }]}>{t('Actions')}:</Text>
-                  {editedFeat?.actions.map((action, index) => (
-                    <View key={index} style={styles.actionContainer}>
-                      <Text style={[styles.actionName, { fontSize: fontSize }]}>{action.name}:</Text>
-                      <TextInput
-                        style={[styles.actionDescription, { fontSize: fontSize }]}
-                        value={action.description}
-                        onChangeText={(value) => handleActionChange(index, value)}
-                        placeholder={t('Description')}
-                        multiline
-                      />
-                    </View>
-                  ))}
-                </View>
 
-                <View style={styles.additionalInfo}>
-                  <Text style={[styles.actionName, { fontSize: fontSize }]}>{t('Features')}:</Text>
-                  {editedFeat?.features.map((feature, index) => (
-                    <View key={index} style={styles.featureContainerFeats}>
-                      <Text style={[styles.featureName, { fontSize: fontSize }]}>{feature.name}:</Text>
-                      <TextInput
-                        style={[styles.featureDescription, { fontSize: fontSize }]}
-                        value={feature.description}
-                        onChangeText={(value) => handleFeatureChange(index, value)}
-                        placeholder={t('Description')}
-                        multiline
-                      />
-                    </View>
-                  ))}
+                  <Text style={[styles.actionName, { fontSize: fontSize }]}>{t('Actions')}: </Text>
+                  <TextInput
+                    style={styles.actionDescription}
+                    value={editedFeat?.actionDescription || ''}
+                    onChangeText={(value) => handleEditChange('actionDescription', value)}
+                  />
+
                 </View>
 
                 <View style={styles.modalButtons}>
@@ -456,6 +542,7 @@ const Bestiary: React.FC = ({ navigation }) => {
                   </View>
                 </View>
 
+
                 <View style={styles.statsContainerFeatsB}>
                   <View style={styles.statsContainerFeatsA}>
                     {['strScore', 'dexScore', 'conScore', 'intScore', 'wisScore', 'chaScore'].map((statbonus) => (
@@ -483,12 +570,22 @@ const Bestiary: React.FC = ({ navigation }) => {
                   <Text style={[styles.actionDescription, { fontSize: fontSize }]}>{t('Languages')}: {selectedFeat?.languageNoteOverride.join(', ')}</Text>
                 </View>
 
-                <View style={styles.additionalInfo}>
-                  <Text style={[styles.actionDescription, { fontSize: fontSize }]}>{selectedFeat?.actionDescription}</Text>
-                </View>
+               <View style={styles.additionalInfo}>
+                 {extractActions(selectedFeat?.actionDescription).map((action, index) => (
+                   <View key={index} style={styles.actionContainer}>
+                     <Text style={styles.actionDescription}>{t('Name')}: {action.name}</Text>
+                     <Text style={styles.actionDescription}>{t('Description')}: {action.description}</Text>
+                     {action.hit && (
+                       <TouchableOpacity onPress={() => roll(selectedMonster, action, session)}>
+                         <Text style={styles.actionDescriptionA}>{t('Hit')}: {action.hit}</Text>
+                       </TouchableOpacity>
+                     )}
+                   </View>
+                 ))}
+               </View>
 
                 <View style={styles.modalButtons}>
-                {user.id === bestiaries.ownerID && (
+                {userID === selectedFeat?.ownerID && (
                   <TouchableOpacity onPress={() => handleEditFeat(selectedFeat)} style={styles.editButton}>
                     <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
                   </TouchableOpacity>

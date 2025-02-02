@@ -5,50 +5,126 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
+import { useFocusEffect } from '@react-navigation/native';
 
 Appearance.setColorScheme('light');
 
 const Encounters: React.FC = ({ navigation, route }) => {
+
+  const { ipv4 } = useContext(UserData)
+  const { token } = useAuth();
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
-
-  const [encounters, setEncounters] = useState([
-    { id: 1, name: 'Forest Encounter', campaign: 'Campaign 1', level: 1 },
-    { id: 2, name: 'Cave Encounter', campaign: 'Campaign 1', level: 3 },
-    { id: 3, name: 'Town Encounter', campaign: 'Campaign 1', level: 5 },
-  ]);
-
+  const { campaign } = route.params;
+  const [actualCampaign,setActualCampaign] = useState(campaign);
+  const [encounters, setEncounters] = useState([]);
+  const [difficulty,setDifficulty]= useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [newEncounter, setNewEncounter] = useState({
-    name: '',
-    campaign: '',
-    level: '',
-  });
+      title: ''
+    });
+const thresholdsXP = {
+  1: { easy: 25, medium: 50, hard: 75, deadly: 100 },
+  2: { easy: 50, medium: 100, hard: 150, deadly: 200 },
+  3: { easy: 75, medium: 150, hard: 225, deadly: 400 },
+  4: { easy: 125, medium: 250, hard: 375, deadly: 500 },
+  5: { easy: 250, medium: 500, hard: 750, deadly: 1100 },
+};
+useEffect(() => {
+    fetchData();
+  }, []);
+const fetchData = async () => {
+        try {
+            const sessionsResponse = await fetch(`http://${ipv4}:8000/campaigns/${campaign.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                }
+            });
 
-  const updateEncounters = (updatedEncounters) => {
-    setEncounters(updatedEncounters);
-  };
+            if (!sessionsResponse.ok) {
+                throw new Error('Failed to fetch data');
+            }
 
-  useEffect(() => {
-    if (route.params?.updatedEncounter) {
-      const updatedList = encounters.map((e) =>
-        e.id === route.params.updatedEncounter.id ? route.params.updatedEncounter : e
-      );
-      updateEncounters(updatedList);
+             const data = await sessionsResponse.json();
+             setActualCampaign(data);
+             setEncounters(data.encounters);
+            console.log(encounters);
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+ useFocusEffect(
+     React.useCallback(() => {
+
+       fetchData();
+     }, [])
+   );
+const addNewEncounter = async (name) => {
+
+  try {
+     const requestBody = {
+         token: token,
+         campaignID:campaign.id,
+         itemEncounterName: name
+         };
+    const response = await fetch(`http://${ipv4}:8000/encounters/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
     }
-  }, [route.params?.updatedEncounter]);
+fetchData();
+    const result = await response.json();
+    console.log('New encounter:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
+const deleteEncounter = async (id) => {
+  try {
+
+    const response = await fetch(`http://${ipv4}:8000/encounters/delete/${id}`, {
+      method: 'Delete',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('New encounter:', result);
+fetchData();
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
 
   const handleAddEncounter = () => {
-    if (!newEncounter.name || !newEncounter.campaign || !newEncounter.level) {
+    if (!newEncounter.name) {
       Alert.alert(t('Error'), t('Please fill all fields'));
       return;
     }
+    addNewEncounter(newEncounter.name);
 
-    const newId = encounters.length ? Math.max(...encounters.map((e) => e.id)) + 1 : 1;
-    const encounterToAdd = { ...newEncounter, id: newId, level: parseInt(newEncounter.level) };
-    setEncounters((prev) => [...prev, encounterToAdd]);
-    setNewEncounter({ name: '', campaign: '', level: '' });
+    setNewEncounter('');
     setModalVisible(false);
   };
 
@@ -61,27 +137,49 @@ const Encounters: React.FC = ({ navigation, route }) => {
         {
           text: t('Delete'),
           style: 'destructive',
-          onPress: () => {
-            const filteredEncounters = encounters.filter((e) => e.id !== id);
-            setEncounters(filteredEncounters);
-          },
+           onPress: () => {
+                      deleteEncounter(id);
+                    },
         },
       ]
     );
   };
 
+    const calculatePartyThresholds = (actualCampaign) => {
+      const thresholds = { easy: 0, medium: 0, hard: 0, deadly: 0 };
+
+      actualCampaign.characters.forEach((player) => {
+        const level = player.playerClasses[0].level;
+        const levelThresholds = thresholdsXP[level];
+
+        thresholds.easy += levelThresholds.easy;
+        thresholds.medium += levelThresholds.medium;
+        thresholds.hard += levelThresholds.hard;
+        thresholds.deadly += levelThresholds.deadly;
+      });
+
+  return thresholds;
+};
+const getEncounterDifficulty = (adjustedXP, partyThresholds) => {
+  if (adjustedXP < partyThresholds.easy) return "Easy";
+  if (adjustedXP < partyThresholds.medium) return "Medium";
+  if (adjustedXP < partyThresholds.hard) return "Hard";
+  if (adjustedXP < partyThresholds.deadly) return "Deadly";
+  return "Deadlier than Deadly!";
+};
+
   const handleEditEncounter = (encounter) => {
-    navigation.navigate('EncounterEdit', { encounter });
+    navigation.navigate('EncounterEdit', { encounter,campaign: actualCampaign });
   };
 
   const handleRunEncounter = (encounter) => {
-    navigation.navigate('EncounterRun', { encounter });
+    navigation.navigate('EncounterRun', { encounter,campaign: actualCampaign });
   };
 
   const handleGoBack = () => {
     navigation.goBack();
   };
-
+const partyThresholds = calculatePartyThresholds(actualCampaign);
   return (
     <ImageBackground source={theme.background} style={styles.containerCreator}>
 
@@ -98,15 +196,18 @@ const Encounters: React.FC = ({ navigation, route }) => {
         <View style={styles.tableHeader}>
           <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Name')}</Text>
           <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Campaign')}</Text>
-          <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Level')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Difficulty')}</Text>
           <Text style={[styles.tableHeaderText, { fontSize: fontSize }]}>{t('Action')}</Text>
         </View>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          {encounters.map((encounter) => (
+          {encounters.map((encounter) => {
+
+                      const difficulty = getEncounterDifficulty(encounter.XP, partyThresholds);
+            return(
             <View key={encounter.id} style={styles.tableRow}>
-              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.name}</Text>
-              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.campaign}</Text>
-              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.level}</Text>
+              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.title}</Text>
+              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{encounter.campaignTitle}</Text>
+              <Text style={[styles.tableCellEncounter, { fontSize: fontSize }]}>{difficulty}</Text>
               <View style={styles.actions}>
                 <TouchableOpacity
                   style={[styles.editButton, { height: 45 * scaleFactor, width: 80 * scaleFactor }]}
@@ -128,7 +229,8 @@ const Encounters: React.FC = ({ navigation, route }) => {
                 </TouchableOpacity>
               </View>
             </View>
-          ))}
+            );
+          })}
         </ScrollView>
       </View>
       <TouchableOpacity
@@ -152,22 +254,7 @@ const Encounters: React.FC = ({ navigation, route }) => {
               value={newEncounter.name}
               onChangeText={(text) => setNewEncounter((prev) => ({ ...prev, name: text }))}
             />
-            <TextInput
-              placeholder={t('Campaign')}
-              style={[styles.modalInputEncounter, { height: 40 * scaleFactor, fontSize: fontSize }]}
-              value={newEncounter.campaign}
-              onChangeText={(text) => setNewEncounter((prev) => ({ ...prev, campaign: text }))}
-            />
-            <TextInput
-              placeholder={t('Level')}
-              style={[styles.modalInputEncounter, { height: 40 * scaleFactor, fontSize: fontSize }]}
-              keyboardType="numeric"
-              value={newEncounter.level}
-              onChangeText={(text) => {
-                const numericValue = text.replace(/[^0-9]/g, '');
-                setNewEncounter((prev) => ({ ...prev, level: numericValue }));
-              }}
-            />
+
             <View style={styles.modalActionsEncounter}>
               <TouchableOpacity
                 style={styles.cancelButtonEncounter}

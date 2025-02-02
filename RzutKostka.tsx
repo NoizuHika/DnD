@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { ImageBackground, StyleSheet, View, Text, TouchableOpacity,route, Animated, Easing, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
@@ -24,8 +24,7 @@ const RzutKostka: React.FC = ({ route,navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme, addDiceResult } = useContext(ThemeContext);
-  const { player={}, session={} } = route.params;
-
+  const { player={}, session={},spell={} } = route?.params || {};
   const [selectedDice, setSelectedDice] = useState([]);
   const [diceValues, setDiceValues] = useState([]);
   const [rotateValues] = useState(diceTypes.map(() => new Animated.Value(0)));
@@ -39,19 +38,62 @@ const RzutKostka: React.FC = ({ route,navigation }) => {
       setSelectedDice([...selectedDice, { index, count: 1 }]);
     }
   };
+useEffect(() => {
+    applySpellSettings();
+  }, [spell]);
+
+  const applySpellSettings = () => {
+    if (spell && spell.hit) {
+      const dicePattern = /(\d+)d(\d+)/i;
+      const hitPattern = /(?:\d+d\d+\s*\+\s*)(\d+)/i;
+
+      const modifierMatch = hitPattern.exec(spell.hit);
+      let modifier = modifierMatch ? parseInt(modifierMatch[1], 10) : 0;
+
+      const diceMatch = dicePattern.exec(spell.hit);
+      if (diceMatch) {
+        const count = parseInt(diceMatch[1], 10);
+        const sides = parseInt(diceMatch[2], 10);
+
+        const diceIndex = diceTypes.findIndex((dice) => dice.sides === sides);
+        if (diceIndex !== -1) {
+          setSelectedDice([{ index: diceIndex, count }]);
+        }
+      }
+
+      return modifier;
+    }
+
+    setSelectedDice([]);
+    return 0;
+  };
 
   const handleRollDice = () => {
     const newDiceValues = [];
     const resultsSummary = [];
+    const forFetchResult = [];
+    const spellModifier =applySpellSettings() || null;
 
     selectedDice.forEach(({ index, count }) => {
-      const diceResults = [];
-      for (let i = 0; i < count; i++) {
-        const randomValue = Math.floor(Math.random() * diceTypes[index].sides) + 1;
-        diceResults.push(randomValue);
-      }
+      const diceResults = Array.from({ length: count }, () =>
+        Math.floor(Math.random() * diceTypes[index].sides) + 1
+      );
+
       newDiceValues.push({ index, results: diceResults });
-      resultsSummary.push(`${player.name} roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
+      resultsSummary.push(`roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
+      if (player) {
+        if (spell){
+            if (spellModifier){
+                diceResult2= diceResults;
+               for (let i = 0; i < diceResult2.length; i++) {
+                     diceResult2[i] += spellModifier;
+                   }
+            forFetchResult.push(`${player.name} roll ${diceTypes[index].sides} + ${spellModifier}: ${diceResult2.join(', ')}`);
+             }
+            }
+        forFetchResult.push(`${player.name} roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
+      }
+
 
       Animated.timing(rotateValues[index], {
         toValue: 1,
@@ -63,7 +105,19 @@ const RzutKostka: React.FC = ({ route,navigation }) => {
       });
     });
 
-    fetchData(resultsSummary);
+
+   if (session && Object.keys(session).length > 0 && Array.isArray(forFetchResult) && forFetchResult.length > 0) {
+     fetchData(forFetchResult);
+
+     if (navigation && navigation.canGoBack()) {
+       navigation.goBack();
+       setTimeout(() => {
+         navigation.goBack();
+       }, 100);
+     }
+   }
+
+
     setDiceValues(newDiceValues);
     addDiceResult(resultsSummary.join(' | Dice '));
   };

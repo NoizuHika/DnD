@@ -29,9 +29,9 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
     wisdom: '',
     charisma: '',
     movement: [],
-    skills: [],
-    senses: [],
-    languages: [],
+    skill: [],
+    sense: [],
+    language: [],
   });
 
   const handleGoBack = () => {
@@ -244,7 +244,7 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
           <View style={styles.columnAdding}>
             <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Movement')}</Text>
             <TouchableOpacity style={[styles.addButtonMonCre, { height: 50 * scaleFactor, width: 200 * scaleFactor }]} onPress={() => openInputModal('movement')}>
-              <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize * 1.1 }]}>{t('Add Movement')}</Text>
+              <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize * 1.1 }]}>{t('Add movement')}</Text>
             </TouchableOpacity>
           </View>
             {monster.movement.map((item, index) => (
@@ -258,14 +258,14 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
 
           <View style={styles.columnAdding}>
             <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Skills')}</Text>
-            <TouchableOpacity style={[styles.addButtonMonCre, { height: 50 * scaleFactor, width: 200 * scaleFactor }]} onPress={() => openInputModal('skills')}>
-              <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize * 1.1 }]}>{t('Add Skill')}</Text>
+            <TouchableOpacity style={[styles.addButtonMonCre, { height: 50 * scaleFactor, width: 200 * scaleFactor }]} onPress={() => openInputModal('skill')}>
+              <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize * 1.1 }]}>{t('Add skill')}</Text>
             </TouchableOpacity>
           </View>
-            {monster.skills.map((item, index) => (
+            {monster.skill.map((item, index) => (
               <View key={index} style={styles.itemContainer}>
                 <Text style={styles.itemText}>{item}</Text>
-                <TouchableOpacity onPress={() => removeItem('skills', index)}>
+                <TouchableOpacity onPress={() => removeItem('skill', index)}>
                   <Text style={[styles.removeButtonText, { fontSize: fontSize }]}>{t('Remove')}</Text>
                 </TouchableOpacity>
               </View>
@@ -273,29 +273,29 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
 
           <View style={styles.columnAdding}>
             <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Senses')}</Text>
-            <TouchableOpacity style={[styles.addButtonMonCre, { height: 50 * scaleFactor, width: 200 * scaleFactor }]} onPress={() => openInputModal('senses')}>
-              <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Add Sense')}</Text>
+            <TouchableOpacity style={[styles.addButtonMonCre, { height: 50 * scaleFactor, width: 200 * scaleFactor }]} onPress={() => openInputModal('sense')}>
+              <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Add sense')}</Text>
             </TouchableOpacity>
           </View>
-            {monster.senses.map((item, index) => (
+            {monster.sense.map((item, index) => (
               <View key={index} style={styles.itemContainer}>
                 <Text style={styles.itemText}>{item}</Text>
-                <TouchableOpacity onPress={() => removeItem('senses', index)}>
+                <TouchableOpacity onPress={() => removeItem('sense', index)}>
                   <Text style={[styles.removeButtonText, { fontSize: fontSize }]}>{t('Remove')}</Text>
                 </TouchableOpacity>
               </View>
             ))}
 
           <View style={styles.columnAdding}>
-            <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Language')}</Text>
-            <TouchableOpacity style={[styles.addButtonMonCre, { height: 50 * scaleFactor, width: 200 * scaleFactor }]} onPress={() => openInputModal('languages')}>
+            <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Languages')}</Text>
+            <TouchableOpacity style={[styles.addButtonMonCre, { height: 50 * scaleFactor, width: 200 * scaleFactor }]} onPress={() => openInputModal('language')}>
               <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Add language')}</Text>
             </TouchableOpacity>
           </View>
-            {monster.languages.map((item, index) => (
+            {monster.language.map((item, index) => (
               <View key={index} style={styles.itemContainer}>
                 <Text style={styles.itemText}>{item}</Text>
-                <TouchableOpacity onPress={() => removeItem('languages', index)}>
+                <TouchableOpacity onPress={() => removeItem('language', index)}>
                   <Text style={[styles.removeButtonText, { fontSize: fontSize }]}>{t('Remove')}</Text>
                 </TouchableOpacity>
               </View>

@@ -5,39 +5,38 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { UserData } from './UserData';
 import { SettingsContext } from './SettingsContext';
-
 const RulesGloss: React.FC = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const { fontSize, scaleFactor } = useContext(SettingsContext);
-  const { ipv4 } = useContext(UserData);
 
   const [rulesGloss, setRulesGloss] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [selectedRule, setSelectedRule] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedRule, setEditedRule] = useState(null);
-
+    const { ipv4 } = useContext(UserData);
   useEffect(() => {
-    fetchData();
-  }, []);
+         fetchData();
+       }, []);
 
-  const fetchData = async () => {
-    try {
-      const [rulesResponse] = await Promise.all([
-        fetch(`http://${ipv4}:8000/rules/all`)
-      ]);
+   const fetchData = async () => {
+         try {
+             const [rulesResponse] = await Promise.all([
+               fetch(`http://${ipv4}:8000/rules/all`)
+             ]);
 
-      if (!rulesResponse.ok) {
-        throw new Error('Failed to fetch data');
-      }
+             if (!rulesResponse.ok) {
+               throw new Error('Failed to fetch data');
+             }
 
-      const rules = await rulesResponse.json();
-      setRulesGloss(rules);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+             const rules = await rulesResponse.json();
+             setRulesGloss(rules);
+
+           } catch (error) {
+             console.error('Error fetching data:', error);
+           }
+         };
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -103,6 +102,7 @@ const RulesGloss: React.FC = ({ navigation }) => {
           <Text style={[styles.noResultsText, { fontSize: fontSize }]}>{t('No rules found')}</Text>
         ) : (
           filteredRules.map((rule, index) => (
+
             <View key={index} style={[styles.tableRow, { paddingVertical: 10 * scaleFactor }]}>
               <Text style={[styles.tableCell, styles.nameColumn, { fontSize: fontSize }]}>{rule.name}</Text>
               <Text style={[styles.tableCell, { fontSize: fontSize }]}>{rule.ruleType || t('None')}</Text>
@@ -122,6 +122,7 @@ const RulesGloss: React.FC = ({ navigation }) => {
         <Modal visible={true} transparent={true} animationType="fade">
           <ScrollView contentContainerStyle={styles.modalOverlaySpells}>
             {!isEditing ? (
+
               <View style={[styles.itemModal, { padding: 20 * scaleFactor }]}>
                 <Text style={[styles.itemTitle, { fontSize: fontSize * 1.2 }]}>{selectedRule.name}</Text>
                 <Text style={[styles.itemDescriptionAttune, { fontSize: fontSize }]}>
@@ -129,8 +130,10 @@ const RulesGloss: React.FC = ({ navigation }) => {
                 </Text>
                 <Text style={[styles.itemDescription, { fontSize: fontSize }]}>{selectedRule.description}</Text>
                 <View style={styles.modalButtons}>
+
                   <TouchableOpacity onPress={closeRuleModal} style={[styles.closeButtonItem, { padding: 10 * scaleFactor }]}>
                     <Text style={[styles.closeButtonText, { fontSize: fontSize }]}>{t('Close')}</Text>
+
                   </TouchableOpacity>
                 </View>
               </View>
@@ -144,7 +147,9 @@ const RulesGloss: React.FC = ({ navigation }) => {
                   placeholderTextColor="#b5b5b5"
                 />
                 <TextInput
+
                   style={[styles.itemDescriptionAttune, { fontSize: fontSize }]}
+
                   value={editedRule.ruleType}
                   onChangeText={(value) => handleEditChange('type', value)}
                   placeholder={t('Type')}

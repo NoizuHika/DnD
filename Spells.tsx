@@ -7,7 +7,6 @@ import styles from './styles';
 import { Appearance } from 'react-native';
 import { UserData } from './UserData';
 import { SettingsContext } from './SettingsContext';
-
 Appearance.setColorScheme('light');
 
 const spellsData = require('./assets/Library/spells.json');
@@ -52,7 +51,7 @@ const Spells: React.FC = ({ navigation }) => {
   const fetchData = async () => {
       try {
           const [spellsResponse, schoolsResponse] = await Promise.all([
-            fetch(`http://${ipv4}:8000/spells/all`),
+            fetch(`http://${ipv4}:8000/spells/all/10`),
             fetch(`http://${ipv4}:8000/schools/all`),
           ]);
 
@@ -120,44 +119,75 @@ const Spells: React.FC = ({ navigation }) => {
     }));
   };
 
-  const updateSpell = (updatedSpell) => {
-    setSpells((prevSpells) =>
-      prevSpells.map((spell) =>
-        spell.id === updatedSpell.id ? updatedSpell : spell
-      )
-    );
-  };
+const setUpdate = async (spellDto) => {
+  try {
+    const response = await fetch(`http://${ipv4}:8000/spells/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(spellDto),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Updated spell:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+};
+
 
   const saveSpellChanges = () => {
     if (!editedSpell) return;
-
-    const updatedSpell = { ...editedSpell };
-
-    setSpells((prevSpells) =>
-      prevSpells.map((spell) =>
-        spell.id === updatedSpell.id ? updatedSpell : spell
-      )
-    );
-
-    setSelectedSpell(updatedSpell);
+    const spellDto = {
+              id: editedSpell.id,
+              name: editedSpell.name,
+              level: editedSpell.level,
+              castingTime: editedSpell.castingTime,
+              duration: editedSpell.duration,
+              components: editedSpell.components,
+              description: editedSpell.description,
+              atHigherLevels: editedSpell.atHigherLevels,
+              range: editedSpell.range,
+              school:editedSpell.school,
+              classes: editedSpell.classes,
+              source: editedSpell.source,
+              ownerID: editedSpell.ownerID,
+            };
+         setUpdate(spellDto);
+    setSelectedSpell(editedSpell);
     setIsEditing(false);
   };
 
-  const deleteSpell = async () => {
-    try {
-      const response = await fetch(`/api/items/${item.id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        alert(t('Item deleted successfully'));
-      } else {
-        alert(t('Failed to delete item'));
+    const deleteSpell = async () => {
+      try {
+
+        const response = await fetch(`http://${ipv4}:8000/spells/delete/${editedSpell.id}`, {
+          method: 'Delete',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+    setSelectedSpell(null);
+    setIsEditing(false);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('New encounter:', result);
+      fetchData();
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
       }
-    } catch (error) {
-      console.error(error);
-      alert(t('Error deleting item'));
-    }
-  };
+
+    };
 
 
   return (
@@ -171,65 +201,67 @@ const Spells: React.FC = ({ navigation }) => {
       />
 
       <View style={styles.pickerItemsContainer}>
-        <Picker
-          selectedValue={selectedLevel}
-          style={[styles.pickerItems, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
-          onValueChange={(value) => setSelectedLevel(value)}
-        >
-          <Picker.Item style={[styles.pickerItems, { fontSize: fontSize }]} label={t('All Levels')} value="All" />
-          {levels.map((level) => (
-            <Picker.Item key={level} label={`${t('Level')} ${level}`} value={level.toString()} style={{ fontSize: fontSize }} />
-          ))}
-        </Picker>
-        <Picker
-          selectedValue={selectedSchool}
-          style={[styles.pickerItems, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
-          onValueChange={(value) => setSelectedSchool(value)}
-        >
-          <Picker.Item style={[styles.pickerItems, { fontSize: fontSize }]} label={t('All Schools')} value="All" />
-          {schools.map((school) => (
-            <Picker.Item
-              key={school}
-              label={t(school.name)}
-              value={school.name}
-              color={schoolColors[school]}
-              style={{ fontSize: fontSize }}
-            />
-          ))}
-        </Picker>
+            <Picker
+              selectedValue={selectedLevel}
+              style={[styles.pickerItems, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
+              onValueChange={(value) => setSelectedLevel(value)}
+            >
+              <Picker.Item style={[styles.pickerItems, { fontSize: fontSize }]} label={t('All Levels')} value="All" />
+              {levels.map((level) => (
+
+                <Picker.Item key={level} label={`${t('Level')} ${level}`} value={level.toString()} style={{ fontSize: fontSize }} />
+
+              ))}
+            </Picker>
+            <Picker
+              selectedValue={selectedSchool}
+              style={[styles.pickerItems, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
+              onValueChange={(value) => setSelectedSchool(value)}
+            >
+              <Picker.Item style={[styles.pickerItems, { fontSize: fontSize }]} label={t('All Schools')} value="All" />
+              {schools.map((school) => (
+                <Picker.Item
+                  key={school}
+                  label={t(school.name)}
+                  value={school.name}
+                  color={schoolColors[school]}
+                  style={{ fontSize: fontSize }}
+                />
+              ))}
+            </Picker>
       </View>
 
       <ScrollView style={styles.tableContainer}>
-        <View style={styles.tableHeader}>
-          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Name')}</Text>
-          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('School')}</Text>
-          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Level')}</Text>
-          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Details')}</Text>
-        </View>
-        {filteredSpells.length === 0 ? (
-          <Text style={[styles.noResultsText, { fontSize: fontSize }]}>{t('No spells found')}</Text>
-        ) : (
-        filteredSpells.map((spell, index) => (
-          <View key={index} style={styles.tableRow}>
-            <Text style={[styles.tableCell, styles.nameColumn, { fontSize: fontSize }]}>{spell.name}</Text>
-            <Text
-              style={[
-                styles.tableCell,
-                styles.schoolColumn,
-                { color: schoolColors[spell.school] || '#000', fontSize: fontSize * 0.9 },
-              ]}
-            >
-              {spell.school}
-            </Text>
-            <Text style={[styles.tableCell, styles.levelColumn, { fontSize: fontSize }]}>{spell.level}</Text>
-            <TouchableOpacity
-              style={[styles.tableCell, styles.actionsColumn]}
-              onPress={() => handleSpellPress(spell)}
-            >
-              <Text style={[styles.actionText, { fontSize: fontSize }]}>{t('Details')}</Text>
-            </TouchableOpacity>
-          </View>
-        )))}
+            <View style={styles.tableHeader}>
+              <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Name')}</Text>
+              <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('School')}</Text>
+              <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Level')}</Text>
+              <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Details')}</Text>
+            </View>
+            {filteredSpells.length === 0 ? (
+              <Text style={[styles.noResultsText, { fontSize: fontSize }]}>{t('No spells found')}</Text>
+            ) : (
+            filteredSpells.map((spell, index) => (
+                  <View key={index} style={styles.tableRow}>
+                    <Text style={[styles.tableCell, styles.nameColumn, { fontSize: fontSize }]}>{spell.name}</Text>
+                    <Text
+                      style={[
+                        styles.tableCell,
+                        styles.schoolColumn,
+                        { color: schoolColors[spell.school] || '#000', fontSize: fontSize * 0.9 },
+                      ]}
+                    >
+                      {spell.school}
+                    </Text>
+                    <Text style={[styles.tableCell, styles.levelColumn, { fontSize: fontSize }]}>{spell.level}</Text>
+                    <TouchableOpacity
+                      style={[styles.tableCell, styles.actionsColumn]}
+                      onPress={() => handleSpellPress(spell)}
+                    >
+                      <Text style={[styles.actionText, { fontSize: fontSize }]}>{t('Details')}</Text>
+                    </TouchableOpacity>
+                  </View>
+            )))}
       </ScrollView>
 
         {selectedSpell && (
@@ -237,60 +269,71 @@ const Spells: React.FC = ({ navigation }) => {
             <ScrollView contentContainerStyle={styles.modalOverlaySpells}>
               {!isEditing ? (
                 <View style={[styles.SpellModal, { padding: 20 * scaleFactor }]}>
-                  <Text style={[styles.itemTitle, { fontSize: fontSize * 1.2 }]}>{selectedSpell.name}</Text>
+                  <Text style={[styles.itemTitle, { fontSize: fontSize * 1.2 }]}>
+                    {selectedSpell.name}
+                  </Text>
 
                   <View style={styles.twoColumnContainer}>
                     <View style={styles.columnSpells}>
                       <Text style={[styles.modalDetailsSpells, { fontSize: fontSize }]}>
                         {t('Level: \n')} {selectedSpell.level}
                       </Text>
-
-                      <Text style={[{ color: schoolColors[selectedSpell.school] || '#000' }, styles.modalDetailsSpellsSchool, { fontSize: fontSize }]}>
+                      <Text
+                        style={[
+                          { color: schoolColors[selectedSpell.school] || '#000' },
+                          styles.modalDetailsSpellsSchool,
+                          { fontSize: fontSize },
+                        ]}
+                      >
                         {t('School: \n')} {selectedSpell.school}
                       </Text>
                     </View>
+
                     <View style={styles.columnSpells}>
                       <Text style={[styles.modalDetailsSpells, { fontSize: fontSize }]}>
                         {t('Casting Time: \n')} {selectedSpell.castingTime}
                       </Text>
-
                       <Text style={[styles.modalDetailsSpells, { fontSize: fontSize }]}>
                         {t('Duration: \n')} {selectedSpell.duration}
                       </Text>
                     </View>
+
                     <View style={styles.columnSpells}>
                       <Text style={[styles.modalDetailsSpells, { fontSize: fontSize }]}>
                         {t('Range: \n')} {selectedSpell.range}
                       </Text>
 
-                      <Text style={[styles.modalDetailsSpells, { fontSize: fontSize }]}>
-                        {t('Attack/Save: \n')} {selectedSpell.attackSave}
-                      </Text>
                     </View>
+
                     <View style={styles.columnSpells}>
-                      <Text style={[styles.modalDetailsSpells, { fontSize: fontSize }]}>
-                        {t('Area: \n')} {selectedSpell.area}
-                      </Text>
 
                       <Text style={[styles.modalDetailsSpells, { fontSize: fontSize }]}>
-                        {t('Components: \n')} {selectedSpell.components.join(', ')}
+                        {t('Components: \n')} {selectedSpell.components?.join(', ')}
                       </Text>
                     </View>
                   </View>
 
-                  <Text style={[styles.itemDescriptionSpell, { fontSize: fontSize }]}>{selectedSpell.description}</Text>
+                  <Text style={[styles.itemDescriptionSpell, { fontSize: fontSize }]}>
+                    {selectedSpell.description}
+                  </Text>
 
-                  {selectedSpell.upgrade && (
-                    <Text style={[styles.itemDescription, { fontSize: fontSize }]}>{t('Upgrade')}: {selectedSpell.upgrade}</Text>
+                  {selectedSpell.atHigherLevels && selectedSpell.atHigherLevels !== ' ' && (
+                    <Text style={[styles.itemDescription, { fontSize: fontSize }]}>
+                      {t('At Higher Levels')}: {selectedSpell.atHigherLevels}
+                    </Text>
                   )}
 
                   <View style={styles.modalButtons}>
-                  {user.id === item.ownerID && (
-                    <TouchableOpacity onPress={() => setIsEditing(true)} style={[styles.editButton, { padding: 10 * scaleFactor }]}>
+                    <TouchableOpacity
+                      onPress={() => setIsEditing(true)}
+                      style={[styles.editButton, { padding: 10 * scaleFactor }]}
+                    >
                       <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
                     </TouchableOpacity>
-                  )}
-                    <TouchableOpacity onPress={closeSpellModal} style={[styles.closeButtonItem, { padding: 10 * scaleFactor }]}>
+                    <TouchableOpacity
+                      onPress={closeSpellModal}
+                      style={[styles.closeButtonItem, { padding: 10 * scaleFactor }]}
+                    >
                       <Text style={[styles.closeButtonText, { fontSize: fontSize }]}>{t('Close')}</Text>
                     </TouchableOpacity>
                   </View>
@@ -306,29 +349,36 @@ const Spells: React.FC = ({ navigation }) => {
 
                   <View style={styles.twoColumnContainer}>
                     <View style={styles.columnSpells}>
-                      <TextInput
-                        style={[styles.modalDetails, { fontSize: fontSize }]}
-                        value={String(editedSpell.level)}
-                        onChangeText={(value) => handleEditChange('level', value)}
-                        placeholder={t('Level')}
-                        placeholderTextColor="#808080"
-                      />
+                      <Picker
+                        selectedValue={editedSpell.level}
+                        onValueChange={(value) => handleEditChange('level', value)}
+                        style={[
+                          styles.pickerItemsA,
+                          { width: 150 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] },
+                        ]}
+                      >
+                        <Picker.Item label={t('Cantrip')} value="Cantrip" />
+                        {[...Array(9)].map((_, index) => (
+                          <Picker.Item key={index} label={`${index + 1}th`} value={`${index + 1}th`} />
+                        ))}
+                      </Picker>
 
                       <Picker
                         selectedValue={editedSpell.school}
                         onValueChange={(value) => handleEditChange('school', value)}
-                        style={[styles.pickerItemsA, { width: 150 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
+                        style={[
+                          styles.pickerItemsA,
+                          { width: 150 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] },
+                        ]}
                       >
-                        <Picker.Item label={t('Evocation')} value="Evocation" />
-                        <Picker.Item label={t('Necromancy')} value="Necromancy" />
-                        <Picker.Item label={t('Abjuration')} value="Abjuration" />
-                        <Picker.Item label={t('Divination')} value="Divination" />
-                        <Picker.Item label={t('Conjuration')} value="Conjuration" />
-                        <Picker.Item label={t('Illusion')} value="Illusion" />
-                        <Picker.Item label={t('Enchantment')} value="Enchantment" />
-                        <Picker.Item label={t('Transmutation')} value="Transmutation" />
+                        {['Evocation', 'Necromancy', 'Abjuration', 'Divination', 'Illusion', 'Enchantment', 'Transmutation'].map(
+                          (school) => (
+                            <Picker.Item key={school} label={t(school)} value={school} />
+                          )
+                        )}
                       </Picker>
                     </View>
+
                     <View style={styles.columnSpells}>
                       <TextInput
                         style={[styles.modalDetails, { fontSize: fontSize }]}
@@ -345,6 +395,7 @@ const Spells: React.FC = ({ navigation }) => {
                         placeholderTextColor="#808080"
                       />
                     </View>
+
                     <View style={styles.columnSpells}>
                       <TextInput
                         style={[styles.modalDetails, { fontSize: fontSize }]}
@@ -353,25 +404,12 @@ const Spells: React.FC = ({ navigation }) => {
                         placeholder={t('Range')}
                         placeholderTextColor="#808080"
                       />
-                      <TextInput
-                        style={[styles.modalDetails, { fontSize: fontSize }]}
-                        value={editedSpell.attackSave}
-                        onChangeText={(value) => handleEditChange('attackSave', value)}
-                        placeholder={t('Attack/Save')}
-                        placeholderTextColor="#808080"
-                      />
                     </View>
+
                     <View style={styles.columnSpells}>
                       <TextInput
                         style={[styles.modalDetails, { fontSize: fontSize }]}
-                        value={editedSpell.area}
-                        onChangeText={(value) => handleEditChange('area', value)}
-                        placeholder={t('Area')}
-                        placeholderTextColor="#808080"
-                      />
-                      <TextInput
-                        style={[styles.modalDetails, { fontSize: fontSize }]}
-                        value={editedSpell.components ? editedSpell.components.join(', ') : ''}
+                        value={editedSpell.components?.join(', ')}
                         onChangeText={(value) => handleEditChange('components', value.split(', '))}
                         placeholder={t('Components')}
                         placeholderTextColor="#808080"
@@ -387,24 +425,34 @@ const Spells: React.FC = ({ navigation }) => {
                     placeholderTextColor="#808080"
                     multiline
                   />
-                  {editedSpell.upgrade && (
+                  {editedSpell.atHigherLevels && (
                     <TextInput
                       style={[styles.itemDescription, { fontSize: fontSize }]}
-                      value={editedSpell.upgrade}
-                      onChangeText={(value) => handleEditChange('upgrade', value)}
-                      placeholder={t('Upgrade')}
+                      value={editedSpell.atHigherLevels}
+                      onChangeText={(value) => handleEditChange('atHigherLevels', value)}
+                      placeholder={t('At Higher Levels')}
                       placeholderTextColor="#808080"
                       multiline
                     />
                   )}
+
                   <View style={styles.modalButtons}>
-                    <TouchableOpacity onPress={() => setIsEditing(false)} style={[styles.closeButtonItem, { padding: 10 * scaleFactor }]}>
+                    <TouchableOpacity
+                      onPress={() => setIsEditing(false)}
+                      style={[styles.closeButtonItem, { padding: 10 * scaleFactor }]}
+                    >
                       <Text style={[styles.closeButtonText, { fontSize: fontSize }]}>{t('Cancel')}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={deleteSpell} style={[styles.deleteButtonSpell, { padding: 10 * scaleFactor }]}>
+                    <TouchableOpacity
+                      onPress={deleteSpell}
+                      style={[styles.deleteButtonSpell, { padding: 10 * scaleFactor }]}
+                    >
                       <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Delete')}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={saveSpellChanges} style={[styles.editButton, { padding: 10 * scaleFactor }]}>
+                    <TouchableOpacity
+                      onPress={saveSpellChanges}
+                      style={[styles.editButton, { padding: 10 * scaleFactor }]}
+                    >
                       <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Save')}</Text>
                     </TouchableOpacity>
                   </View>
@@ -413,6 +461,7 @@ const Spells: React.FC = ({ navigation }) => {
             </ScrollView>
           </Modal>
         )}
+
 
       <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>

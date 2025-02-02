@@ -7,7 +7,7 @@ import styles from './styles';
 import { Appearance } from 'react-native';
 import { UserData } from './UserData';
 import { SettingsContext } from './SettingsContext';
-
+import { useAuth } from './AuthContext';
 Appearance.setColorScheme('light');
 
 const Items: React.FC = ({ navigation }) => {
@@ -23,9 +23,11 @@ const Items: React.FC = ({ navigation }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedItem, setEditedItem] = useState(null);
+  const { token } = useAuth();
   const { ipv4 } = useContext(UserData);
   const categories = ['Type', 'weapon', 'armor', 'adventuring_gear', 'consumable', 'magic', 'other'];
   const rarities = ['Rarity', 'common', 'uncommon', 'rare', 'very rare', 'legendary'];
+  const [userID, setUserID] = useState(null);
 
   const handleSubtypePicker = (type) => {
     if (!subTypes || subTypes.length === 0) return [];
@@ -41,26 +43,36 @@ const Items: React.FC = ({ navigation }) => {
   useEffect(() => {
     fetchData();
   }, []);
-
   const fetchData = async () => {
-    try {
-      const [itemsResponse, itemTypesResponse] = await Promise.all([
-        fetch(`http://${ipv4}:8000/items/all`),
-        fetch(`http://${ipv4}:8000/itemTypes/all`),
-      ]);
+          try {
+              const [itemsResponse, itemTypesResponse,meResponse] = await Promise.all([
+                fetch(`http://${ipv4}:8000/items/all/10`),
+                fetch(`http://${ipv4}:8000/itemTypes/all`),
+                fetch(`http://${ipv4}:8000/me`,{
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'accept': 'application/json',
+                         "Authorization": `Bearer ${token}`
+                    }
 
-      if (!itemsResponse.ok || !itemTypesResponse.ok) {
-        throw new Error('Failed to fetch data');
-      }
+                }),
+              ]);
 
-      const itemsData = await itemsResponse.json();
-      const itemTypesData = await itemTypesResponse.json();
-      setItems(itemsData);
-      setSubTypes(itemTypesData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+              if (!itemsResponse.ok || !itemTypesResponse.ok || !meResponse.ok) {
+                throw new Error('Failed to fetch data');
+              }
+
+              const itemsData = await itemsResponse.json();
+              const itemTypesData = await itemTypesResponse.json();
+              const userID = await meResponse.json();
+              setItems(itemsData);
+              setSubTypes(itemTypesData);
+              setUserID(userID.id);
+            } catch (error) {
+              console.error('Error fetching data:', error);
+            }
+          };
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -81,6 +93,19 @@ const Items: React.FC = ({ navigation }) => {
       filtered = filtered.filter((item) => item.type.includes(selectedType));
     }
 
+if (selectedSubtype && selectedSubtype !== 'Subtype') {
+  filtered = filtered.filter((item) => {
+
+    if (!item.itemType) return false;
+
+    const normalizedItemTypes = Array.isArray(item.itemType)
+      ? item.itemType.map((s) => s.trim().toLowerCase()).join(',')
+      : item.itemType.trim().toLowerCase();
+
+    return normalizedItemTypes.split(',').includes(selectedSubtype.trim().toLowerCase());
+  });
+}
+
     if (selectedSubtype && selectedSubtype !== 'Subtype') {
       filtered = filtered.filter((item) => {
         if (!item.itemType) return false;
@@ -90,6 +115,7 @@ const Items: React.FC = ({ navigation }) => {
         return normalizedItemTypes.split(',').includes(selectedSubtype.trim().toLowerCase());
       });
     }
+
 
     if (selectedRarity && selectedRarity !== 'Rarity') {
       filtered = filtered.filter((item) => item.rarity.includes(selectedRarity));
@@ -115,30 +141,76 @@ const Items: React.FC = ({ navigation }) => {
   };
 
   const saveItemChanges = () => {
-    const updatedItems = items.map((item) =>
-      item.name === selectedItem.name
-        ? { ...editedItem, subtype: [editedItem.subtype] }
-        : item
-    );
-    setItems(updatedItems);
+    const itemDto= {
+        id: editedItem.id,
+        name: editedItem.name,
+        description: editedItem.description,
+        weight: editedItem.weight,
+        value: editedItem.value,
+        ownerID: editedItem.ownerID,
+        type: editedItem.type,
+        rarity: editedItem.rarity,
+        requiresAttunement: editedItem.requiresAttunement,
+        itemType: editedItem.itemType,
+        armorClass: editedItem.armorClass,
+        dexBonus: editedItem.dexBonus,
+        stealthDisadventage: editedItem.stealthDisadvantage,
+        damageType: editedItem.damageType,
+        diceNumber: editedItem.diceNumber,
+        diceType: editedItem.diceType,
+        specification: editedItem.specification,
+        properties: editedItem.properties,
+        source: editedItem.source,
+        };
+    setUpdate(itemDto);
     closeItemModal();
   };
+const setUpdate = async (itemDto) => {
+  try {
+      console.log(itemDto)
+    const response = await fetch(`http://${ipv4}:8000/items/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
 
-  const deleteItem = async () => {
-    try {
-      const response = await fetch(`/api/items/${item.id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        alert(t('Item deleted successfully'));
-      } else {
-        alert(t('Failed to delete item'));
-      }
-    } catch (error) {
-      console.error(error);
-      alert(t('Error deleting item'));
+      body: JSON.stringify(itemDto),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
     }
-  };
+
+    const result = await response.json();
+    console.log('Updated item:', result);
+        fetchData();
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+};
+  const deleteItem = async () => {
+        try {
+
+          const response = await fetch(`http://${ipv4}:8000/items/delete/${editedItem.id}`, {
+            method: 'Delete',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch data: ${response.status}`);
+          }
+
+          const result = await response.json();
+          console.log('New encounter:', result);
+        closeItemModal();
+        fetchData();
+        } catch (error) {
+          console.error('Error fetching data:', error.message);
+        }
+
+      };
 
   return (
     <ImageBackground source={theme.background} style={styles.container}>
@@ -172,7 +244,9 @@ const Items: React.FC = ({ navigation }) => {
           >
             <Picker.Item label={t('Subtype')} value="Subtype" style={{ fontSize: fontSize }} />
             {handleSubtypePicker(selectedType).map((subtype) => (
+
               <Picker.Item key={subtype.id || subtype} label={t(subtype.name || subtype)} value={subtype.name} style={{ fontSize: fontSize }} />
+
             ))}
           </Picker>
         )}
@@ -200,11 +274,13 @@ const Items: React.FC = ({ navigation }) => {
           <Text style={[styles.noResultsText, { fontSize: fontSize }]}>{t('No items found')}</Text>
         ) : (
           filteredItems.map((item, index) => (
+
             <View key={index} style={[styles.tableRow, { paddingVertical: 10 * scaleFactor }]}>
               <Text style={[styles.tableCell, { fontSize: fontSize }]}>{item.name}</Text>
               <Text style={[styles.tableCell, { fontSize: fontSize * 0.9 }]}>{item.rarity}</Text>
               <Text style={[styles.tableCell, { fontSize: fontSize }]}>{item.type}</Text>
               <Text style={[styles.tableCell, { fontSize: fontSize }]}>{item.itemType.slice(0, 2).join(', ')}</Text>
+
               <TouchableOpacity
                 style={styles.tableCell}
                 onPress={() => handleItemPress(item)}
@@ -232,8 +308,8 @@ const Items: React.FC = ({ navigation }) => {
                   <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Rarity')}: {selectedItem.rarity}</Text>
                 </View>
                 <View style={styles.itemsDetails}>
-                  <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Price')}: {selectedItem.value} gp</Text>
-                  <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Weight')}: {selectedItem.weight} lb</Text>
+                  <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Price')}: {selectedItem.value} </Text>
+                  <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Weight')}: {selectedItem.weight} </Text>
                 </View>
 
                 {selectedItem.type === 'weapon' && (
@@ -283,7 +359,7 @@ const Items: React.FC = ({ navigation }) => {
 
                 <Text style={[styles.itemDescription, { fontSize: fontSize }]}>{selectedItem.description}</Text>
                 <View style={styles.modalButtons}>
-                {user.id === spell.ownerID && (
+                {userID === selectedItem.ownerID && (
                   <TouchableOpacity onPress={() => setIsEditing(true)} style={[styles.editButton, { padding: 10 * scaleFactor }]}>
                     <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
                   </TouchableOpacity>
@@ -321,11 +397,13 @@ const Items: React.FC = ({ navigation }) => {
                     <Picker
                       selectedValue={editedItem.subtype}
                       onValueChange={(value) => handleEditChange('itemType', value)}
+
                       style={[styles.pickerItems, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
                     >
                       <Picker.Item label={t('Subtype')} value="Subtype" style={{ fontSize: fontSize }} />
                       {handleSubtypePicker(editedItem.itemType).map((itemType) => (
                         <Picker.Item key={itemType} label={t(itemType)} value={itemType} style={{ fontSize: fontSize }} />
+
                       ))}
                     </Picker>
                   )}
@@ -343,20 +421,21 @@ const Items: React.FC = ({ navigation }) => {
                 </View>
                 <View style={styles.itemsDetails}>
                   <TextInput
+
                     style={[styles.itemCategory, { fontSize: fontSize }]}
+
                     value={String(editedItem.value)}
-                    onChangeText={(value) => handleEditChange('value', parseFloat(value) || 0)}
+                    onChangeText={(value) => handleEditChange('value', value.endsWith('gp') ? value : `${value}gp`)}
+
                     placeholder={t('Price')}
                     placeholderTextColor="#b5b5b5"
-                    keyboardType="numeric"
                   />
                   <TextInput
                     style={[styles.itemCategory, { fontSize: fontSize }]}
                     value={String(editedItem.weight)}
-                    onChangeText={(value) => handleEditChange('weight', parseFloat(value) || 0)}
+                    onChangeText={(value) => handleEditChange('weight',value.endsWith('lp') ? value : `${value}lp`)}
                     placeholder={t('Weight')}
                     placeholderTextColor="#b5b5b5"
-                    keyboardType="numeric"
                   />
                 </View>
 

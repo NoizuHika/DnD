@@ -196,6 +196,9 @@
   "Monster Description": "Описание монстра",
   "Enter description...": "Введите описание...",
   "Enter language...": "Введите язык...",
+  "Enter sense...": "Введите чувство...",
+  "Enter skill...": "Введите навык...",
+  "Enter movement...": "Введите движение...",
   "Enter perception...": "Введите восприятие...",
   "Enter action_description...": "Введите описание действия...",
   "Enter bonus_action_description...": "Введите описание бонусного действия...",
@@ -210,10 +213,10 @@
   "Edit Hit Points": "Редактировать очки здоровья",
   "Languages": "Языки",
   "Add language": "Добавить язык",
-  "Add Sense": "Добавить чувство",
+  "Add sense": "Добавить чувство",
   "Senses": "Чувства",
-  "Add Skill": "Добавить навык",
-  "Add Movement": "Добавить движение",
+  "Add skill": "Добавить навык",
+  "Add movement": "Добавить движение",
   "Movement": "Движение",
   "Charisma": "Харизма",
   "Wisdom": "Мудрость",
@@ -552,5 +555,8 @@
   "Confirm": "Подтвердить",
   "Item deleted successfully": "Предмет успешно удален",
   "Failed to delete item": "Не удалось удалить предмет",
-  "Error deleting item": "Ошибка при удалении предмета"
+  "Error deleting item": "Ошибка при удалении предмета",
+  "Hit": "Попадание",
+  "No Image": "Нет изображения",
+  "Add NPC": "Добавить NPC"
 }
