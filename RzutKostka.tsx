@@ -72,6 +72,7 @@ useEffect(() => {
     const newDiceValues = [];
     const resultsSummary = [];
     const forFetchResult = [];
+    const spellModifier =applySpellSettings() || null;
 
     selectedDice.forEach(({ index, count }) => {
       const diceResults = Array.from({ length: count }, () =>
@@ -81,6 +82,15 @@ useEffect(() => {
       newDiceValues.push({ index, results: diceResults });
       resultsSummary.push(`roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
       if (player) {
+        if (spell){
+            if (spellModifier){
+                diceResult2= diceResults;
+               for (let i = 0; i < diceResult2.length; i++) {
+                     diceResult2[i] += spellModifier;
+                   }
+            forFetchResult.push(`${player.name} roll ${diceTypes[index].sides} + ${spellModifier}: ${diceResult2.join(', ')}`);
+             }
+            }
         forFetchResult.push(`${player.name} roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
       }
 
@@ -96,9 +106,16 @@ useEffect(() => {
     });
 
 
-    if (session && Object.keys(session).length > 0 && Array.isArray(forFetchResult) && forFetchResult.length > 0) {
-      fetchData(forFetchResult);
-    }
+   if (session && Object.keys(session).length > 0 && Array.isArray(forFetchResult) && forFetchResult.length > 0) {
+     fetchData(forFetchResult);
+
+     if (navigation && navigation.canGoBack()) {
+       navigation.goBack();
+       setTimeout(() => {
+         navigation.goBack();
+       }, 100);
+     }
+   }
 
 
     setDiceValues(newDiceValues);
