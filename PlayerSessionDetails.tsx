@@ -8,20 +8,20 @@ import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
 import { UserData } from './UserData';
-
+import { useAuth } from './AuthContext';
 Appearance.setColorScheme('light');
 
 const PlayerSessionDetails: React.FC = ({ navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const route = useRoute();
-
+  const { token } = useAuth();
   const { ipv4 } = useContext(UserData);
   const { t } = useTranslation();
   const { theme, diceResults } = useContext(ThemeContext);
   const { campaign,player} = route.params;
   const { session } = route.params || {};
   const [playerActual, setPlayerActual] = useState(player);
-  const [notes, setNotes] = useState(player.sharedNotes);
+  const [notes, setNotes] = useState([]);
   const [newSessionName, setNewSessionName] = useState('');
   const [newSessionContent, setNewSessionContent] = useState('');
   const [newNoteTitle, setNewNoteTitle] = useState('');
@@ -40,13 +40,36 @@ const PlayerSessionDetails: React.FC = ({ navigation }) => {
   const [actualSession,setActualSession]= useState(session);
 
   const scrollViewRef = useRef(null);
-
+useEffect(()=>{
+    setNotes(playerActual.shared_notes);
+    });
   useEffect(() => {
     if (scrollViewRef.current && actualSession?.logs?.length > 0) {
           scrollViewRef.current.scrollToEnd({ animated: true });
         }
   }, [actualSession?.logs]);
+const deleteNote = async () => {
+  try {
 
+    const response = await fetch(`http://${ipv4}:8000/notes/delete/${selectedNote.id}`, {
+      method: 'Delete',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Deleted:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+  fetchData();
+};
   useEffect(() => {
       const intervalId = setInterval(() => {
         if (playerActual && actualSession) {
@@ -93,21 +116,6 @@ const PlayerSessionDetails: React.FC = ({ navigation }) => {
       setSelectedPlayers([...selectedPlayers, player.id]);
     }
   };
-
-
-  useEffect(() => {
-    const loadNotes = async () => {
-      try {
-        const savedNotes = await AsyncStorage.getItem('notes');
-        if (savedNotes !== null) {
-          setNotes(JSON.parse(savedNotes));
-        }
-      } catch (error) {
-        console.error('Failed to load notes', error);
-      }
-    };
-    loadNotes();
-  }, []);
 
 
   const saveNotes = async (updatedNotes) => {
@@ -168,17 +176,40 @@ const PlayerSessionDetails: React.FC = ({ navigation }) => {
     setNewNoteImage(null);
     setModalVisible(true);
   };
+const updateNote = async (newNoteTitle,newNoteContent,editingNoteIndex) => {
+  try {
+         const requestBody = {
+             id: notes[editingNoteIndex].id,
+             title: newNoteTitle,
+             description: newNoteContent,
+             sessionID: actualSession.id,
+             images: notes[editingNoteIndex].images,
+             ownerID: notes[editingNoteIndex].ownerID };
+    const response = await fetch(`http://${ipv4}:8000/notes/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
 
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('Notes updated:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+  fetchData();
+};
   const handleSaveNote = async () => {
     if (newNoteTitle && newNoteContent) {
-      const newNote = {
-        title: newNoteTitle,
-        content: newNoteContent,
-        image: newNoteImage ? { uri: newNoteImage } : require('./assets/Human-W-Mage.jpg'),
-        diceResults: diceResults,
-      };
-      const updatedNotes = [...notes, newNote];
-      await saveNotes(updatedNotes);
+      addNewNote(newNoteTitle,newNoteContent)
       setNewNoteTitle('');
       setNewNoteContent('');
       setNewNoteImage(null);
@@ -192,21 +223,48 @@ const PlayerSessionDetails: React.FC = ({ navigation }) => {
     handleCloseNote();
     setEditingNoteIndex(index);
     setNewNoteTitle(notes[index].title);
-    setNewNoteContent(notes[index].content);
-    setNewNoteImage(notes[index].image.uri || null);
+    setNewNoteContent(notes[index].description);
+    setNewNoteImage(notes[index]?.image|| null);
     setAddingNewNote(!addingNewNote);
     setModalVisible(true);
   };
+const addNewNote = async (newNoteTitle,newNoteContent) => {
 
+  try {
+     const requestBody = {
+         token: token,
+         id: parseInt(playerActual?.id),
+         itemNoteTitle: newNoteTitle,
+         itemNoteDescription: newNoteContent,
+         type:"p"};
+         console.log(requestBody)
+    const response = await fetch(`http://${ipv4}:8000/notes/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New session:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+  fetchData();
+};
   const handleSaveEditNote = () => {
     if (editingNoteIndex !== null) {
-      const updatedNotes = [...notes];
-      updatedNotes[editingNoteIndex] = {
-        title: newNoteTitle,
-        content: newNoteContent,
-        image: newNoteImage ? { uri: newNoteImage } : require('./assets/Human-W-Mage.jpg')
-      };
-      setNotes(updatedNotes);
+      updateNote(newNoteTitle,newNoteContent,editingNoteIndex);
+
+
       setEditingNoteIndex(null);
       setNewNoteTitle('');
       setNewNoteContent('');
@@ -216,6 +274,7 @@ const PlayerSessionDetails: React.FC = ({ navigation }) => {
   };
 
   const handleDeleteNote = (index) => {
+      deleteNote();
     const updatedNotes = notes.filter((_, i) => i !== index);
     setNotes(updatedNotes);
     setNoteVisibility(noteVisibility.filter((_, i) => i !== index));
@@ -286,16 +345,17 @@ return (
              {notes && notes.length > 0 ? (
                notes.map((note, index) => (
                  <View key={index} style={styles.noteHeader}>
-                   <TouchableOpacity onPress={() => handleOpenNote(note, index)}>
-                     <View style={styles.noteActions}>
-                       <Text style={[styles.noteTitle, { fontSize: fontSize }]}>{note.title}</Text>
-                     </View>
-                   </TouchableOpacity>
-                   {noteVisibility[index] && (
-                     <>
-                       <Text style={[styles.noteContent, { fontSize: fontSize }]}>{note.content}</Text>
-                       <Image source={note.image} style={[styles.noteImage, { width: 200 * scaleFactor, height: 200 * scaleFactor }]} />
-                                     </>
+                         <TouchableOpacity onPress={() => handleOpenNote(note, index)}>
+                           <View style={styles.noteActions}>
+                             <Text style={[styles.noteTitle, { fontSize: fontSize }]}>{note.title}</Text>
+                           </View>
+                         </TouchableOpacity>
+                         {noteVisibility[index] && (
+                           <>
+
+                     <Text style={[styles.noteContent, { fontSize: fontSize }]}>{note.description}</Text>
+                     <Image source={note.image} style={[styles.noteImage, { width: 200 * scaleFactor, height: 200 * scaleFactor }]} />
+                         </>
                    )}
                  </View>
                ))
@@ -315,7 +375,7 @@ return (
            <View style={styles.modalNoteCampaignContainer}>
              <View style={styles.modalNoteCampaignContent}>
                <Text style={[styles.modalNoteCampaignTitle, { fontSize: fontSize * 1.2 }]}>{selectedNote?.title}</Text>
-               <Text style={[styles.modalNoteCampaignText, { fontSize: fontSize }]}>{selectedNote?.content}</Text>
+               <Text style={[styles.modalNoteCampaignText, { fontSize: fontSize }]}>{selectedNote?.description}</Text>
                <Image source={selectedNote?.image} style={[styles.modalImageNoteCampaign, { width: 200 * scaleFactor, height: 200 * scaleFactor }]} />
                <View style={styles.modalActionsNoteCampaign}>
                  <TouchableOpacity style={styles.editButtonCamp} onPress={() => handleEditNote(editingNoteIndex)}>
