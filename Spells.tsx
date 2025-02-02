@@ -51,7 +51,7 @@ const Spells: React.FC = ({ navigation }) => {
   const fetchData = async () => {
       try {
           const [spellsResponse, schoolsResponse] = await Promise.all([
-            fetch(`http://${ipv4}:8000/spells/all`),
+            fetch(`http://${ipv4}:8000/spells/all/10`),
             fetch(`http://${ipv4}:8000/schools/all`),
           ]);
 
@@ -160,26 +160,34 @@ const setUpdate = async (spellDto) => {
               source: editedSpell.source,
               ownerID: editedSpell.ownerID,
             };
-         setUpdate(spellDto)
+         setUpdate(spellDto);
     setSelectedSpell(editedSpell);
     setIsEditing(false);
   };
 
-  const deleteSpell = async () => {
-    try {
-      const response = await fetch(`/api/items/${item.id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        alert(t('Item deleted successfully'));
-      } else {
-        alert(t('Failed to delete item'));
+    const deleteSpell = async () => {
+      try {
+
+        const response = await fetch(`http://${ipv4}:8000/spells/delete/${editedSpell.id}`, {
+          method: 'Delete',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+    setSelectedSpell(null);
+    setIsEditing(false);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch data: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('New encounter:', result);
+      fetchData();
+      } catch (error) {
+        console.error('Error fetching data:', error.message);
       }
-    } catch (error) {
-      console.error(error);
-      alert(t('Error deleting item'));
-    }
-  };
+
+    };
 
 
   return (

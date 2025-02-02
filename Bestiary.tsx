@@ -56,7 +56,7 @@ const Bestiary: React.FC = ({ navigation }) => {
   const fetchData = async () => {
         try {
             const [bestiariesResponse, environmentsResponse, monsterTypeResponse,meResponse] = await Promise.all([
-              fetch(`http://${ipv4}:8000/bestiaries/all`),
+              fetch(`http://${ipv4}:8000/bestiaries/all/10`),
               fetch(`http://${ipv4}:8000/environments/all`),
               fetch(`http://${ipv4}:8000/monster_types/all`),
               fetch(`http://${ipv4}:8000/me`,{
@@ -79,7 +79,7 @@ const Bestiary: React.FC = ({ navigation }) => {
             const typeData = await monsterTypeResponse.json();
             const userID = await meResponse.json();
             setFeats(feats);
-            setEnvironmentOptions(environmentOptions);
+            setEnvironmentOptions(environmentData);
             setTypeOptions(typeData);
             console.log(userID);
             setUserID(userID.id)
@@ -223,20 +223,21 @@ const setUpdate = async (bestiaryDto) => {
   };
 
   const deleteBesti = async () => {
-    try {
-      const response = await fetch(`/api/items/${item.id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        alert(t('Item deleted successfully'));
-      } else {
-        alert(t('Failed to delete item'));
-      }
-    } catch (error) {
-      console.error(error);
-      alert(t('Error deleting item'));
-    }
-  };
+        console.log(editedFeat.id)
+      try {
+        const response = await fetch(`http://${ipv4}:8000/bestiaries/delete/${editedFeat.id}`, {
+          method: 'DELETE',
+        });
+          fetchData();
+          setSelectedFeat(null);
+              setIsEditing(false);
+        if (!response.ok) {
+                throw new Error(`Failed to fetch data: ${response.status}`);
+              }
+       }catch (error) {
+            console.error('Error fetching data:', error.message);
+          }
+    };
 
   return (
     <ImageBackground source={theme.background} style={styles.container}>

@@ -59,6 +59,9 @@ const handleRollDice = () => {
         setAnswer(answerMessage);
 
         fetchData(answerMessage);
+        if (finalResult > 10){
+            navigation.navigate('RzutKostka', { player:player,spell:spell,session: session });
+            }
       }
     }, 200);
   });

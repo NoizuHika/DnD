@@ -63,7 +63,30 @@ const BackLibrary: React.FC = ({ navigation }) => {
       item.name.toLowerCase().includes(searchText.toLowerCase())
     );
   };
+  const setUpdate = async (backgroundDto) => {
+      console.log(backgroundDto)
+    try {
+      const response = await fetch(`http://${ipv4}:8000/backgrounds/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
 
+        body: JSON.stringify(backgroundDto),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.status}`);
+      }
+    fetchData();
+      const result = await response.json();
+      console.log('Updated spell:', result);
+
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    }
+
+  };
   const filteredBackLibrary = filterBackLibrary();
 
   const handleItemPress = (item) => {
@@ -86,31 +109,43 @@ const BackLibrary: React.FC = ({ navigation }) => {
 
   const saveBackItemChanges = () => {
     if (!editedItem) return;
-
-    setBackLibrary((prevBackLibrary) =>
-      prevBackLibrary.map((item) =>
-        item.name === selectedItem.name ? editedItem : item
-      )
-    );
-
+    const backgroundDto ={
+        id: editedItem.id,
+        name: editedItem.name,
+        skillProficiencies: editedItem.skillProficiencies,
+        toolProficiencies: editedItem.toolProficiencies,
+        equipments: editedItem.equipments,
+        languages: editedItem.languages,
+        features: editedItem.features,
+        ownerID: editedItem.ownerID,
+        source: editedItem.source
+        }
+      setUpdate(backgroundDto);
     setSelectedItem(editedItem);
     setIsEditing(false);
   };
 
   const deleteBackItem = async () => {
     try {
-      const response = await fetch(`/api/items/${item.id}`, {
-        method: 'DELETE',
+
+      const response = await fetch(`http://${ipv4}:8000/backgrounds/delete/${editedItem.id}`, {
+        method: 'Delete',
+        headers: {
+          'Content-Type': 'application/json',
+        }
       });
-      if (response.ok) {
-        alert(t('Item deleted successfully'));
-      } else {
-        alert(t('Failed to delete item'));
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.status}`);
       }
+
+      const result = await response.json();
+      console.log('New encounter:', result);
+    fetchData();
     } catch (error) {
-      console.error(error);
-      alert(t('Error deleting item'));
+      console.error('Error fetching data:', error.message);
     }
+
   };
 
   return (

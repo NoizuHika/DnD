@@ -86,11 +86,13 @@ useEffect(() => {
     setFilteredMonsters(filtered);
   };
 const fetchData = async () => {
+
         try {
             const [bestiariesResponse, environmentsResponse, monsterTypeResponse] = await Promise.all([
               fetch(`http://${ipv4}:8000/bestiaries/all/10`),
               fetch(`http://${ipv4}:8000/environments/all`),
               fetch(`http://${ipv4}:8000/monster_types/all`)
+
             ]);
 
             if (!bestiariesResponse.ok || !environmentsResponse.ok || !monsterTypeResponse.ok) {
@@ -116,49 +118,38 @@ const fetchData = async () => {
     setSearchText('');
     setFilteredMonsters(bestiary);
   };
+
 const setUpdate = async (updatedEncounter) => {
   try {
+     console.log(JSON.stringify(updatedEncounter));
     const response = await fetch(`http://${ipv4}:8000/encounters/update`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: {
-        item_id: updatedEncounter.id,
-        item: updatedEncounter.toString(),
-      },
+
+      body: JSON.stringify(updatedEncounter),
     });
 
     if (!response.ok) {
-      throw new Error('Failed to fetch data');
+      throw new Error(`Failed to fetch data: ${response.status}`);
     }
 
     const result = await response.json();
-
+    console.log(updatedEncounter)
     console.log('Updated encounter:', result);
 
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error('Error fetching data:', error.message);
   }
 };
 
 
-  const updateEncounters=()=>{
-      const players = encounter.players == null ? [] : encounter.players;
-      const { adjustedXP } = calculateEncounterXP();
-      const updatedEncounter = {
-          id: encounter.id,
-          title: encounter.title,
-          entities: monsters,
-          players: players,
-          campaignID: encounter.campaignID,
-          ownerID: encounter.ownerID,
-          XP:adjustedXP
-        };
-
-      setUpdate(updatedEncounter)
-      navigation.navigate('Encounters',{campaign:campaign});
-      };
+const updateEncounters=()=>{
+    const updatedEncounter = { ...encounter, entities: monsters };
+    setUpdate(updatedEncounter)
+    navigation.navigate('Encounters',{campaign:campaign});
+    };
 
   const handleGoBack = () => {
     navigation.goBack();

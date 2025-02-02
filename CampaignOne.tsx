@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
-
+import { useAuth } from './AuthContext';
 import { SettingsContext } from './SettingsContext';
 import { UserData } from './UserData';
 Appearance.setColorScheme('light');
@@ -16,7 +16,7 @@ const CampaignOne: React.FC = ({ route,navigation }) => {
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const { ipv4 } = useContext(UserData)
-
+  const [selectedPlayerAdd,setSelectedPlayerAdd] = useState(false);
   const [sessions, setSessions] = useState([]);
   const [notes, setNotes] = useState([]);
   const [newSessionName, setNewSessionName] = useState('');
@@ -36,7 +36,7 @@ const CampaignOne: React.FC = ({ route,navigation }) => {
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [noteVisibility, setNoteVisibility] = useState(new Array(notes.length).fill(false));
   const [modalVisible, setModalVisible] = useState(false);
-
+  const { token } = useAuth();
   const scrollViewRef = useRef(null);
 
   useEffect(() => {
@@ -118,15 +118,8 @@ const CampaignOne: React.FC = ({ route,navigation }) => {
   };
 
   const handleAddPlayer = () => {
-    const newPlayer = {
-      id: players.length + 1,
-      name: `Player ${players.length + 1}`,
-      image: require('./assets/adventurer.jpeg'),
-      coins: 0,
-      level: 1,
-      hp: 100,
-    };
-    setPlayers([...players, newPlayer]);
+    setIsModalVisible(true);
+    setSelectedPlayerAdd(true);
   };
 
   const saveSessions = async (updatedSessions) => {
@@ -146,7 +139,9 @@ const CampaignOne: React.FC = ({ route,navigation }) => {
       console.error('Failed to save notes', error);
     }
   };
+  const addNPC = () =>{
 
+      };
   const handleGoBack = () => {
     navigation.goBack();
   };
@@ -179,7 +174,65 @@ const addNewSession = async (newSessionContent,newSessionName) => {
   }
   fetchData();
 };
+const addNewNote = async (newNoteTitle,newNoteContent) => {
 
+  try {
+     const requestBody = {
+         token: token,
+         sessionID: sessions[activeSessionIndex]?.id,
+         itemNoteTitle: newNoteTitle,
+         itemNoteDescription: newNoteContent};
+         console.log(requestBody)
+    const response = await fetch(`http://${ipv4}:8000/notes/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New session:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+  fetchData();
+};
+const updateSession = async (newSessionContent) => {
+  try {
+         const requestBody = {
+             sessionName: sessions[activeSessionIndex]?.title,
+             SessionDescription: newSessionContent,
+             sessionID: sessions[activeSessionIndex]?.id };
+    const response = await fetch(`http://${ipv4}:8000/sessions/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New session:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+  fetchData();
+};
   const handleAddSession = () => {
     if (newSessionName && newSessionContent) {
         addNewSession(newSessionContent,newSessionName);
@@ -202,6 +255,7 @@ const addNewSession = async (newSessionContent,newSessionName) => {
 
   const handleSaveEdit = () => {
     if (editingSession !== null) {
+        updateSession(newSessionContent);
       const updatedSessions = [...sessions];
       updatedSessions[editingSession] = { name: newSessionName, description: newSessionContent };
       saveSessions(updatedSessions);
@@ -210,8 +264,52 @@ const addNewSession = async (newSessionContent,newSessionName) => {
       setNewSessionContent('');
     }
   };
+const deleteSession = async () => {
+  try {
 
+    const response = await fetch(`http://${ipv4}:8000/sessions/delete/${sessions[activeSessionIndex]?.id}`, {
+      method: 'Delete',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Deleted:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+  fetchData();
+};
+const deleteNote = async () => {
+  try {
+
+    const response = await fetch(`http://${ipv4}:8000/notes/delete/${selectedNote.id}`, {
+      method: 'Delete',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Deleted:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+  fetchData();
+};
   const handleDeleteSession = (index) => {
+      deleteSession();
     const updatedSessions = sessions.filter((_, i) => i !== index);
     saveSessions(updatedSessions);
     setActiveSessionIndex(0);
@@ -246,12 +344,8 @@ const addNewSession = async (newSessionContent,newSessionName) => {
 
   const handleSaveNote = async () => {
     if (newNoteTitle && newNoteContent) {
-      const newNote = {
-        title: newNoteTitle,
-        description: newNoteContent,
-        image: newNoteImage ? { uri: newNoteImage } : require('./assets/Human-W-Mage.jpg'),
-        diceResults: diceResults,
-      };
+        console.log(campaign.sessions[activeSessionIndex]?.id)
+      addNewNote(newNoteTitle,newNoteContent)
       const updatedNotes = [...notes, newNote];
       await saveNotes(updatedNotes);
       setNewNoteTitle('');
@@ -291,6 +385,7 @@ const addNewSession = async (newSessionContent,newSessionName) => {
   };
 
   const handleDeleteNote = (index) => {
+    deleteNote();
     const updatedNotes = notes.filter((_, i) => i !== index);
     setNotes(updatedNotes);
     setNoteVisibility(noteVisibility.filter((_, i) => i !== index));
@@ -321,7 +416,10 @@ const addNewSession = async (newSessionContent,newSessionName) => {
     setEditingNoteIndex(index);
     setIsModalVisible(true);
   };
-
+const handleClosePlayerAdd = () => {
+    setSelectedPlayerAdd(true);
+    setIsModalVisible(false);
+  };
   const handleCloseNote = () => {
     setSelectedNote(null);
     setAddingNewNote(null);
@@ -357,7 +455,7 @@ const addNewSession = async (newSessionContent,newSessionName) => {
           <View style={styles.sessionContainer}>
             <View style={styles.sessionHeader}>
            <ScrollView style={styles.sessionContentScrollContainer}>
-            <Text style={[styles.sessionContent, { fontSize: fontSize }]}>{sessions[activeSessionIndex].description}</Text>
+            <Text style={[styles.sessionContent, { fontSize: fontSize }]}>{sessions[activeSessionIndex]?.description}</Text>
            </ScrollView>
             </View>
              <View style={styles.rowContainerRight}>
@@ -559,7 +657,29 @@ const addNewSession = async (newSessionContent,newSessionName) => {
       </View>
 
      </View>
-
+        {selectedPlayerAdd && (
+                 <Modal
+                   visible={isModalVisible}
+                   animationType="slide"
+                   transparent={true}
+                   onRequestClose={handleCloseNote}
+                 >
+                   <View style={styles.modalNoteCampaignContainer}>
+                     <View style={styles.modalNoteCampaignContent}>
+                       <Text style={[styles.modalNoteCampaignTitle, { fontSize: fontSize * 1.2 }]}>Code to join:</Text>
+                       <Text style={[styles.modalNoteCampaignText, { fontSize: fontSize }]}>{campaign.code}</Text>
+                         <View style={styles.modalActionsNoteCampaign}>
+                         <TouchableOpacity style={styles.editButtonCamp} onPress={addNPC}>
+                           <Text style={[styles.editTextCamp, { fontSize: fontSize }]}>{t('addNPC')}</Text>
+                         </TouchableOpacity>
+                       </View>
+                     </View>
+                   </View>
+                         <TouchableOpacity onPress={handleClosePlayerAdd}>
+                           <Text style={[styles.closeNoteButtonCampaign, { fontSize: fontSize }]}>{t('Close')}</Text>
+                         </TouchableOpacity>
+                 </Modal>
+                )}
       <View style={styles.playerPanel}>
         <ScrollView horizontal>
           {players.map(player => (

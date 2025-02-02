@@ -46,7 +46,7 @@ const Items: React.FC = ({ navigation }) => {
   const fetchData = async () => {
           try {
               const [itemsResponse, itemTypesResponse,meResponse] = await Promise.all([
-                fetch(`http://${ipv4}:8000/items/all`),
+                fetch(`http://${ipv4}:8000/items/all/10`),
                 fetch(`http://${ipv4}:8000/itemTypes/all`),
                 fetch(`http://${ipv4}:8000/me`,{
                     method: 'GET',
@@ -68,7 +68,6 @@ const Items: React.FC = ({ navigation }) => {
               const userID = await meResponse.json();
               setItems(itemsData);
               setSubTypes(itemTypesData);
-              console.log(userID);
               setUserID(userID.id);
             } catch (error) {
               console.error('Error fetching data:', error);
@@ -142,30 +141,76 @@ if (selectedSubtype && selectedSubtype !== 'Subtype') {
   };
 
   const saveItemChanges = () => {
-    const updatedItems = items.map((item) =>
-      item.name === selectedItem.name
-        ? { ...editedItem, subtype: [editedItem.subtype] }
-        : item
-    );
-    setItems(updatedItems);
+    const itemDto= {
+        id: editedItem.id,
+        name: editedItem.name,
+        description: editedItem.description,
+        weight: editedItem.weight,
+        value: editedItem.value,
+        ownerID: editedItem.ownerID,
+        type: editedItem.type,
+        rarity: editedItem.rarity,
+        requiresAttunement: editedItem.requiresAttunement,
+        itemType: editedItem.itemType,
+        armorClass: editedItem.armorClass,
+        dexBonus: editedItem.dexBonus,
+        stealthDisadventage: editedItem.stealthDisadvantage,
+        damageType: editedItem.damageType,
+        diceNumber: editedItem.diceNumber,
+        diceType: editedItem.diceType,
+        specification: editedItem.specification,
+        properties: editedItem.properties,
+        source: editedItem.source,
+        };
+    setUpdate(itemDto);
     closeItemModal();
   };
+const setUpdate = async (itemDto) => {
+  try {
+      console.log(itemDto)
+    const response = await fetch(`http://${ipv4}:8000/items/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
 
-  const deleteItem = async () => {
-    try {
-      const response = await fetch(`/api/items/${item.id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        alert(t('Item deleted successfully'));
-      } else {
-        alert(t('Failed to delete item'));
-      }
-    } catch (error) {
-      console.error(error);
-      alert(t('Error deleting item'));
+      body: JSON.stringify(itemDto),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
     }
-  };
+
+    const result = await response.json();
+    console.log('Updated item:', result);
+        fetchData();
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+};
+  const deleteItem = async () => {
+        try {
+
+          const response = await fetch(`http://${ipv4}:8000/items/delete/${editedItem.id}`, {
+            method: 'Delete',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch data: ${response.status}`);
+          }
+
+          const result = await response.json();
+          console.log('New encounter:', result);
+        closeItemModal();
+        fetchData();
+        } catch (error) {
+          console.error('Error fetching data:', error.message);
+        }
+
+      };
 
   return (
     <ImageBackground source={theme.background} style={styles.container}>
@@ -263,8 +308,8 @@ if (selectedSubtype && selectedSubtype !== 'Subtype') {
                   <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Rarity')}: {selectedItem.rarity}</Text>
                 </View>
                 <View style={styles.itemsDetails}>
-                  <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Price')}: {selectedItem.value} gp</Text>
-                  <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Weight')}: {selectedItem.weight} lb</Text>
+                  <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Price')}: {selectedItem.value} </Text>
+                  <Text style={[styles.itemCategory, { fontSize: fontSize }]}>{t('Weight')}: {selectedItem.weight} </Text>
                 </View>
 
                 {selectedItem.type === 'weapon' && (
@@ -380,18 +425,17 @@ if (selectedSubtype && selectedSubtype !== 'Subtype') {
                     style={[styles.itemCategory, { fontSize: fontSize }]}
 
                     value={String(editedItem.value)}
-                    onChangeText={(value) => handleEditChange('value', parseFloat(value) || 0)}
+                    onChangeText={(value) => handleEditChange('value', value.endsWith('gp') ? value : `${value}gp`)}
+
                     placeholder={t('Price')}
                     placeholderTextColor="#b5b5b5"
-                    keyboardType="numeric"
                   />
                   <TextInput
                     style={[styles.itemCategory, { fontSize: fontSize }]}
                     value={String(editedItem.weight)}
-                    onChangeText={(value) => handleEditChange('weight', parseFloat(value) || 0)}
+                    onChangeText={(value) => handleEditChange('weight',value.endsWith('lp') ? value : `${value}lp`)}
                     placeholder={t('Weight')}
                     placeholderTextColor="#b5b5b5"
-                    keyboardType="numeric"
                   />
                 </View>
 

@@ -5,23 +5,26 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
+import { useFocusEffect } from '@react-navigation/native';
 
 Appearance.setColorScheme('light');
 
 const Encounters: React.FC = ({ navigation, route }) => {
 
-
+  const { ipv4 } = useContext(UserData)
+  const { token } = useAuth();
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const { campaign } = route.params;
+  const [actualCampaign,setActualCampaign] = useState(campaign);
   const [encounters, setEncounters] = useState([]);
   const [difficulty,setDifficulty]= useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [newEncounter, setNewEncounter] = useState({
-      title: '',
-      campaignTitle: campaign.title,
-      campaignID: campaign.id
+      title: ''
     });
 const thresholdsXP = {
   1: { easy: 25, medium: 50, hard: 75, deadly: 100 },
@@ -30,35 +33,98 @@ const thresholdsXP = {
   4: { easy: 125, medium: 250, hard: 375, deadly: 500 },
   5: { easy: 250, medium: 500, hard: 750, deadly: 1100 },
 };
+useEffect(() => {
+    fetchData();
+  }, []);
+const fetchData = async () => {
+        try {
+            const sessionsResponse = await fetch(`http://${ipv4}:8000/campaigns/${campaign.id}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                }
+            });
 
-  useEffect(() => {
-      console.log(campaign.encounters)
-      setEncounters(campaign.encounters)
-    }, []);
+            if (!sessionsResponse.ok) {
+                throw new Error('Failed to fetch data');
+            }
 
-  const updateEncounters = (updatedEncounters) => {
-    setEncounters(updatedEncounters);
-  };
+             const data = await sessionsResponse.json();
+             setActualCampaign(data);
+             setEncounters(data.encounters);
+            console.log(encounters);
 
-  useEffect(() => {
-    if (route.params?.updatedEncounter) {
-      const updatedList = encounters.map((e) =>
-        e.id === route.params.updatedEncounter.id ? route.params.updatedEncounter : e
-      );
-      updateEncounters(updatedList);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+ useFocusEffect(
+     React.useCallback(() => {
+
+       fetchData();
+     }, [])
+   );
+const addNewEncounter = async (name) => {
+
+  try {
+     const requestBody = {
+         token: token,
+         campaignID:campaign.id,
+         itemEncounterName: name
+         };
+    const response = await fetch(`http://${ipv4}:8000/encounters/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
     }
-  }, [route.params?.updatedEncounter]);
+fetchData();
+    const result = await response.json();
+    console.log('New encounter:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
+const deleteEncounter = async (id) => {
+  try {
+
+    const response = await fetch(`http://${ipv4}:8000/encounters/delete/${id}`, {
+      method: 'Delete',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('New encounter:', result);
+fetchData();
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
 
   const handleAddEncounter = () => {
     if (!newEncounter.name) {
       Alert.alert(t('Error'), t('Please fill all fields'));
       return;
     }
+    addNewEncounter(newEncounter.name);
 
-    const newId = encounters.length ? Math.max(...encounters.map((e) => e.id)) + 1 : 1;
-    const encounterToAdd = { ...newEncounter, id: newId, level: parseInt(newEncounter.level) };
-    setEncounters((prev) => [...prev, encounterToAdd]);
-    setNewEncounter({ name: '', campaign: '', level: '' });
+    setNewEncounter('');
     setModalVisible(false);
   };
 
@@ -71,19 +137,18 @@ const thresholdsXP = {
         {
           text: t('Delete'),
           style: 'destructive',
-          onPress: () => {
-            const filteredEncounters = encounters.filter((e) => e.id !== id);
-            setEncounters(filteredEncounters);
-          },
+           onPress: () => {
+                      deleteEncounter(id);
+                    },
         },
       ]
     );
   };
 
-    const calculatePartyThresholds = (campaign) => {
+    const calculatePartyThresholds = (actualCampaign) => {
       const thresholds = { easy: 0, medium: 0, hard: 0, deadly: 0 };
 
-      campaign.characters.forEach((player) => {
+      actualCampaign.characters.forEach((player) => {
         const level = player.playerClasses[0].level;
         const levelThresholds = thresholdsXP[level];
 
@@ -104,17 +169,17 @@ const getEncounterDifficulty = (adjustedXP, partyThresholds) => {
 };
 
   const handleEditEncounter = (encounter) => {
-    navigation.navigate('EncounterEdit', { encounter, campaign });
+    navigation.navigate('EncounterEdit', { encounter,campaign: actualCampaign });
   };
 
   const handleRunEncounter = (encounter) => {
-    navigation.navigate('EncounterRun', { encounter, campaign });
+    navigation.navigate('EncounterRun', { encounter,campaign: actualCampaign });
   };
 
   const handleGoBack = () => {
     navigation.goBack();
   };
-const partyThresholds = calculatePartyThresholds(campaign);
+const partyThresholds = calculatePartyThresholds(actualCampaign);
   return (
     <ImageBackground source={theme.background} style={styles.containerCreator}>
 
@@ -188,22 +253,6 @@ const partyThresholds = calculatePartyThresholds(campaign);
               style={[styles.modalInputEncounter, { height: 40 * scaleFactor, fontSize: fontSize }]}
               value={newEncounter.name}
               onChangeText={(text) => setNewEncounter((prev) => ({ ...prev, name: text }))}
-            />
-            <TextInput
-              placeholder={t('Campaign')}
-              style={[styles.modalInputEncounter, { height: 40 * scaleFactor, fontSize: fontSize }]}
-              value={newEncounter.campaign}
-              onChangeText={(text) => setNewEncounter((prev) => ({ ...prev, campaign: text }))}
-            />
-            <TextInput
-              placeholder={t('Level')}
-              style={[styles.modalInputEncounter, { height: 40 * scaleFactor, fontSize: fontSize }]}
-              keyboardType="numeric"
-              value={newEncounter.level}
-              onChangeText={(text) => {
-                const numericValue = text.replace(/[^0-9]/g, '');
-                setNewEncounter((prev) => ({ ...prev, level: numericValue }));
-              }}
             />
 
             <View style={styles.modalActionsEncounter}>

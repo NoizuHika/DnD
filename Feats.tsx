@@ -126,19 +126,20 @@ const setUpdate = async (updatedEncounter) => {
   };
 
   const deleteFeats = async () => {
+      console.log(selectedFeat.id)
     try {
-      const response = await fetch(`http://${ipv4}:8000/feats/delete/${item.id}`, {
+      const response = await fetch(`http://${ipv4}:8000/feats/delete/${selectedFeat.id}`, {
         method: 'DELETE',
       });
-      if (response.ok) {
-        alert(t('Item deleted successfully'));
-      } else {
-        alert(t('Failed to delete item'));
-      }
-    } catch (error) {
-      console.error(error);
-      alert(t('Error deleting item'));
-    }
+        fetchData();
+        setSelectedFeat(null);
+            setIsEditing(false);
+      if (!response.ok) {
+              throw new Error(`Failed to fetch data: ${response.status}`);
+            }
+     }catch (error) {
+          console.error('Error fetching data:', error.message);
+        }
   };
 
   return (

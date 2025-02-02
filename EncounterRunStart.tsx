@@ -1,14 +1,15 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, ImageBackground,Modal } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
-
+import { UserData } from './UserData';
 Appearance.setColorScheme('light');
 
 const EncounterRunStart: React.FC = ({ route, navigation }) => {
+      const { ipv4 } = useContext(UserData)
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
@@ -32,7 +33,7 @@ const EncounterRunStart: React.FC = ({ route, navigation }) => {
   const isPlayerDead = entities.some(entity => entity.type === 'player' && entity.actualHP === 0);
 
   const areMonstersAlive = entities.some(entity => entity.type === 'monster' && entity.actualHP > 0);
-  const session = campaign.sessions[campaign?.sessions.length - 1];
+  const [session,setSession] = useState(campaign.sessions[campaign?.sessions.length - 1]);
   const handleNextTurn = () => {
     if (isPlayerDead) {
       navigation.goBack();
@@ -58,7 +59,38 @@ const EncounterRunStart: React.FC = ({ route, navigation }) => {
       return nextIndex;
     });
   };
- closeMonsterModal
+  useEffect(() => {
+      const intervalId = setInterval(() => {
+        if (session) {
+          fetchData();
+        } else {
+          console.warn('Cannot fetch data: actualCampaign is empty');
+        }
+      }, 1000);
+
+      return () => clearInterval(intervalId);
+    }, [session]);
+     const fetchData = async () => {
+             try {
+                 const sessionsResponse = await fetch(`http://${ipv4}:8000/sessions/${session.id}`, {
+                     method: 'GET',
+                     headers: {
+                         'Content-Type': 'application/json',
+                         'accept': 'application/json'
+                     }
+                 });
+
+                 if (!sessionsResponse.ok) {
+                     throw new Error('Failed to fetch data');
+                 }
+
+                  const data = await sessionsResponse.json();
+                         setSession(data);
+
+             } catch (error) {
+                 console.error('Error fetching data:', error);
+             }
+         };
   const handleMonsterPress = (entity) => {
     setSelectedMonster(entity);
     setVisibleMonster(true);
@@ -304,6 +336,22 @@ const EncounterRunStart: React.FC = ({ route, navigation }) => {
         {entities.length === 0 && (
           <Text style={[styles.monsterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('No entities in this encounter')}.</Text>
         )}
+    <ScrollView style={styles.rightCampaignContainerScrollArea}>
+              {session?.logs?.length > 0 ? (
+                <>
+                  {session.logs.reverse().map((logs, index) => (
+
+                    <Text key={index} style={[styles.diceResult, { fontSize: fontSize }]}>
+                        {logs}
+                    </Text>
+                   ))}
+                   <Text style={styles.diceResult}>{"\n\n"}</Text>
+                 </>
+                   ) : (
+                 <Text style={styles.resultText}>{t('No logs available')}</Text>
+
+               )}
+              </ScrollView>
       </ScrollView>
     </ImageBackground>
   );
