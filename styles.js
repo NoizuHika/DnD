@@ -596,6 +596,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 70,
     marginLeft: 0,
   },
+  inputItemCreatorA: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    flex: 1,
+    width: '100%',
+  },
   inputSpellCreator: {
     backgroundColor: '#fff',
     marginTop: 10,
@@ -726,7 +732,7 @@ const styles = StyleSheet.create({
   inputItemCreatorSmall: {
     padding: 8,
     borderWidth: 1,
-    marginHorizontal: 20,
+    marginHorizontal: 15,
     borderColor: '#ccc',
     borderRadius: 8,
     backgroundColor: '#fff',
