@@ -2287,6 +2287,12 @@ const styles = StyleSheet.create({
     maxHeight: '70%',
     backgroundColor: '#1a1716',
   },
+  playersListContainerA: {
+    borderRadius: 15,
+    padding: 20,
+    marginVertical: 20,
+    backgroundColor: '#1a1716',
+  },
   playerAvatarEncounter: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -2323,6 +2329,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 100,
     alignItems: 'center',
+  },
+  closeButtonItemEncounterA: {
+    backgroundColor: '#8B0000',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginHorizontal: 30,
   },
   closeButtonTextEncounter: {
     color: '#fff',

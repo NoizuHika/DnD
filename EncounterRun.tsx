@@ -25,8 +25,8 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   const [selectedNpcs, setSelectedNpcs] = useState([]);
 
   const presetNPCs = [
-    { id: 'npc1', name: 'Mysterious Stranger', armorClass: 14, level: 3, initiative: 0, image: null },
-    { id: 'npc2', name: 'Village Elder', armorClass: 12, level: 2, initiative: 0, image: null },
+    { id: 'npc1', name: 'Mysterious Stranger', armorClass: 14, level: 3, initiative: 0, hp: 20, },
+    { id: 'npc2', name: 'Village Elder', armorClass: 12, level: 2, initiative: 0, hp: 20, },
   ];
 
   const handleSelectNPC = (npc) => {
@@ -109,7 +109,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   };
 
   const handleStart = () => {
-    navigation.navigate('EncounterRunStart', { encounter:encounter,playersBase:players,monstersBase:monsters,campaign:campaign});
+    navigation.navigate('EncounterRunStart', { encounter:encounter,playersBase:players,monstersBase:monsters,campaign:campaign, npc:presetNPCs});
   };
  useEffect(() => {
       fetchData();
@@ -300,7 +300,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
             <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{player.initiative}</Text>
                 <View style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { height: 50 * scaleFactor, width: 50 * scaleFactor }]}>
                   <ImageBackground
-                    source={{ uri: player.image }}
+                    source={player.image ? { uri: player.image } : require('./addons/defaultPlayer.png')}
                     style={[styles.avatarImage, { height: 90 * scaleFactor, width: 90 * scaleFactor }]}
                   />
                 </View>
