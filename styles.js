@@ -2234,6 +2234,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: '25%',
   },
+  middleEncounterContRunA: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   autoRollEncounterButton: {
     backgroundColor: '#222',
     justifyContent: 'center',

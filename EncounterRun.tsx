@@ -15,11 +15,38 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   const { theme } = useContext(ThemeContext);
   const { ipv4 } = useContext(UserData);
   const [visibleAdd, setVisibleAdd] = useState(false);
+  const [visibleAddNPC, setVisibleAddNPC] = useState(false);
   const { encounter,campaign } = route.params || {};
   const [usedEncounter, setUsedEncounter] = useState(encounter || {});
   const [players,setPlayers] = useState(encounter.players || {});
   const [monsters,setMonsters] = useState(encounter.entities || {});
+  const [npcs, setNpcs] = useState([]);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const [selectedNpcs, setSelectedNpcs] = useState([]);
+
+  const presetNPCs = [
+    { id: 'npc1', name: 'Mysterious Stranger', armorClass: 14, level: 3, initiative: 0, image: null },
+    { id: 'npc2', name: 'Village Elder', armorClass: 12, level: 2, initiative: 0, image: null },
+  ];
+
+  const handleSelectNPC = (npc) => {
+    if (selectedNpcs.includes(npc.id)) {
+      setSelectedNpcs(selectedNpcs.filter(id => id !== npc.id));
+    } else {
+      setSelectedNpcs([...selectedNpcs, npc.id]);
+    }
+  };
+
+  const addNPCsToEncounter = () => {
+    const newNPCs = presetNPCs.filter(npc => selectedNpcs.includes(npc.id));
+    setNpcs([...npcs, ...newNPCs]);
+    setSelectedNpcs([]);
+    setVisibleAddNPC(false);
+  };
+
+  const removeNpcFromEncounter = (npc) => {
+    setNpcs(prevNpcs => prevNpcs.filter(item => item.id !== npc.id));
+  };
 
   const removePlayerFromEncounter = async (player) => {
         const value = player.id
@@ -162,6 +189,14 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   return (
     <ImageBackground source={theme.background} style={styles.containerEncounterRun}>
 
+      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
+        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
+          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
+            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
+          </ImageBackground>
+        </TouchableOpacity>
+      </View>
+
     {visibleAdd && (
       <Modal visible={true} transparent={true} animationType="fade">
         <View style={styles.modalOverlayItems}>
@@ -179,7 +214,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
               >
                 <View style={styles.avatarContainerEncounter}>
                   {player.image ? (
-                    <Image source={{ uri: player.image }} style={styles.playerImage} />
+                    <Image source={player.image ? { uri: player.image } : require('./addons/defaultPlayer.png')} style={styles.playerImage} />
                   ) : (
                     <View style={[styles.playerImage, styles.placeholder]}>
                       <Text style={[styles.placeholderText, { color: theme.fontColor, fontSize: fontSize * 1.1 }]}>{t('No Image')}</Text>
@@ -204,14 +239,39 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
       </Modal>
     )}
 
+      {visibleAddNPC && (
+        <Modal visible={true} transparent={true} animationType="fade">
+          <View style={styles.modalOverlayItems}>
+            <View style={[styles.playersListContainer, { borderColor: theme.borderColor, borderWidth: 1 }]}>
+              {presetNPCs.map(npc => (
+                <TouchableOpacity
+                  key={npc.id}
+                  style={[
+                    styles.playerAvatarEncounter,
+                    selectedNpcs.includes(npc.id) && styles.selectedPlayerEncounter,
+                    { borderColor: theme.borderColor, borderWidth: 0.5 }
+                  ]}
+                  onPress={() => handleSelectNPC(npc)}
+                >
+                  <View style={styles.avatarContainerEncounter}>
+                      <Image source={npc.image ? { uri: npc.image } : require('./addons/defaultNPC.png')} style={[styles.playerImage, { width: 50, height: 50 }]} />
+                  </View>
+                  <Text style={[styles.playerNameEncounter, { color: theme.fontColor, fontSize: fontSize * 1.1 }]}>{npc.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
 
-      <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
-        <TouchableOpacity style={styles.button} onPress={handleGoBack}>
-          <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
-            <Text style={[styles.GoBackText, { fontSize: fontSize * 0.7 }]}>{t('Go_back')}</Text>
-          </ImageBackground>
-        </TouchableOpacity>
-      </View>
+            <View style={styles.modalButtonsEncounter}>
+              <TouchableOpacity onPress={() => setVisibleAddNPC(false)} style={styles.closeButtonItemEncounter}>
+                <Text style={styles.closeButtonTextEncounter}>{t('Cancel')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.editButtonEncounter} onPress={addNPCsToEncounter}>
+                <Text style={styles.editButtonTextEncounter}>{t('Add')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
 
       <View style={styles.middleEncounterContRun}>
         <TouchableOpacity style={[styles.autoRollEncounterButton, { height: 50 * scaleFactor, width: 150 * scaleFactor }]}onPress={handleInitiative}>
@@ -222,14 +282,13 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.monstersListContainer}>
       <View style={[styles.monsterRowEncounterRun, { backgroundColor: '#222' }]}>
         <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('Initiative')}</Text>
         <Text style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('Avatar')}</Text>
         <Text style={[styles.cellEncounterRun, styles.cellNameEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('Name')}</Text>
         <Text style={[styles.cellEncounterRun, styles.cellCountEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('Count')}</Text>
       </View>
-
+      <ScrollView style={styles.monstersListContainer}>
         {players.map((player, index) => (
           <View
             key={`player-${index}`}
@@ -239,12 +298,12 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
             ]}
           >
             <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{player.initiative}</Text>
-                            <View style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { height: 50 * scaleFactor, width: 50 * scaleFactor }]}>
-                              <ImageBackground
-                                source={{ uri: player.image }}
-                                style={[styles.avatarImage, { height: 90 * scaleFactor, width: 90 * scaleFactor }]}
-                              />
-                            </View>
+                <View style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { height: 50 * scaleFactor, width: 50 * scaleFactor }]}>
+                  <ImageBackground
+                    source={{ uri: player.image }}
+                    style={[styles.avatarImage, { height: 90 * scaleFactor, width: 90 * scaleFactor }]}
+                  />
+                </View>
             <View style={[styles.cellEncounterRun, styles.cellNameEncounterRun]}>
               <Text style={[styles.monsterTextEncRun, { fontSize: fontSize, color: theme.fontColor }]}>{player.name}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -262,6 +321,35 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
         <View >
        </View>
 
+        {npcs.map((npc, index) => (
+          <View
+            key={`npc-${index}`}
+            style={[
+              styles.monsterRowEncounterRun,
+              (players.length + index) % 2 === 0 && styles.monsterRowOdd,
+            ]}
+          >
+            <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{npc.base ? npc.initiative: 'N/A'}</Text>
+            <View style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { height: 50 * scaleFactor, width: 50 * scaleFactor }]}>
+              <ImageBackground
+                source={npc.image ? { uri: npc.image } : require('./addons/defaultNPC.png')}
+                style={[styles.avatarImage, { height: 90 * scaleFactor, width: 90 * scaleFactor }]}
+              />
+            </View>
+            <View style={[styles.cellEncounterRun, styles.cellNameEncounterRun]}>
+              <Text style={[styles.monsterTextEncRun, { fontSize: fontSize, color: theme.fontColor }]}>{npc.name}</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={[styles.acEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('AC')}: {npc.armorClass}</Text>
+                <Text style={[styles.crEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Level')}: {npc.level || 'N/A'}</Text>
+              </View>
+            </View>
+            <TouchableOpacity style={styles.cellCountEncounterRunA} onPress={() => removeNpcFromEncounter(npc)}>
+              <Text style={[styles.cellEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('X')}</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+        <View />
+
         {monsters && monsters.length > 0 ? (
           monsters.map((monster, index) => {
 
@@ -272,7 +360,6 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
                   styles.monsterRowEncounterRun,
                   (players.length + index) % 2 === 0 && styles.monsterRowOdd,
                 ]}
-
               >
                 <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{monster.base ? monster.initiative: 'N/A'}</Text>
                 <View style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { height: 50 * scaleFactor, width: 50 * scaleFactor }]}>
@@ -304,14 +391,20 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
           </Text>
         )}
 
-               <TouchableOpacity style={[styles.startEncounterButton, { height: 50 * scaleFactor, width: 150 * scaleFactor }]} onPress={handleAddPlayer}>
-                                 <Text style={[styles.startEncounterButtonText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Add Player')}</Text>
-                               </TouchableOpacity>
-
       {players.length === 0 && monsters.length === 0 && (
         <Text style={[styles.monsterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('No players or monsters in this encounter')}.</Text>
       )}
       </ScrollView>
+
+      <View style={styles.middleEncounterContRunA}>
+        <TouchableOpacity style={[styles.startEncounterButton, { height: 50 * scaleFactor, width: 150 * scaleFactor }]} onPress={() => setVisibleAdd(true)}>
+          <Text style={[styles.startEncounterButtonText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Add Player')}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.startEncounterButton, { height: 50 * scaleFactor, width: 150 * scaleFactor }]} onPress={() => setVisibleAddNPC(true)}>
+          <Text style={[styles.startEncounterButtonText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Add NPC')}</Text>
+        </TouchableOpacity>
+      </View>
 
     </ImageBackground>
   );
