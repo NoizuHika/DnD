@@ -2249,7 +2249,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#333',
   },
   cellEncounterRun: {
-    flex: 1,
+    flex: 0.5,
     alignItems: 'center',
     justifyContent: 'center',
     textAlignVertical: 'center',
@@ -2257,11 +2257,11 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   cellInitiativeEncounterRun: {
-    flex: 0.7,
+    flex: 0.3,
     textAlign: 'center',
   },
   cellAvatarEncounterRun: {
-    flex: 0.7,
+    flex: 1.1,
     textAlign: 'center',
   },
   cellNameEncounterRun: {
