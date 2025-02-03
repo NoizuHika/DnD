@@ -15,62 +15,88 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   const { theme } = useContext(ThemeContext);
   const { ipv4 } = useContext(UserData);
   const [visibleAdd, setVisibleAdd] = useState(false);
+  const [visibleAddNPC, setVisibleAddNPC] = useState(false);
   const { encounter,campaign } = route.params || {};
   const [usedEncounter, setUsedEncounter] = useState(encounter || {});
   const [players,setPlayers] = useState(encounter.players || {});
   const [monsters,setMonsters] = useState(encounter.entities || {});
+  const [npcs, setNpcs] = useState([]);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
+  const [selectedNpcs, setSelectedNpcs] = useState([]);
+
+  const presetNPCs = [
+    { id: 'npc1', name: 'Mysterious Stranger', armorClass: 14, level: 3, initiative: 0, hp: 20, },
+    { id: 'npc2', name: 'Village Elder', armorClass: 12, level: 2, initiative: 0, hp: 20, },
+  ];
+
+  const handleSelectNPC = (npc) => {
+    if (selectedNpcs.includes(npc.id)) {
+      setSelectedNpcs(selectedNpcs.filter(id => id !== npc.id));
+    } else {
+      setSelectedNpcs([...selectedNpcs, npc.id]);
+    }
+  };
+
+  const addNPCsToEncounter = () => {
+    const newNPCs = presetNPCs.filter(npc => selectedNpcs.includes(npc.id));
+    setNpcs([...npcs, ...newNPCs]);
+    setSelectedNpcs([]);
+    setVisibleAddNPC(false);
+  };
+
+  const removeNpcFromEncounter = (npc) => {
+    setNpcs(prevNpcs => prevNpcs.filter(item => item.id !== npc.id));
+  };
 
   const removePlayerFromEncounter = async (player) => {
-                const value = player.id
-                console.log(value)
-                try {
-                    const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/removePlayer`, {
-                            method: 'Delete',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'accept': 'application/json'
-                            },
-                        body: JSON.stringify({id:value})
-                        });
+        const value = player.id
+        console.log(value)
+        try {
+            const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/removePlayer`, {
+                    method: 'Delete',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'accept': 'application/json'
+                    },
+                body: aaJSON.stringify({id:value})
+                });
 
 
 
-                    if (!response.ok) {
-                        throw new Error('Failed to fetch data');
-                    }
-                    const data= await response.json();
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+            const data= await response.json();
 
-                          console.log('Player removed from encounter :', data);
-                } catch (error) {
-                    console.error('Error fetching data:', error);
-                }
-            };
+                  console.log('Player removed from encounter :', data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
   const addPlayersToEncounter = async () => {
+      try {
+          const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/addPlayers`, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'accept': 'application/json'
+                      },
+                  body: JSON.stringify(selectedPlayers)
+                  });
 
-                  try {
-                      const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/addPlayers`, {
-                                  method: 'POST',
-                                  headers: {
-                                      'Content-Type': 'application/json',
-                                      'accept': 'application/json'
-                                  },
-                              body: JSON.stringify(selectedPlayers)
-                              });
 
+          if (!response.ok) {
+              throw new Error('Failed to fetch data');
+          }
+          const data= await response.json();
 
-                      if (!response.ok) {
-                          throw new Error('Failed to fetch data');
-                      }
-                      const data= await response.json();
-
-                            console.log('Player added to encounter :', data);
-                  } catch (error) {
-                      console.error('Error fetching data:', error);
-                  }
-              setSelectedPlayers([]);
-              };
+                console.log('Player added to encounter :', data);
+      } catch (error) {
+          console.error('Error fetching data:', error);
+      }
+  setSelectedPlayers([]);
+  };
 
 
   const removePlayer = (index) => {
@@ -83,7 +109,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   };
 
   const handleStart = () => {
-    navigation.navigate('EncounterRunStart', { encounter:encounter,playersBase:players,monstersBase:monsters,campaign:campaign});
+    navigation.navigate('EncounterRunStart', { encounter:encounter,playersBase:players,monstersBase:monsters,campaign:campaign, npc:presetNPCs});
   };
  useEffect(() => {
       fetchData();
@@ -119,42 +145,41 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
     };
 
   const fetchData = async () => {
+          const entityAnswer = encounter.entities.map(entity => entity.baseID);
 
-                  const entityAnswer = encounter.entities.map(entity => entity.baseID);
-
-              try {
-                  const response = await fetch(`http://${ipv4}:8000/bestiaries/list`, {
-                              method: 'POST',
-                              headers: {
-                                  'Content-Type': 'application/json',
-                                  'accept': 'application/json'
-                              },
-                          body: JSON.stringify(entityAnswer)
-                          });
+      try {
+          const response = await fetch(`http://${ipv4}:8000/bestiaries/list`, {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'accept': 'application/json'
+                      },
+                  body: JSON.stringify(entityAnswer)
+                  });
 
 
-                  if (!response.ok) {
-                      throw new Error('Failed to fetch data');
-                  }
+          if (!response.ok) {
+              throw new Error('Failed to fetch data');
+          }
 
-                  const data= await response.json();
+          const data= await response.json();
 
-                    const updatedEntities = encounter.entities.map(entity => {
+            const updatedEntities = encounter.entities.map(entity => {
 
-                                const entityData = data.bestiaries.find(bestiary => bestiary.id === entity.baseID);
-                                if (entityData) {
+                        const entityData = data.bestiaries.find(bestiary => bestiary.id === entity.baseID);
+                        if (entityData) {
 
-                                    return { ...entity, base: entityData };
-                                }
-                                return entity;
-                            });
-                        console.log('Updated Entity Base:', updatedEntities);
-                            setUsedEncounter({ ...encounter, entities: updatedEntities });
-                            setMonsters(updatedEntities);
-              } catch (error) {
-                  console.error('Error fetching data:', error);
-              }
-          };
+                            return { ...entity, base: entityData };
+                        }
+                        return entity;
+                    });
+                console.log('Updated Entity Base:', updatedEntities);
+                    setUsedEncounter({ ...encounter, entities: updatedEntities });
+                    setMonsters(updatedEntities);
+      } catch (error) {
+          console.error('Error fetching data:', error);
+      }
+  };
   const handleAddPlayer = () => {
       setSelectedPlayers([]);
     setVisibleAdd(true);
@@ -164,45 +189,6 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   return (
     <ImageBackground source={theme.background} style={styles.containerEncounterRun}>
 
-{visibleAdd && (
-  <Modal visible={true} transparent={true} animationType="fade">
-    <View style={styles.modalOverlayItems}>
-
-      <View style={styles.playersListContainer}>
-        {campaign.characters.map(player => (
-          <TouchableOpacity
-            key={player.id}
-            style={[
-              styles.playerAvatar,
-              selectedPlayers.includes(player.id) && styles.selectedPlayer
-            ]}
-            onPress={() => handleSelectPlayer(player)}
-          >
-            {player.image ? (
-              <Image source={{ uri: player.image }} style={styles.playerImage} />
-            ) : (
-              <View style={[styles.playerImage, styles.placeholder]}>
-                <Text style={styles.placeholderText}>No Image</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      <View style={styles.modalButtons}>
-        <TouchableOpacity onPress={() => setVisibleAdd(false)} style={styles.closeButtonItem}>
-          <Text style={styles.closeButtonText}>{t('Cancel')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.editButton} onPress={() => addPlayersToEncounter()} >
-          <Text style={styles.editButtonText}>{t('Add')}</Text>
-        </TouchableOpacity>
-      </View>
-
-    </View>
-  </Modal>
-)}
-
-
       <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
@@ -210,6 +196,82 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
           </ImageBackground>
         </TouchableOpacity>
       </View>
+
+    {visibleAdd && (
+      <Modal visible={true} transparent={true} animationType="fade">
+        <View style={styles.modalOverlayItems}>
+
+          <View style={[styles.playersListContainer, { borderColor: theme.borderColor, borderWidth: 1 }]}>
+            {campaign.characters.map(player => (
+              <TouchableOpacity
+                key={player.id}
+                style={[
+                  styles.playerAvatarEncounter,
+                  selectedPlayers.includes(player.id) && styles.selectedPlayerEncounter,
+                  { borderColor: theme.borderColor, borderWidth: 0.5 }
+                ]}
+                onPress={() => handleSelectPlayer(player)}
+              >
+                <View style={styles.avatarContainerEncounter}>
+                  {player.image ? (
+                    <Image source={player.image ? { uri: player.image } : require('./addons/defaultPlayer.png')} style={styles.playerImage} />
+                  ) : (
+                    <View style={[styles.playerImage, styles.placeholder]}>
+                      <Text style={[styles.placeholderText, { color: theme.fontColor, fontSize: fontSize * 1.1 }]}>{t('No Image')}</Text>
+                    </View>
+                  )}
+                </View>
+                <Text style={[styles.playerNameEncounter, { color: theme.fontColor, fontSize: fontSize * 1.1 }]}>{player.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <View style={styles.modalButtonsEncounter}>
+            <TouchableOpacity onPress={() => setVisibleAdd(false)} style={styles.closeButtonItemEncounter}>
+              <Text style={styles.closeButtonTextEncounter}>{t('Cancel')}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.editButtonEncounter} onPress={() => addPlayersToEncounter()} >
+              <Text style={styles.editButtonTextEncounter}>{t('Add')}</Text>
+            </TouchableOpacity>
+          </View>
+
+        </View>
+      </Modal>
+    )}
+
+      {visibleAddNPC && (
+        <Modal visible={true} transparent={true} animationType="fade">
+          <View style={styles.modalOverlayItems}>
+            <View style={[styles.playersListContainer, { borderColor: theme.borderColor, borderWidth: 1 }]}>
+              {presetNPCs.map(npc => (
+                <TouchableOpacity
+                  key={npc.id}
+                  style={[
+                    styles.playerAvatarEncounter,
+                    selectedNpcs.includes(npc.id) && styles.selectedPlayerEncounter,
+                    { borderColor: theme.borderColor, borderWidth: 0.5 }
+                  ]}
+                  onPress={() => handleSelectNPC(npc)}
+                >
+                  <View style={styles.avatarContainerEncounter}>
+                      <Image source={npc.image ? { uri: npc.image } : require('./addons/defaultNPC.png')} style={[styles.playerImage, { width: 50, height: 50 }]} />
+                  </View>
+                  <Text style={[styles.playerNameEncounter, { color: theme.fontColor, fontSize: fontSize * 1.1 }]}>{npc.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <View style={styles.modalButtonsEncounter}>
+              <TouchableOpacity onPress={() => setVisibleAddNPC(false)} style={styles.closeButtonItemEncounter}>
+                <Text style={styles.closeButtonTextEncounter}>{t('Cancel')}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.editButtonEncounter} onPress={addNPCsToEncounter}>
+                <Text style={styles.editButtonTextEncounter}>{t('Add')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+      )}
 
       <View style={styles.middleEncounterContRun}>
         <TouchableOpacity style={[styles.autoRollEncounterButton, { height: 50 * scaleFactor, width: 150 * scaleFactor }]}onPress={handleInitiative}>
@@ -220,14 +282,13 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.monstersListContainer}>
       <View style={[styles.monsterRowEncounterRun, { backgroundColor: '#222' }]}>
         <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('Initiative')}</Text>
         <Text style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('Avatar')}</Text>
         <Text style={[styles.cellEncounterRun, styles.cellNameEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('Name')}</Text>
         <Text style={[styles.cellEncounterRun, styles.cellCountEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('Count')}</Text>
       </View>
-
+      <ScrollView style={styles.monstersListContainer}>
         {players.map((player, index) => (
           <View
             key={`player-${index}`}
@@ -237,34 +298,57 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
             ]}
           >
             <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{player.initiative}</Text>
-                            <View style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { height: 50 * scaleFactor, width: 50 * scaleFactor }]}>
-                              <ImageBackground
-                                source={{ uri: player.image }}
-                                style={[styles.avatarImage, { height: 100 * scaleFactor, width: 100 * scaleFactor }]}
-                              />
-                            </View>
+                <View style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { height: 50 * scaleFactor, width: 50 * scaleFactor }]}>
+                  <ImageBackground
+                    source={player.image ? { uri: player.image } : require('./addons/defaultPlayer.png')}
+                    style={[styles.avatarImage, { height: 90 * scaleFactor, width: 90 * scaleFactor }]}
+                  />
+                </View>
             <View style={[styles.cellEncounterRun, styles.cellNameEncounterRun]}>
               <Text style={[styles.monsterTextEncRun, { fontSize: fontSize, color: theme.fontColor }]}>{player.name}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Text style={[styles.acEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('AC')}: {player.armorClass}</Text>
 
-                <Text style={[styles.crEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Level')}: {player.playerClasses[0].level || 'N/A'}</Text>
+                <Text style={[styles.crEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Level')}: {player.playerClasses[0]?.level || 'N/A'}</Text>
 
               </View>
             </View>
-            <TouchableOpacity style={[styles.startEncounterButton, { height: 50 * scaleFactor, width: 150 * scaleFactor }]} onPress={() => removePlayerFromEncounter(player)}>
-                  <Text style={[styles.startEncounterButtonText, { fontSize: fontSize, color: theme.fontColor }]}>{t('X')}</Text>
+            <TouchableOpacity style={styles.cellCountEncounterRunA} onPress={() => removePlayerFromEncounter(player)}>
+                  <Text style={[styles.cellEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('X')}</Text>
                 </TouchableOpacity>
           </View>
         ))}
         <View >
-               <TouchableOpacity style={[styles.startEncounterButton, { height: 50 * scaleFactor, width: 150 * scaleFactor }]} onPress={handleAddPlayer}>
-                                 <Text style={[styles.startEncounterButtonText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Add Player')}</Text>
-                               </TouchableOpacity>
        </View>
-       <View style={[styles.middleEncounterContRun, { flex: 1, justifyContent: 'center', alignItems: 'center' }]}>
 
+        {npcs.map((npc, index) => (
+          <View
+            key={`npc-${index}`}
+            style={[
+              styles.monsterRowEncounterRun,
+              (players.length + index) % 2 === 0 && styles.monsterRowOdd,
+            ]}
+          >
+            <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{npc.base ? npc.initiative: 'N/A'}</Text>
+            <View style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { height: 50 * scaleFactor, width: 50 * scaleFactor }]}>
+              <ImageBackground
+                source={npc.image ? { uri: npc.image } : require('./addons/defaultNPC.png')}
+                style={[styles.avatarImage, { height: 90 * scaleFactor, width: 90 * scaleFactor }]}
+              />
+            </View>
+            <View style={[styles.cellEncounterRun, styles.cellNameEncounterRun]}>
+              <Text style={[styles.monsterTextEncRun, { fontSize: fontSize, color: theme.fontColor }]}>{npc.name}</Text>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <Text style={[styles.acEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('AC')}: {npc.armorClass}</Text>
+                <Text style={[styles.crEncounterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Level')}: {npc.level || 'N/A'}</Text>
               </View>
+            </View>
+            <TouchableOpacity style={styles.cellCountEncounterRunA} onPress={() => removeNpcFromEncounter(npc)}>
+              <Text style={[styles.cellEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{t('X')}</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+        <View />
 
         {monsters && monsters.length > 0 ? (
           monsters.map((monster, index) => {
@@ -276,13 +360,12 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
                   styles.monsterRowEncounterRun,
                   (players.length + index) % 2 === 0 && styles.monsterRowOdd,
                 ]}
-
               >
                 <Text style={[styles.cellEncounterRun, styles.cellInitiativeEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>{monster.base ? monster.initiative: 'N/A'}</Text>
                 <View style={[styles.cellEncounterRun, styles.cellAvatarEncounterRun, { height: 50 * scaleFactor, width: 50 * scaleFactor }]}>
                   <ImageBackground
-                    source={{ uri: monster.image }}
-                    style={[styles.avatarImage, { height: 100 * scaleFactor, width: 100 * scaleFactor }]}
+                    source={monster.image ? { uri: monster.image } : require('./addons/defaultBeast.png')}
+                    style={[styles.avatarImage, { height: 90 * scaleFactor, width: 90 * scaleFactor }]}
                   />
                 </View>
                 <View style={[styles.cellEncounterRun, styles.cellNameEncounterRun]}>
@@ -296,7 +379,9 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
                     </Text>
                   </View>
                 </View>
-                <Text style={[styles.cellEncounterRun, styles.cellCountEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>1</Text>
+                <View style={[styles.cellCountEncounterRunA]}>
+                    <Text style={[styles.cellEncounterRun, { fontSize: fontSize, color: theme.fontColor }]}>1</Text>
+                </View>
               </View>
             );
           })
@@ -310,6 +395,16 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
         <Text style={[styles.monsterText, { fontSize: fontSize, color: theme.fontColor }]}>{t('No players or monsters in this encounter')}.</Text>
       )}
       </ScrollView>
+
+      <View style={styles.middleEncounterContRunA}>
+        <TouchableOpacity style={[styles.startEncounterButton, { height: 50 * scaleFactor, width: 150 * scaleFactor }]} onPress={() => setVisibleAdd(true)}>
+          <Text style={[styles.startEncounterButtonText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Add Player')}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.startEncounterButton, { height: 50 * scaleFactor, width: 150 * scaleFactor }]} onPress={() => setVisibleAddNPC(true)}>
+          <Text style={[styles.startEncounterButtonText, { fontSize: fontSize, color: theme.fontColor }]}>{t('Add NPC')}</Text>
+        </TouchableOpacity>
+      </View>
 
     </ImageBackground>
   );

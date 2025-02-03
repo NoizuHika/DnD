@@ -31,6 +31,11 @@ const handleRollDice = () => {
   setDiceValue(null);
   setResult(null);
 
+
+const handleRollDice = () => {
+  setDiceValue(null);
+  setResult(null);
+
   console.log(statValue);
 
   const randomValue = Math.floor(Math.random() * 20) + 1;

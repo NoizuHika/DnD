@@ -474,7 +474,6 @@ const setUpdate = async (bestiaryDto) => {
                                                      value.split(',').map(item => item.trim())
                                                    )
                                                  }
-
                   />
                 </View>
 
@@ -574,11 +573,11 @@ const setUpdate = async (bestiaryDto) => {
                <View style={styles.additionalInfo}>
                  {extractActions(selectedFeat?.actionDescription).map((action, index) => (
                    <View key={index} style={styles.actionContainer}>
-                     <Text style={styles.actionDescription}>Name: {action.name}</Text>
-                     <Text style={styles.actionDescription}>Description: {action.description}</Text>
+                     <Text style={styles.actionDescription}>{t('Name')}: {action.name}</Text>
+                     <Text style={styles.actionDescription}>{t('Description')}: {action.description}</Text>
                      {action.hit && (
                        <TouchableOpacity onPress={() => roll(selectedMonster, action, session)}>
-                         <Text style={styles.actionDescription}>Hit: {action.hit}</Text>
+                         <Text style={styles.actionDescriptionA}>{t('Hit')}: {action.hit}</Text>
                        </TouchableOpacity>
                      )}
                    </View>
