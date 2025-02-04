@@ -41,7 +41,7 @@ const RzutKostka: React.FC = ({ route,navigation }) => {
 useEffect(() => {
     applySpellSettings();
   }, [spell]);
-
+const spellModifier = useMemo(() => applySpellSettings() || 0, [spell]);
   const applySpellSettings = () => {
     if (spell && spell.hit) {
       const dicePattern = /(\d+)d(\d+)/i;
@@ -72,7 +72,7 @@ useEffect(() => {
     const newDiceValues = [];
     const resultsSummary = [];
     const forFetchResult = [];
-    const spellModifier =applySpellSettings() || null;
+
 
     selectedDice.forEach(({ index, count }) => {
       const diceResults = Array.from({ length: count }, () =>

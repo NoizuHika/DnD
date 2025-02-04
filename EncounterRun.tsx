@@ -49,30 +49,36 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   };
 
   const removePlayerFromEncounter = async (player) => {
-        const value = player.id
-        console.log(value)
-        try {
-            const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/removePlayer`, {
-                    method: 'Delete',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'accept': 'application/json'
-                    },
-                body: aaJSON.stringify({id:value})
-                });
+                  const item = {
+                      item:encounter.id,
+                      id:player.id
+                      };
+
+
+                  console.log(value)
+                  try {
+                      const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/removePlayer`, {
+                              method: 'Delete',
+                              headers: {
+                                  'Content-Type': 'application/json',
+                                  'accept': 'application/json'
+                              },
+                          body: JSON.stringify({id:value})
+                          });
 
 
 
-            if (!response.ok) {
-                throw new Error('Failed to fetch data');
-            }
-            const data= await response.json();
+                      if (!response.ok) {
+                          throw new Error('Failed to fetch data');
+                      }
+                      const data= await response.json();
 
-                  console.log('Player removed from encounter :', data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
+                            console.log('Player removed from encounter :', data);
+                  } catch (error) {
+                      console.error('Error fetching data:', error);
+                  }
+              };
+
 
   const addPlayersToEncounter = async () => {
       try {

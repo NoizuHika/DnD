@@ -26,11 +26,6 @@ const RzutKostka_Bonus_SpellStat: React.FC = ({ route, navigation }) => {
   const [result, setResult] = useState(null);
   const { ipv4 } = useContext(UserData);
   const [answer, setAnswer] = useState(null);
-  
-const handleRollDice = () => {
-  setDiceValue(null);
-  setResult(null);
-
 
 const handleRollDice = () => {
   setDiceValue(null);
