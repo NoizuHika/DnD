@@ -4,15 +4,48 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { SettingsContext } from './SettingsContext';
-
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
 const FeatsCreator: React.FC = ({ navigation }) => {
+      const { ipv4 } = useContext(UserData);
   const { fontSize, scaleFactor } = useContext(SettingsContext);
+  const { token } = useAuth();
   const [feat, setFeat] = useState({
     name: '',
-    prerequisite: '',
+    requirements: '',
     description: '',
   });
+const addNewFeat = async () => {
 
+  try {
+     const requestBody = {
+         token: token,
+         name:feat.name,
+         description: feat.description,
+         requirements: feat.requirements};
+         console.log(requestBody)
+    const response = await fetch(`http://${ipv4}:8000/feats/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
 
@@ -25,6 +58,7 @@ const FeatsCreator: React.FC = ({ navigation }) => {
   };
 
   const saveFeat = () => {
+      addNewFeat();
     console.log('Feat saved:', feat);
   };
 
@@ -54,8 +88,8 @@ const FeatsCreator: React.FC = ({ navigation }) => {
           <TextInput
             style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
             placeholder={t('Enter prerequisite')}
-            value={feat.prerequisite}
-            onChangeText={(text) => handleInputChange('prerequisite', text)}
+            value={feat.requirements}
+            onChangeText={(text) => handleInputChange('requirements', text)}
           />
         </View>
 

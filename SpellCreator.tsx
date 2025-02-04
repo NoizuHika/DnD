@@ -6,17 +6,23 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { SettingsContext } from './SettingsContext';
-
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
 const SpellCreator: React.FC = ({ navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
-
+const { ipv4 } = useContext(UserData);
+const { token } = useAuth();
   const [spell, setSpell] = useState({
     name: '',
-    SpellDescription: '',
+    description: '',
     atHigherDescription: '',
-    ClassesDescription: '',
+    level: 'cantrip',
+    castingTime: '',
+    duration: '',
+    school: '',
+    range: ''
   });
 
   const [castingTime, setCastingTime] = useState('');
@@ -51,9 +57,52 @@ const SpellCreator: React.FC = ({ navigation }) => {
   };
 
   const saveSpell = () => {
-    console.log('Spell saved:', spell);
+    addNewSpell();
   };
+const addNewSpell = async () => {
+  const components = [];
 
+  if (verbal) components.push('V');
+  if (somatic) components.push('S');
+  if (material && materialDescription) components.push(materialDescription);
+
+  try {
+    const requestBody = {
+      token: token,
+      name: spell.name,
+      description: spell.description,
+      level: level,
+      castingTime: castingTime,
+      duration: durationAmount ? `${durationAmount} ${duration}` : duration,
+      components: components,
+      atHigherLevels: spell.atHigherDescription,
+      school: school,
+      range: range,
+    };
+
+    console.log(requestBody);
+
+    const response = await fetch(`http://${ipv4}:8000/spells/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('New Spell:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+
+};
   return (
     <ImageBackground source={theme.background} style={styles.containerCreator}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -249,24 +298,7 @@ const SpellCreator: React.FC = ({ navigation }) => {
         </View>
 
         <View style={styles.rowContainer}>
-          <View style={styles.column}>
-            <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Area Type')}</Text>
-            <Picker
-              selectedValue={areaType}
-              style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
-              onValueChange={(value) => {
-                setAreaType(value);
-                setShowRangeInput(value === 'cone' || value === 'cylinder' || value === 'line' || value === 'sphere');
-              }}
-            >
-              <Picker.Item label={t('None')} value="none" />
-              <Picker.Item label={t('Cone')} value="cone" />
-              <Picker.Item label={t('Cylinder')} value="cylinder" />
-              <Picker.Item label={t('Line')} value="line" />
-              <Picker.Item label={t('Sphere')} value="sphere" />
-            </Picker>
 
-          </View>
 
           <View style={styles.column}>
             <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Range')}</Text>
@@ -275,28 +307,12 @@ const SpellCreator: React.FC = ({ navigation }) => {
               placeholder={t('Enter range')}
               value={range}
               onChangeText={(text) => {
-                const validatedText = text.replace(/[^0-9]/g, '');
-                setRange(validatedText);
+
+                setRange(text);
               }}
-              keyboardType="numeric"
             />
           </View>
 
-        </View>
-
-          <View style={styles.column}>
-            {showRangeInput && (
-            <TextInput
-              style={[styles.inputSpellCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
-              placeholder={t('Enter area duration amount')}
-              value={areaDurationAmount}
-              onChangeText={(text) => {
-                const validatedText = text.replace(/[^0-9]/g, '');
-                setAreaDurationAmount(validatedText);
-              }}
-              keyboardType="numeric"
-            />
-            )}
         </View>
 
         <View style={styles.centeredBlockDescription}>
@@ -319,17 +335,6 @@ const SpellCreator: React.FC = ({ navigation }) => {
               placeholder={t('Enter at higher levels description')}
               value={spell.atHigherDescription}
               onChangeText={(text) => handleInputChange('atHigherDescription', text)}
-            />
-          </View>
-
-          <View style={styles.centeredBlockMagicItemCont}>
-            <Text style={[styles.labelMagicItemCreA, { fontSize: fontSize, color: theme.textColor }]}>{t('Classes description')}</Text>
-            <TextInput
-              style={[styles.inputItemCreator, { height: 100 * scaleFactor, width: 300 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
-              multiline
-              placeholder={t('Enter classes description')}
-              value={spell.ClassesDescription}
-              onChangeText={(text) => handleInputChange('ClassesDescription', text)}
             />
           </View>
         </View>

@@ -24,12 +24,13 @@ const RzutKostka: React.FC = ({ route,navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { theme, addDiceResult } = useContext(ThemeContext);
-  const { player={}, session={},spell={} } = route?.params || {};
+  const { player={}, session={},spell={}} = route?.params || {};
   const [selectedDice, setSelectedDice] = useState([]);
   const [diceValues, setDiceValues] = useState([]);
   const [rotateValues] = useState(diceTypes.map(() => new Animated.Value(0)));
   const { ipv4 } = useContext(UserData);
   const { token } = useAuth();
+  const [modifier,setModifier]=useState(null)
   const handleDiceSelection = (index) => {
     const alreadySelected = selectedDice.find((dice) => dice.index === index);
     if (alreadySelected) {
@@ -38,10 +39,11 @@ const RzutKostka: React.FC = ({ route,navigation }) => {
       setSelectedDice([...selectedDice, { index, count: 1 }]);
     }
   };
+
 useEffect(() => {
     applySpellSettings();
   }, [spell]);
-const spellModifier = useMemo(() => applySpellSettings() || 0, [spell]);
+
   const applySpellSettings = () => {
     if (spell && spell.hit) {
       const dicePattern = /(\d+)d(\d+)/i;
@@ -51,59 +53,69 @@ const spellModifier = useMemo(() => applySpellSettings() || 0, [spell]);
       let modifier = modifierMatch ? parseInt(modifierMatch[1], 10) : 0;
 
       const diceMatch = dicePattern.exec(spell.hit);
-      if (diceMatch) {
+
         const count = parseInt(diceMatch[1], 10);
         const sides = parseInt(diceMatch[2], 10);
 
         const diceIndex = diceTypes.findIndex((dice) => dice.sides === sides);
-        if (diceIndex !== -1) {
+
           setSelectedDice([{ index: diceIndex, count }]);
-        }
-      }
+            setModifier(modifier);
 
-      return modifier;
     }
-
-    setSelectedDice([]);
-    return 0;
-  };
-
+}
   const handleRollDice = () => {
     const newDiceValues = [];
     const resultsSummary = [];
     const forFetchResult = [];
+    if (spell && spell.hit) {
+      selectedDice.forEach(({ index, count }) => {
+        const diceResults = Array.from({ length: count }, () =>
+            Math.floor(Math.random() * diceTypes[index].sides) + 1
+          );
+
+          const modifiedResults = diceResults.map(result => result + (modifier || 0));
+
+          newDiceValues.push({ index, results: modifiedResults });
+        resultsSummary.push(`roll ${diceTypes[index].sides}: ${modifiedResults.join(', ')}`);
 
 
-    selectedDice.forEach(({ index, count }) => {
-      const diceResults = Array.from({ length: count }, () =>
-        Math.floor(Math.random() * diceTypes[index].sides) + 1
-      );
+          forFetchResult.push(`${player.name} roll for attack ${diceTypes[index].sides}: ${modifiedResults.join(', ')}`);
+           fetchData(forFetchResult)
 
-      newDiceValues.push({ index, results: diceResults });
-      resultsSummary.push(`roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
-      if (player) {
-        if (spell){
-            if (spellModifier){
-                diceResult2= diceResults;
-               for (let i = 0; i < diceResult2.length; i++) {
-                     diceResult2[i] += spellModifier;
-                   }
-            forFetchResult.push(`${player.name} roll ${diceTypes[index].sides} + ${spellModifier}: ${diceResult2.join(', ')}`);
-             }
-            }
-        forFetchResult.push(`${player.name} roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
-      }
-
-
-      Animated.timing(rotateValues[index], {
-        toValue: 1,
-        duration: 1000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      }).start(() => {
-        rotateValues[index].setValue(0);
+        Animated.timing(rotateValues[index], {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }).start(() => {
+          rotateValues[index].setValue(0);
+        });
       });
-    });
+    } else {
+      selectedDice.forEach(({ index, count }) => {
+        const diceResults = Array.from({ length: count }, () =>
+          Math.floor(Math.random() * diceTypes[index].sides) + 1
+        );
+
+        newDiceValues.push({ index, results: diceResults });
+        resultsSummary.push(`roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
+
+        if (player) {
+          forFetchResult.push(`${player.name} roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
+        }
+
+        Animated.timing(rotateValues[index], {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }).start(() => {
+          rotateValues[index].setValue(0);
+        });
+      });
+    }
+
 
 
    if (session && Object.keys(session).length > 0 && Array.isArray(forFetchResult) && forFetchResult.length > 0) {

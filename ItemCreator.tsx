@@ -5,8 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { SettingsContext } from './SettingsContext';
-
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
 const ItemCreator: React.FC = ({ navigation }) => {
+      const { token } = useAuth();
+      const { ipv4 } = useContext(UserData);
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const [item, setItem] = useState({
     name: '',
@@ -31,16 +34,16 @@ const ItemCreator: React.FC = ({ navigation }) => {
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
 
-  const categories = ['Type', 'Weapon', 'Armor', 'Adventuring Gear', 'Consumable', 'Magic', 'Other'];
+  const categories = ['Type', 'weapon', 'armor', 'adventuring_gear', 'consumable', 'magic', 'other'];
   const rarities = ['Rarity', 'Common', 'Uncommon', 'Rare', 'Very Rare', 'Legendary'];
 
   const handleSubtypePicker = (type) => {
-    if (type === 'Weapon') return ['Sword', 'Dagger', 'Hammer', 'Polearm'];
-    if (type === 'Armor') return ['Plate Armor', 'Shield', 'Leather Armor'];
-    if (type === 'Adventuring Gear') return ['Magic Container', 'Tool', 'Instrument'];
-    if (type === 'Consumable') return ['Potion', 'Elixir'];
-    if (type === 'Magic') return ['Wand', 'Scroll', 'Staff'];
-    if (type === 'Other') return ['Treasure', 'Alchemical Item'];
+    if (type === 'weapon') return ['Sword', 'Dagger', 'Hammer', 'Polearm'];
+    if (type === 'armor') return ['Plate Armor', 'Shield', 'Leather Armor'];
+    if (type === 'adventuring_gear') return ['Magic Container', 'Tool', 'Instrument'];
+    if (type === 'consumable') return ['Potion', 'Elixir'];
+    if (type === 'magic') return ['Wand', 'Scroll', 'Staff'];
+    if (type === 'other') return ['Treasure', 'Alchemical Item'];
     return [];
   };
 
@@ -64,19 +67,50 @@ const ItemCreator: React.FC = ({ navigation }) => {
       alert(t('Please enter a valid item name.'));
       return;
     }
-    const newItem = {
-      ...item,
-      gold: Number(item.gold || 0),
-      silver: Number(item.silver || 0),
-      copper: Number(item.copper || 0),
-      weight: Number(item.weight || 0),
-      type: selectedType,
-      subtype: selectedSubtype,
-      rarity: selectedRarity,
-    };
-    console.log('Item saved:', newItem);
+    addNewItem();
   };
+const addNewItem = async () => {
 
+  try {
+     const requestBody = {
+         token: token,
+         name: item.name,
+         description: item.description|| null,
+         dexBonus: item.dexBonus|| 0,
+         stealthDisadvantage: String(item.stealthDisadvantage)|| "False",
+         damageType: item.damageType|| null,
+         diceNumber: item.diceNumber|| 0,
+         diceType: item.diceType|| null,
+         specification: item.specification|| null,
+         properties: item.properties|| null,
+         value: `${String(item.gold || 0)} gp, ${String(item.silver || 0)} sp, ${String(item.copper || 0)} cp`,
+         weight: `${String(item.weight || 0)} lb`,
+         type: selectedType|| null,
+         itemType: [selectedSubtype]|| [],
+         rarity: selectedRarity|| null};
+         console.log(requestBody)
+    const response = await fetch(`http://${ipv4}:8000/items/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New session:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+  fetchData();
+};
   return (
     <ImageBackground source={theme.background} style={styles.containerCreator}>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
