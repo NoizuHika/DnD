@@ -56,7 +56,9 @@ const Characters: React.FC = ({ navigation }) => {
      console.log(`Character ${character.name} pressed`);
      navigation.navigate('Character1',{ characterData : character });
   };
-
+ const handleCharacterCreatePress = (character) => {
+     navigation.navigate('CreateCharacter');
+  };
   return (
   <ImageBackground
          source={theme.background}
@@ -81,7 +83,7 @@ const Characters: React.FC = ({ navigation }) => {
               </View>
             ))}
 
-              <TouchableOpacity onPress={() => handleCharacterPress('CreateCharacter')}>
+              <TouchableOpacity onPress={() => handleCharacterCreatePress('CreateCharacter')}>
                 <ImageBackground
                   source={require('./assets/Halfling-M-Warlock.jpg')}
                   style={[styles.characterImage, { height: 100 * scaleFactor, width: 100 * scaleFactor }]}
