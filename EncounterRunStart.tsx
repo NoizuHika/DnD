@@ -80,26 +80,26 @@ const EncounterRunStart: React.FC = ({ route, navigation }) => {
       return () => clearInterval(intervalId);
     }, [session]);
      const fetchData = async () => {
-             try {
-                 const sessionsResponse = await fetch(`http://${ipv4}:8000/sessions/${session.id}`, {
-                     method: 'GET',
-                     headers: {
-                         'Content-Type': 'application/json',
-                         'accept': 'application/json'
-                     }
-                 });
-
-                 if (!sessionsResponse.ok) {
-                     throw new Error('Failed to fetch data');
+         try {
+             const sessionsResponse = await fetch(`http://${ipv4}:8000/sessions/${session.id}`, {
+                 method: 'GET',
+                 headers: {
+                     'Content-Type': 'application/json',
+                     'accept': 'application/json'
                  }
+             });
 
-                  const data = await sessionsResponse.json();
-                         setSession(data);
-
-             } catch (error) {
-                 console.error('Error fetching data:', error);
+             if (!sessionsResponse.ok) {
+                 throw new Error('Failed to fetch data');
              }
-         };
+
+              const data = await sessionsResponse.json();
+                     setSession(data);
+
+         } catch (error) {
+             console.error('Error fetching data:', error);
+         }
+     };
   const handleMonsterPress = (entity) => {
     setSelectedMonster(entity);
     setVisibleMonster(true);

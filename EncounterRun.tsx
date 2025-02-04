@@ -102,6 +102,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
           console.error('Error fetching data:', error);
       }
   setSelectedPlayers([]);
+  setVisibleAdd(false);
   };
 
 

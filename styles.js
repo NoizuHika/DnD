@@ -596,6 +596,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 70,
     marginLeft: 0,
   },
+  inputItemCreatorA: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    flex: 1,
+    width: '100%',
+  },
   inputSpellCreator: {
     backgroundColor: '#fff',
     marginTop: 10,
@@ -726,7 +732,7 @@ const styles = StyleSheet.create({
   inputItemCreatorSmall: {
     padding: 8,
     borderWidth: 1,
-    marginHorizontal: 20,
+    marginHorizontal: 15,
     borderColor: '#ccc',
     borderRadius: 8,
     backgroundColor: '#fff',
@@ -2249,7 +2255,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#333',
   },
   cellEncounterRun: {
-    flex: 1,
+    flex: 0.5,
     alignItems: 'center',
     justifyContent: 'center',
     textAlignVertical: 'center',
@@ -2257,11 +2263,11 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   cellInitiativeEncounterRun: {
-    flex: 0.7,
+    flex: 0.3,
     textAlign: 'center',
   },
   cellAvatarEncounterRun: {
-    flex: 0.7,
+    flex: 1.1,
     textAlign: 'center',
   },
   cellNameEncounterRun: {

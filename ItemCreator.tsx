@@ -15,6 +15,13 @@ const ItemCreator: React.FC = ({ navigation }) => {
     copper: '',
     weight: '',
     description: '',
+    diceNumber: '',
+    diceType: '',
+    damageType: '',
+    specification: '',
+    dexBonus: '',
+    stealthDisadvantage: false,
+    properties: '',
   });
 
   const [selectedType, setSelectedType] = useState('Type');
@@ -53,8 +60,16 @@ const ItemCreator: React.FC = ({ navigation }) => {
   };
 
   const saveItem = () => {
+    if (!item.name.trim() || selectedType === 'Type' || selectedRarity === 'Rarity') {
+      alert(t('Please enter a valid item name.'));
+      return;
+    }
     const newItem = {
       ...item,
+      gold: Number(item.gold || 0),
+      silver: Number(item.silver || 0),
+      copper: Number(item.copper || 0),
+      weight: Number(item.weight || 0),
       type: selectedType,
       subtype: selectedSubtype,
       rarity: selectedRarity,
@@ -90,7 +105,7 @@ const ItemCreator: React.FC = ({ navigation }) => {
               <View style={styles.column}>
                 <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Gold')}</Text>
                 <TextInput
-                  style={[styles.inputItemCreatorSmall, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
+                  style={[styles.inputItemCreatorA, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
                   placeholder={t('Enter gold')}
                   value={item.gold}
                   onChangeText={(text) => handleInputChange('gold', text)}
@@ -101,7 +116,7 @@ const ItemCreator: React.FC = ({ navigation }) => {
               <View style={styles.column}>
                 <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Silver')}</Text>
                 <TextInput
-                  style={[styles.inputItemCreatorSmall, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
+                  style={[styles.inputItemCreatorA, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
                   placeholder={t('Enter silver')}
                   value={item.silver}
                   onChangeText={(text) => handleInputChange('silver', text)}
@@ -112,7 +127,7 @@ const ItemCreator: React.FC = ({ navigation }) => {
               <View style={styles.column}>
                 <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Copper')}</Text>
                 <TextInput
-                  style={[styles.inputItemCreatorSmall, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
+                  style={[styles.inputItemCreatorA, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
                   placeholder={t('Enter copper')}
                   value={item.copper}
                   onChangeText={(text) => handleInputChange('copper', text)}
@@ -170,6 +185,99 @@ const ItemCreator: React.FC = ({ navigation }) => {
          )}
          </View>
          </View>
+
+        {selectedType === 'Weapon' && (
+          <>
+          <View style={styles.rowCreateItemContainer}>
+            <View style={styles.column}>
+            <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
+              <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Dice Number')}</Text>
+              <TextInput
+                style={[styles.inputItemCreatorA, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
+                placeholder={t('Enter dice number')}
+                value={item.diceNumber}
+                onChangeText={(text) => handleInputChange('diceNumber', text)}
+                keyboardType="numeric"
+              />
+            </View>
+
+            <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
+              <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Dice Type')}</Text>
+              <TextInput
+                style={[styles.inputItemCreatorA, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
+                placeholder={t('Enter dice type')}
+                value={item.diceType}
+                onChangeText={(text) => handleInputChange('diceType', text)}
+                keyboardType="numeric"
+              />
+            </View>
+             </View>
+             <View style={styles.column}>
+            <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
+              <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Damage Type')}</Text>
+              <TextInput
+                style={[styles.inputItemCreatorA, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
+                placeholder={t('Enter damage type')}
+                value={item.damageType}
+                onChangeText={(text) => handleInputChange('damageType', text)}
+              />
+            </View>
+
+            <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
+              <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Specification')}</Text>
+              <TextInput
+                style={[styles.inputItemCreatorA, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
+                placeholder={t('Enter specification')}
+                value={item.specification}
+                onChangeText={(text) => handleInputChange('specification', text)}
+              />
+            </View>
+           </View>
+           </View>
+          </>
+        )}
+
+        {selectedType === 'Armor' && (
+          <>
+          <View style={styles.rowCreateItemContainer}>
+            <View style={styles.column}>
+            <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
+              <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Dexterity Bonus')}</Text>
+              <TextInput
+                style={[styles.inputItemCreatorA, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
+                placeholder={t('Enter dexterity bonus')}
+                value={item.dexBonus}
+                onChangeText={(text) => handleInputChange('dexBonus', text)}
+                keyboardType="numeric"
+              />
+            </View>
+
+             </View>
+             <View style={styles.column}>
+            <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
+              <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Properties')}</Text>
+              <TextInput
+                style={[styles.inputItemCreatorA, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
+                placeholder={t('Enter properties')}
+                value={item.properties}
+                onChangeText={(text) => handleInputChange('properties', text)}
+              />
+            </View>
+            </View>
+            </View>
+            <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
+              <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Stealth Disadvantage')}</Text>
+              <Picker
+                selectedValue={item.stealthDisadvantage}
+                style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
+                onValueChange={(value) => handleInputChange('stealthDisadvantage', value)}
+              >
+                <Picker.Item label={t('No')} value={false} />
+                <Picker.Item label={t('Yes')} value={true} />
+              </Picker>
+            </View>
+          </>
+        )}
 
           <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
            <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Rarity')}</Text>
