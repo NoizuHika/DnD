@@ -1,8 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { ImageBackground, TouchableOpacity, Text, View, Button, StyleSheet, ScrollView, TextInput, FlatList, Modal } from 'react-native';
+import { ImageBackground, TouchableOpacity, Text, View, Button, StyleSheet, ScrollView, TextInput, FlatList, Modal, Image } from 'react-native';
 import { useNavigation, HeaderBackButton } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTranslation } from 'react-i18next';
+import { Picker } from '@react-native-picker/picker';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
@@ -23,33 +24,51 @@ const PlayerSessions: React.FC = () => {
     const { token } = useAuth();
     const [modalVisible, setModalVisible] = useState(false);
     const [code, setCode] = useState('');
-
+    const [characters, setCharacters] = useState([]);
+    const [selectedPlayers, setSelectedPlayers] = useState([]);
+    const [playerModalVisible, setPlayerModalVisible] = useState(false);
 
     useEffect(() => {
          fetchData();
     }, []);
     const fetchData = async () => {
-          try {
-              console.log('Token:', token.toString());
-              const sessionsResponse = await fetch(`http://${ipv4}:8000/user/characters/sessions`, {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                      'accept': 'application/json'
-                  },
-                  body: JSON.stringify({ token: token.toString() }),
-              });
+        try {
+            console.log('Token:', token.toString());
+            const sessionsResponse = await fetch(`http://${ipv4}:8000/user/characters/sessions`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                },
+                body: JSON.stringify({ token: token.toString() }),
+            });
 
-              if (!sessionsResponse.ok) {
-                  throw new Error('Failed to fetch data');
-              }
-              const data = await sessionsResponse.json();
-              setResult(data.result)
+            if (!sessionsResponse.ok) {
+                throw new Error('Failed to fetch data');
+            }
+            const data = await sessionsResponse.json();
+             setResult(data.result)
 
 
-          } catch (error) {
-              console.error('Error fetching data:', error);
-          }
+            const charactersResponse = await fetch(`http://${ipv4}:8000/user/characters`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                },
+                body: JSON.stringify({ token: token.toString() }),
+            });
+
+            if (!charactersResponse.ok) {
+                throw new Error('Failed to fetch characters');
+            }
+
+            const charactersData = await charactersResponse.json();
+            setCharacters(charactersData.characters);
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     };
 
 
@@ -60,11 +79,19 @@ const PlayerSessions: React.FC = () => {
 
     const addSession = () => {
         if (code.trim() === '') return;
-        const newSession = { title: `${code}`, sessions: [] };
+        const newSession = { title: `${code}`, sessions: [], players: selectedPlayers };
         setResult([...result, [code, newSession]]);
         setModalVisible(false);
         setCode('');
+        setSelectedPlayers([]);
+    };
 
+    const handleSelectPlayer = (player) => {
+        if (selectedPlayers.includes(player.id)) {
+            setSelectedPlayers(selectedPlayers.filter(id => id !== player.id));
+        } else {
+            setSelectedPlayers([...selectedPlayers, player.id]);
+        }
     };
 
     return (
@@ -115,6 +142,17 @@ const PlayerSessions: React.FC = () => {
                         placeholderTextColor="#808080"
                         maxLength={6}
                     />
+
+                    <Text style={[styles.modalTitleMonCre, { fontSize: fontSize, marginTop: 10 * scaleFactor }]}>{t('Select Player')}</Text>
+                    <TouchableOpacity
+                        style={[styles.pickerButton, { borderColor: theme.borderColor, borderWidth: 1 }]}
+                        onPress={() => setPlayerModalVisible(true)}
+                    >
+                        <Text style={{ fontSize: fontSize, color: theme.fontColor }}>
+                            {selectedPlayers ? selectedPlayers.name : t('Select a player')}
+                        </Text>
+                    </TouchableOpacity>
+
                   <View style={styles.rowContainer}>
                     <TouchableOpacity
                         style={[styles.modalButtonSession, { padding: 10 * scaleFactor, backgroundColor: 'green' }]}
@@ -131,6 +169,41 @@ const PlayerSessions: React.FC = () => {
                   </View>
                 </View>
             </View>
+
+            <Modal transparent={true} visible={playerModalVisible} animationType="slide">
+                <View style={styles.modalContainerMonCre}>
+                    <View style={styles.modalContentMonCre}>
+                        <Text style={[styles.modalTitleMonCre, { fontSize: fontSize }]}>{t('Select Player')}</Text>
+
+                        <FlatList
+                            data={characters}
+                            keyExtractor={(player) => player.id.toString()}
+                            renderItem={({ item }) => (
+                                <TouchableOpacity
+                                    style={[
+                                        styles.characterItem,
+                                        selectedPlayers?.id === item.id && styles.selectedCharacter
+                                    ]}
+                                    onPress={() => {
+                                        setSelectedPlayers(item);
+                                        setPlayerModalVisible(false);
+                                    }}
+                                >
+                                    <Image source={{ uri: item.image }} style={styles.characterImageSession} />
+                                    <Text style={[styles.characterNameSession, { color: theme.fontColor }]}>{item.name}</Text>
+                                </TouchableOpacity>
+                            )}
+                        />
+
+                        <TouchableOpacity
+                            style={[styles.modalButtonSession, { padding: 10 * scaleFactor, backgroundColor: 'gray' }]}
+                            onPress={() => setPlayerModalVisible(false)}
+                        >
+                            <Text style={[styles.modalCloseButtonText, { fontSize: fontSize * 0.8 }]}>{t('Cancel')}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </Modal>
 
 

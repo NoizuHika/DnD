@@ -602,6 +602,33 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
   },
+  pickerButton: {
+      padding: 10,
+      borderRadius: 5,
+      marginVertical: 10,
+      alignItems: 'center',
+      backgroundColor: '#2E2E2E',
+  },
+  characterItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: 10,
+      borderRadius: 5,
+      marginVertical: 5,
+      backgroundColor: 'grey',
+  },
+  selectedCharacter: {
+      backgroundColor: 'green',
+  },
+  characterImageSession: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      marginRight: 10,
+  },
+  characterNameSession: {
+      fontSize: 16,
+  },
   inputSpellCreator: {
     backgroundColor: '#fff',
     marginTop: 10,

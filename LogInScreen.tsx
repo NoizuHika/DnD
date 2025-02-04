@@ -113,27 +113,6 @@ const LogInScreen: React.FC = () => {
 
     </View>
 
-    <View style={styles.separator}>
-      <View style={[styles.separatorLine, { height: 1 * scaleFactor }]} />
-        <Text style={[styles.separatorText, { fontSize: fontSize * 1 }]}>{t('or')}</Text>
-      <View style={[styles.separatorLine, { height: 1 * scaleFactor }]} />
-    </View>
-
-    <View style={styles.media}>
-       <TouchableOpacity style={styles.socialGoogle} onPress={() => {handleKontoGoogle()}}>
-          <Image source={require('./assets/google.webp')} style={styles.googleicon} />
-          <Text style={[styles.socialButtonText, { fontSize: fontSize * 1 }]}>{t('Use_Google')}</Text>
-       </TouchableOpacity>
-       <TouchableOpacity style={styles.socialFacebook} onPress={() => {handleKontoFacebook()}}>
-          <Image source={require('./assets/facebook.jpg')} style={styles.facebookicon} />
-          <Text style={[styles.socialButtonText, { fontSize: fontSize * 1 }]}>{t('Use_Facebook')}</Text>
-       </TouchableOpacity>
-       <TouchableOpacity style={styles.socialApple} onPress={() => {handleKontoApple()}}>
-          <Image source={require('./assets/apple.webp')} style={styles.appleicon} />
-          <Text style={[styles.socialButtonText, { fontSize: fontSize * 1 }]}>{t('Use_Apple')}</Text>
-       </TouchableOpacity>
-    </View>
-
       <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
           <ImageBackground source={theme.backgroundButton} style={styles.buttonBackground}>
