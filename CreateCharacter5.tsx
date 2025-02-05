@@ -91,7 +91,7 @@ const addCharacter = async () => {
 
   const handleContinue = () => {
       addCharacter();
-    const equipment = startingEquipment[selectedClassInfo];
+    navigation.navigate('LoggedScreen');
   };
 
   const handleFocus = (field) => {

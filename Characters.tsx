@@ -75,7 +75,7 @@ const Characters: React.FC = ({ navigation }) => {
 
                 <TouchableOpacity style={styles.button} onPress={() => handleCharacterPress(character)}>
                   <ImageBackground
-                                    source={{uri: character.image }}
+                                    source={character.image ? { uri: character.image } : require('./addons/defaultPlayer.png')}
                                     style={[styles.characterImage, { height: 100 * scaleFactor, width: 100 * scaleFactor }]}
                                       >
                   </ImageBackground>
