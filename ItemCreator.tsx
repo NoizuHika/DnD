@@ -44,6 +44,9 @@ const ItemCreator: React.FC = ({ navigation }) => {
     return [];
   };
 
+  const diceTypes = ['d4', 'd6', 'd8', 'd10', 'd12', 'd20'];
+  const damageTypes = ['Slashing', 'Piercing', 'Bludgeoning', 'Fire', 'Cold', 'Lightning', 'Acid', 'Thunder', 'Poison', 'Radiant', 'Necrotic', 'Psychic', 'Force'];
+
   const handleGoBack = () => {
     navigation.goBack();
   };
@@ -90,7 +93,7 @@ const ItemCreator: React.FC = ({ navigation }) => {
       </View>
 
           <View style={[styles.centeredBlock, { marginTop: 40 * scaleFactor }]}>
-            <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
+            <Text style={[styles.labelNameItemCreA, { fontSize: fontSize, color: theme.textColor }]}>{t('Name')}</Text>
             <TextInput
               style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
               placeholder={t('Enter item name')}
@@ -203,24 +206,30 @@ const ItemCreator: React.FC = ({ navigation }) => {
 
             <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
               <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Dice Type')}</Text>
-              <TextInput
-                style={[styles.inputItemCreatorA, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
-                placeholder={t('Enter dice type')}
-                value={item.diceType}
-                onChangeText={(text) => handleInputChange('diceType', text)}
-                keyboardType="numeric"
-              />
+              <Picker
+                selectedValue={item.diceType}
+                style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
+                onValueChange={(value) => handleInputChange('diceType', value)}
+              >
+                {diceTypes.map((type) => (
+                  <Picker.Item key={type} label={type} value={type} />
+                ))}
+              </Picker>
             </View>
-             </View>
-             <View style={styles.column}>
+          </View>
+
+          <View style={styles.column}>
             <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>
               <Text style={[styles.labelItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Damage Type')}</Text>
-              <TextInput
-                style={[styles.inputItemCreatorA, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
-                placeholder={t('Enter damage type')}
-                value={item.damageType}
-                onChangeText={(text) => handleInputChange('damageType', text)}
-              />
+              <Picker
+                selectedValue={item.damageType}
+                style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
+                onValueChange={(value) => handleInputChange('damageType', value)}
+              >
+                {damageTypes.map((type) => (
+                  <Picker.Item key={type} label={type} value={type} />
+                ))}
+              </Picker>
             </View>
 
             <View style={[styles.centeredBlock, { marginTop: 10 * scaleFactor }]}>

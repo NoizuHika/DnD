@@ -728,6 +728,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.8)',
     paddingVertical: 3,
   },
+  labelNameItemCreA: {
+    alignItems: 'center',
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#d6d6d6',
+    width: '50%',
+    marginTop: 40,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingVertical: 3,
+  },
   labelMagicItemCre: {
     width: '100%',
     textAlign: 'center',
@@ -1385,6 +1395,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#7F7F7F',
     alignItems: 'center',
+    marginTop: 10,
   },
   ConButton: {
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
@@ -1621,12 +1632,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#d6d6d6',
-    marginTop: 20,
+    marginVertical: 30,
+    paddingHorizontal: 20,
+    borderRadius: 10,
   },
   blockContent: {
     width: '90%',
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 5,
     borderRadius: 10,
   },
   pickerCharacter3: {
