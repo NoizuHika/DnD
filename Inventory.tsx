@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Modal, ImageBackground, StyleSheet, View, Text, TouchableOpacity, ScrollView, TextInput } from 'react-native';
+import { Modal, ImageBackground, StyleSheet, View, Text, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Picker } from '@react-native-picker/picker';
 import { ThemeContext } from './theme/ThemeContext';
@@ -23,6 +23,36 @@ const Inventory: React.FC = ({ route,navigation }) => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [items, setItems] = useState(sampleItems.items || []);
   const [gold, setGold] = useState(sampleItems.gold || 0);
+  const [equippedItems, setEquippedItems] = useState({});
+  const [isEquipModalVisible, setEquipModalVisible] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+
+  const equipSlots = [
+    { key: "Weapon", label: t('Right Hand') },
+    { key: 'Shield', label: t('Left Hand') },
+    { key: 'Armor', label: t('Body Armor') },
+    { key: 'Ring', label: t('Ring') },
+    { key: 'Amulet', label: t('Amulet') }
+  ];
+
+  const handleEquipItem = (item) => {
+    if (!selectedSlot || item.category !== selectedSlot) return;
+
+    setEquippedItems((prev) => ({
+      ...prev,
+      [item.category]: item,
+    }));
+
+    setSelectedSlot(null);
+  };
+
+  const handleUnequipItem = (category) => {
+    setEquippedItems((prev) => {
+      const updatedItems = { ...prev };
+      delete updatedItems[category];
+      return updatedItems;
+    });
+  };
 
   const handleSpendGold = (amount) => {
     if (gold >= amount) {
@@ -119,7 +149,6 @@ const Inventory: React.FC = ({ route,navigation }) => {
         </Picker>
       </View>
 
-      {/* search input */}
       <TextInput
         style={[styles.searchInput, { height: 40 * scaleFactor, fontSize: fontSize }]}
         placeholder={t('Search items')}
@@ -128,7 +157,6 @@ const Inventory: React.FC = ({ route,navigation }) => {
         onChangeText={setSearchText}
       />
 
-      {/* category filter maxHeight: 50, */}
       <ScrollView horizontal style={styles.categoryContainer} showsHorizontalScrollIndicator={true}>
         {['All', 'Weapon', 'Armor', 'Ammunition', 'Tools', 'Potions', 'Scrolls', 'Magic Items', 'Adventuring Gear', 'Other'].map(category => (
           <TouchableOpacity
@@ -145,7 +173,6 @@ const Inventory: React.FC = ({ route,navigation }) => {
         <Text style={[styles.goldText, { fontSize: fontSize }]}>{t('Gold')}: {gold}</Text>
       </View>
 
-      {/* items list */}
       <ScrollView style={styles.tableContainer}>
         <View style={styles.tableHeader}>
           <Text style={[styles.tableHeaderText, styles.nameColumn, { fontSize: fontSize * 0.9 }]}>{t('Name')}</Text>
@@ -170,7 +197,6 @@ const Inventory: React.FC = ({ route,navigation }) => {
         ))}
       </ScrollView>
 
-      {/* add item */}
       <Modal
         visible={isModalVisible}
         transparent={true}
@@ -238,7 +264,6 @@ const Inventory: React.FC = ({ route,navigation }) => {
         </View>
       </Modal>
 
-      {/* description */}
       <Modal
         visible={!!selectedItem}
         transparent={true}
@@ -256,7 +281,6 @@ const Inventory: React.FC = ({ route,navigation }) => {
         </View>
       </Modal>
 
-
       <View style={styles.summaryContainer}>
         <Text style={[styles.summaryTextLeft, { fontSize: fontSize }]}>{calculateTotalWeight()} {t('kg')}</Text>
         <TouchableOpacity style={[styles.addButtonInventory, { height: 45 * scaleFactor }]} onPress={() => setModalVisible(true)}>
@@ -268,6 +292,62 @@ const Inventory: React.FC = ({ route,navigation }) => {
       <TouchableOpacity style={[styles.autoAddButton, { height: 45 * scaleFactor }]} onPress={handleAddItemsFromJSON}>
         <Text style={[styles.autoAddButtonText, { fontSize: fontSize }]}>{t('Add Automatically')}</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.equipButton} onPress={() => setEquipModalVisible(true)}>
+        <Text style={[styles.equipButtonText, { fontSize: fontSize }]}>{t('On yourself')}</Text>
+      </TouchableOpacity>
+
+      <Modal
+        visible={isEquipModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setEquipModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContentInventory}>
+            <Text style={[styles.modalTitleInv, { fontSize: fontSize * 1.2 }]}>{t('Equipped Items')}</Text>
+
+            {equipSlots.map((slot) => (
+              <View key={slot.key} style={styles.equippedItemRow}>
+                <Text style={[styles.equippedItemText, { fontSize: fontSize }]}>{slot.label}:</Text>
+
+                {equippedItems[slot.key] ? (
+                  <>
+                    <Text style={[styles.equippedItemText, { fontSize: fontSize }]}>{equippedItems[slot.key].name}</Text>
+                    <TouchableOpacity style={styles.unequipButton} onPress={() => handleUnequipItem(slot.key)}>
+                      <Text style={[styles.unequipButtonText, { fontSize: fontSize * 0.8 }]}>{t('Unequip')}</Text>
+                    </TouchableOpacity>
+                  </>
+                ) : (
+                  <TouchableOpacity style={styles.equipItemButton} onPress={() => setSelectedSlot(slot.key)}>
+                    <Text style={[styles.equipItemButtonText, { fontSize: fontSize }]}>{t('Select')}</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            ))}
+
+            {Object.keys(equippedItems).length === 0 && (
+              <Text style={[styles.noEquipmentText, { fontSize: fontSize }]}>{t('No items equipped')}</Text>
+            )}
+
+            {selectedSlot && (
+              <ScrollView style={styles.equipItemList}>
+                {items
+                  .filter((item) => item.category === selectedSlot)
+                  .map((item) => (
+                    <TouchableOpacity key={item.name} style={styles.equipItemButton} onPress={() => handleEquipItem(item)}>
+                      <Text style={[styles.equipItemButtonText, { fontSize: fontSize }]}>{item.name} ({t(item.category)})</Text>
+                    </TouchableOpacity>
+                  ))}
+              </ScrollView>
+            )}
+
+            <TouchableOpacity onPress={() => setEquipModalVisible(false)} style={[styles.cancelButton, { height: 50 * scaleFactor }]}>
+              <Text style={[styles.cancelButtonText, { fontSize: fontSize }]}>{t('Close')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
 
       <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>

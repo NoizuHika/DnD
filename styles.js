@@ -863,6 +863,7 @@ const styles = StyleSheet.create({
   },
   autoAddButtonText: {
     fontSize: 16,
+    color: 'white',
   },
   newNoteImage: {
     marginTop: 10,
@@ -963,6 +964,52 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     alignItems: 'center',
+  },
+  equipButton: {
+    backgroundColor: '#5A9',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  equipButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  equippedItemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginVertical: 5,
+  },
+  equippedItemText: {
+    flex: 1,
+    textAlign: 'left',
+  },
+  unequipButton: {
+    backgroundColor: 'red',
+    padding: 5,
+    borderRadius: 5,
+  },
+  unequipButtonText: {
+    color: 'white',
+    fontSize: 12,
+  },
+  equipItemList: {
+    marginTop: 10,
+    maxHeight: 200,
+    width: '100%',
+  },
+  equipItemButton: {
+    padding: 10,
+    backgroundColor: '#DDD',
+    marginVertical: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  equipItemButtonText: {
+    fontSize: 14,
   },
   addButton: {
     marginTop: 10,
