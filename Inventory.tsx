@@ -289,13 +289,15 @@ const Inventory: React.FC = ({ route,navigation }) => {
         <Text style={[styles.summaryTextRight, { fontSize: fontSize }]}>{calculateTotalCost()} {t('gold')}</Text>
       </View>
 
+      <View style={styles.summaryContainerA}>
       <TouchableOpacity style={[styles.autoAddButton, { height: 45 * scaleFactor }]} onPress={handleAddItemsFromJSON}>
         <Text style={[styles.autoAddButtonText, { fontSize: fontSize }]}>{t('Add Automatically')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.equipButton} onPress={() => setEquipModalVisible(true)}>
-        <Text style={[styles.equipButtonText, { fontSize: fontSize }]}>{t('On yourself')}</Text>
+        <Text style={[styles.equipButtonText, { fontSize: fontSize }]}>{t('Equipped')}</Text>
       </TouchableOpacity>
+      </View>
 
       <Modal
         visible={isEquipModalVisible}

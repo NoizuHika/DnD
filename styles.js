@@ -970,6 +970,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     marginTop: 10,
+    marginLeft: 50,
     alignItems: 'center',
   },
   equipButtonText: {
@@ -2845,6 +2846,11 @@ const styles = StyleSheet.create({
   },
   summaryContainer: {
     marginLeft: 15,
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  summaryContainerA: {
     marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
