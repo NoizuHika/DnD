@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next';
 import CheckBox from '@react-native-community/checkbox';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
-import autofill from './assets/Library/autofill.json';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
-
+import { UserData } from './UserData';
+import { useAuth } from './AuthContext';
 Appearance.setColorScheme('light');
 
 const MonsterCreationScreen: React.FC = ({ navigation }) => {
@@ -22,12 +22,12 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
     hitPoints: '',
     alignment: '',
     monsterSubtype: '',
-    strength: '',
-    dexterity: '',
-    constitution: '',
-    intelligence: '',
-    wisdom: '',
-    charisma: '',
+    strScore: '',
+    dexScore: '',
+    conScore: '',
+    intScore: '',
+    wisScore: '',
+    chaScore: '',
     movements: [],
     skills: [],
     senses: [],
@@ -40,7 +40,8 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
 
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
-
+const { token } = useAuth();
+      const { ipv4 } = useContext(UserData);
   const [descriptionModalVisible, setDescriptionModalVisible] = useState(false);
   const [descriptionModalVisibleDescription, setDescriptionModalVisibleDescription] = useState(false);
   const [description, setDescription] = useState('');
@@ -102,7 +103,85 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
     }));
     closeInputModal();
   };
+const autofillBeast = async () => {
 
+  try {
+     const requestBody = {
+         name:monster.name,
+         type:monster.monsterType,
+         cr:eval(monster.challengeRating)};
+         console.log(requestBody)
+    const response = await fetch(`http://${ipv4}:8000/bestiaries/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+	setMonster(result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
+const addNewBeast = async () => {
+
+  try {
+     const requestBody = {
+         token: token,
+    name: monster.name,
+    challengeRating: monster.challengeRating,
+    armorClass: monster.armorClass,
+    hitPoints: monster.hitPoints,
+    passivePerception: monster.senses.join(", "),
+    strScore: monster.strScore,
+    dexScore: monster.dexScore,
+    intScore: monster.intScore,
+    wisScore: monster.wisScore,
+    chaScore: monster.chaScore,
+    conScore: monster.conScore,
+    legendaryActionDescription: monsterDescriptions.legendaryActionDescription,
+    actionDescription: monsterDescriptions.actionsDescription,
+    bonusActionDescription: monsterDescriptions.bonusActionsDescription,
+    monsterDescription: monsterDescriptions.description,
+    alignment: monster.alignment,
+    hitPointDiceType: monster.hitPointDiceType,
+    monsterType: monster.monsterType,
+    size: monster.size,
+    speed: monster.movements.join(", "),
+    skills: monster.skills.join(", ")};
+         console.log(requestBody)
+    const response = await fetch(`http://${ipv4}:8000/besiaries/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
   const removeItem = (type, index) => {
     setMonster((prevMonster) => ({
       ...prevMonster,
@@ -120,11 +199,12 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
   };
 
   const autoFill = () => {
+    autofillBeast();
 
-    setMonster(autofill);
   };
 
   const saveMonster = () => {
+      addNewBeast();
     console.log("Monster saved:", monster);
   };
 
@@ -243,28 +323,28 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
         </View>
 
         <View style={styles.twoColumnContainer}>
-          <View style={styles.column}>
-            <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Strength')}</Text>
-            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Strength')} value={monster.strength} onChangeText={(text) => handleInputChange('strength', text)} keyboardType="numeric" />
+                   <View style={styles.column}>
+                     <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Strength')}</Text>
+                     <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Strength')} value={monster.strScore} onChangeText={(text) => handleInputChange('strScore', text)} keyboardType="numeric" />
 
-            <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Dexterity')}</Text>
-            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Dexterity')} value={monster.dexterity} onChangeText={(text) => handleInputChange('dexterity', text)} keyboardType="numeric" />
-          </View>
-          <View style={styles.column}>
-            <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Constitution')}</Text>
-            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Constitution')} value={monster.dexterity} onChangeText={(text) => handleInputChange('constitution', text)} keyboardType="numeric" />
+                     <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Dexterity')}</Text>
+                     <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Dexterity')} value={monster.dexScore} onChangeText={(text) => handleInputChange('dexScore', text)} keyboardType="numeric" />
+                   </View>
+                   <View style={styles.column}>
+                     <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Constitution')}</Text>
+                     <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Constitution')} value={monster.conScore} onChangeText={(text) => handleInputChange('conScore', text)} keyboardType="numeric" />
 
-            <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Intelligence')}</Text>
-            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Intelligence')} value={monster.dexterity} onChangeText={(text) => handleInputChange('intelligence', text)} keyboardType="numeric" />
-          </View>
-          <View style={styles.column}>
-            <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Wisdom')}</Text>
-            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Wisdom')} value={monster.dexterity} onChangeText={(text) => handleInputChange('wisdom', text)} keyboardType="numeric" />
+                     <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Intelligence')}</Text>
+                     <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Intelligence')} value={monster.intScore} onChangeText={(text) => handleInputChange('intScore', text)} keyboardType="numeric" />
+                   </View>
+                   <View style={styles.column}>
+                     <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Wisdom')}</Text>
+                     <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Wisdom')} value={monster.wisScore} onChangeText={(text) => handleInputChange('wisScore', text)} keyboardType="numeric" />
 
-            <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Charisma')}</Text>
-            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Charisma')} value={monster.dexterity} onChangeText={(text) => handleInputChange('charisma', text)} keyboardType="numeric" />
-          </View>
-        </View>
+                     <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Charisma')}</Text>
+                     <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Charisma')} value={monster.chaScore} onChangeText={(text) => handleInputChange('chaScore', text)} keyboardType="numeric" />
+                   </View>
+                 </View>
 
         <View style={styles.container}>
           <View style={styles.columnAdding}>
@@ -380,7 +460,7 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
               <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize * 1.1 }]}>{t('Add movements')}</Text>
             </TouchableOpacity>
           </View>
-            {monster.movements.map((item, index) => (
+            {monster.movements?.map((item, index) => (
               <View key={index} style={styles.itemContainer}>
                 <Text style={styles.itemText}>{item}</Text>
                 <TouchableOpacity onPress={() => removeItem('movements', index)}>
@@ -395,7 +475,7 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
               <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize * 1.1 }]}>{t('Add skills')}</Text>
             </TouchableOpacity>
           </View>
-            {monster.skills.map((item, index) => (
+            {monster.skills?.map((item, index) => (
               <View key={index} style={styles.itemContainer}>
                 <Text style={styles.itemText}>{item}</Text>
                 <TouchableOpacity onPress={() => removeItem('skills', index)}>
@@ -410,7 +490,7 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
               <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Add senses')}</Text>
             </TouchableOpacity>
           </View>
-            {monster.senses.map((item, index) => (
+            {monster.senses?.map((item, index) => (
               <View key={index} style={styles.itemContainer}>
                 <Text style={styles.itemText}>{item}</Text>
                 <TouchableOpacity onPress={() => removeItem('senses', index)}>
@@ -425,7 +505,7 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
               <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Add languages')}</Text>
             </TouchableOpacity>
           </View>
-            {monster.languages.map((item, index) => (
+            {monster.languages?.map((item, index) => (
               <View key={index} style={styles.itemContainer}>
                 <Text style={styles.itemText}>{item}</Text>
                 <TouchableOpacity onPress={() => removeItem('languages', index)}>

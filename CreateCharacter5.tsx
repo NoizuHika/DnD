@@ -32,7 +32,48 @@ const CreateCharacter5: React.FC = ({ navigation, route }) => {
       gold: 0
     },
   };
+const addCharacter = async () => {
 
+  try {
+     const requestBody = {
+    description: description2,
+    name:nickname,
+    race:race,
+    firstClass:firstClass,
+    token: token,
+    strScore:attributes.Strength,
+  	dexScore:attributes.Dexterity,
+  	conScore:attributes.Constitution,
+  	intScore:attributes.Intelligence,
+  	wisScore:attributes.Wisdom,
+  	chaScore:attributes.Charisma,
+    alignment: alignment,
+    background: background,
+    money: moneyforPlayer(totalGold)
+};
+         console.log(requestBody)
+    const response = await fetch(`http://${ipv4}:8000/characters/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+}
   const moneyforPlayer =()=>{
       const copperValue = parseInt(gold.copper, 10) || 0;
            const silverValue = parseInt(gold.silver, 10) || 0;
@@ -46,6 +87,7 @@ const CreateCharacter5: React.FC = ({ navigation, route }) => {
   };
 
   const handleContinue = () => {
+      addCharacter();
     const equipment = startingEquipment[selectedClassInfo];
   };
 

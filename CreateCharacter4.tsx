@@ -7,34 +7,70 @@ import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
 
-Appearance.setColorScheme('light');
-
-const alignments = [
-  'Chaotic Evil',
-  'Chaotic Good',
-  'Chaotic Neutral',
-  'Lawful Evil',
-  'Lawful Good',
-  'Lawful Neutral',
-  'Neutral Evil',
-  'Neutral Good',
-  'True Neutral'
-];
-
-const background = [
-  'background1',
-  'background2',
-  'background3',
-  'background4',
-  'background5',
-];
 
 const CreateCharacter4: React.FC = ({ navigation, route }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const handleGoBack = () => {
     navigation.goBack();
   };
+Appearance.setColorScheme('light');
 
+const[alignments,setAlignments] = useState([]);
+
+const [backgrounds,setBackgrounds] = useState([]);
+useEffect(() => {
+      addBackgrounds();
+      addAlignments();
+      });
+const addAlignments = async () => {
+
+  try {
+         const response = await fetch(`http://${ipv4}:8000/alignments/all`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      }}
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    setAlignments(result);
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
+
+const addBackgrounds= async () => {
+
+  try {
+         const response = await fetch(`http://${ipv4}:8000/backgrounds/all`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      }}
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    setBackgrounds(result);
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
   const { selectedClassInfo, nickname,description,race,playerClass, image, attributes } = route.params;
@@ -51,7 +87,7 @@ const CreateCharacter4: React.FC = ({ navigation, route }) => {
   const [isPhysicalCharacteristicsVisible, setPhysicalCharacteristicsVisible] = useState(false);
   const [isPersonalCharacteristicsVisible, setPersonalCharacteristicsVisible] = useState(false);
   const [isNotesVisible, setNotesVisible] = useState(false);
-
+  const [background,setBackground] = useState('');
   const validateNumberInput = (text) => {
     return text.replace(/[^0-9]/g, '');
   };
@@ -164,7 +200,7 @@ const CreateCharacter4: React.FC = ({ navigation, route }) => {
             <Picker
               selectedValue={alignment}
               style={styles.pickerCharacter3}
-              onValueChange={(itemValue) => setAlignment(itemValue)}
+              onValueChange={(itemValue) => setBackground(itemValue)}
             >
               {background.map((align) => (
                 <Picker.Item key={align} label={align} value={align} />

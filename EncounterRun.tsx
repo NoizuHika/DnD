@@ -43,6 +43,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
      setPlayers(players.filter((_, i) => i !== index));
     };
   const removeNpcFromEncounter = (npc) => {
+      removeNpc();
     setNpcs(prevNpcs => prevNpcs.filter(item => item.id !== npc.id));
   };
 
@@ -102,7 +103,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
     setSelectedPlayers([]);
     setVisibleAdd(false);
   };
-    const removeNpcFromEncounter = async (npc) => {
+    const removeNpc = async (npc) => {
                     const item = {
                         item:encounter.id,
                         id:npc.id
