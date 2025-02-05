@@ -50,11 +50,7 @@ https://tabletopdominion.com/blogs/news/what-has-caused-the-surge-in-popularity-
 https://www.w3schools.com/css/css_examples.asp
 
 
-background - picker
-
-description w monster creator
 style createCharacter 4
+equipowana bron z inventory
 
-backlibcreator feature name + description jako add language
-Equipment zamien feature name
 damage type and dice jako picker

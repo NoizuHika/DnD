@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, ImageBackground } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, ImageBackground, Modal, Button } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
@@ -8,14 +8,47 @@ import { SettingsContext } from './SettingsContext';
 
 const BackLibCreator: React.FC = ({ navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
+  const [inputModalVisible, setInputModalVisible] = useState(false);
+  const [inputName, setInputName] = useState('');
+  const [inputDescription, setInputDescription] = useState('');
+  const [currentInputType, setCurrentInputType] = useState('');
   const [backLib, setBackLib] = useState({
     name: '',
     skillProficiency1: '',
     skillProficiency2: '',
     additionalProficiency: '',
-    featureName: '',
-    featureDescription: '',
+    equipmentName: '',
+    descriptions: [],
   });
+
+  const openInputModal = (type) => {
+    setCurrentInputType(type);
+    setInputModalVisible(true);
+  };
+
+  const closeInputModal = () => {
+    setInputModalVisible(false);
+    setInputName('');
+    setInputDescription('');
+  };
+
+  const addItem = () => {
+    setBackLib(prev => ({
+      ...prev,
+      descriptions: [...prev.descriptions, {
+        name: inputName,
+        description: inputDescription
+      }]
+    }));
+    closeInputModal();
+  };
+
+  const removeItem = (index) => {
+    setBackLib(prev => ({
+      ...prev,
+      descriptions: prev.descriptions.filter((_, i) => i !== index)
+    }));
+  };
 
   const { t } = useTranslation();
   const { theme } = useContext(ThemeContext);
@@ -101,25 +134,90 @@ const BackLibCreator: React.FC = ({ navigation }) => {
         </View>
 
         <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
-          <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Back Library Name')}</Text>
+          <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Equipment')}</Text>
           <TextInput
             style={[styles.inputItemCreator, { height: 50 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
-            placeholder={t('Enter back library name')}
-            value={backLib.featureName}
-            onChangeText={(text) => handleInputChange('featureName', text)}
+            placeholder={t('Enter Equipment')}
+            value={backLib.equipmentName}
+            onChangeText={(text) => handleInputChange('equipmentName', text)}
           />
         </View>
 
-        <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
-          <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Back Library Description')}</Text>
-          <TextInput
-            style={[styles.inputItemCreator, { height: 100 * scaleFactor, fontSize: fontSize, padding: 10 * scaleFactor }]}
-            multiline
-            placeholder={t('Enter back library description')}
-            value={backLib.featureDescription}
-            onChangeText={(text) => handleInputChange('featureDescription', text)}
-          />
+        <View style={styles.columnAdding}>
+          <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>
+            {t('Feature name')}
+          </Text>
+          <TouchableOpacity
+            style={[styles.addButtonMonCre, { height: 50 * scaleFactor, width: 200 * scaleFactor }]}
+            onPress={() => openInputModal('descriptions')}>
+            <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize }]}>
+              {t('Add name and description')}
+            </Text>
+          </TouchableOpacity>
         </View>
+
+        {backLib.descriptions.map((item, index) => (
+          <View key={index} style={styles.itemContainer}>
+            <View>
+              <Text style={[styles.itemText, { fontSize: fontSize }]}>{item.name}</Text>
+              <Text style={[styles.itemDescription, { fontSize: fontSize * 0.8 }]}>
+                {item.description}
+              </Text>
+            </View>
+            <TouchableOpacity onPress={() => removeItem(index)}>
+              <Text style={[styles.removeButtonText, { fontSize: fontSize }]}>
+                {t('Remove')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+
+        <Modal visible={inputModalVisible} transparent={true} animationType="slide">
+          <View style={styles.modalContainerMonCre}>
+            <View style={styles.modalContentMonCre}>
+              <Text style={[styles.modalTitleMonCre, { fontSize: fontSize * 1.2 }]}>
+                {t(`Add feature`)}
+              </Text>
+
+              <TextInput
+                style={[styles.modalInputMonCre, {
+                  height: 50,
+                  fontSize: fontSize,
+                }]}
+                placeholder={t('Enter name')}
+                value={inputName}
+                onChangeText={setInputName}
+              />
+
+              <TextInput
+                style={[styles.modalInputMonCre, {
+                  height: 100 * scaleFactor,
+                  fontSize: fontSize,
+                  textAlignVertical: 'top',
+                  padding: 10 * scaleFactor
+                }]}
+                multiline
+                placeholder={t('Enter description...')}
+                value={inputDescription}
+                onChangeText={setInputDescription}
+              />
+
+              <View style={styles.rowContainer}>
+                <TouchableOpacity
+                  style={[styles.modalButtonSession, { backgroundColor: 'green' }]}
+                  onPress={addItem}>
+                  <Text style={styles.modalCloseButtonText}>{t('Add')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modalButtonSession, { backgroundColor: 'red' }]}
+                  onPress={closeInputModal}>
+                  <Text style={styles.modalCloseButtonText}>{t('Cancel')}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
       </ScrollView>
 
       <View style={[styles.saveButton, { marginBottom: 10 * scaleFactor }]}>
