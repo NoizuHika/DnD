@@ -42,6 +42,7 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
   const { theme } = useContext(ThemeContext);
 
   const [descriptionModalVisible, setDescriptionModalVisible] = useState(false);
+  const [descriptionModalVisibleDescription, setDescriptionModalVisibleDescription] = useState(false);
   const [description, setDescription] = useState('');
   const [inputModalVisible, setInputModalVisible] = useState(false);
   const [currentInputType, setCurrentInputType] = useState('');
@@ -53,6 +54,29 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
   const [hitDieCount, setHitDieCount] = useState('');
   const [isSubtype, setIsSubtype] = useState(false);
   const [subtypeValue, setSubtypeValue] = useState('');
+  const [descriptionType, setDescriptionType] = useState('');
+  const [descriptionText, setDescriptionText] = useState('');
+  const [isLegendary, setIsLegendary] = useState(false);
+  const [monsterDescriptions, setMonsterDescriptions] = useState({
+    monsterDescription: '',
+    actionsDescription: '',
+    bonusActionsDescription: '',
+    reactionsDescription: '',
+    specialTraitsDescription: '',
+    specialTraitsDescription: '',
+  });
+
+  const openDescriptionModalDescription = (type) => {
+    setDescriptionType(type);
+    setDescriptionText(monsterDescriptions[type] || '');
+    setDescriptionModalVisibleDescription(true);
+  };
+  const closeDescriptionModalDescription = () => setDescriptionModalVisibleDescription(false);
+
+  const saveDescription = () => {
+    setMonsterDescriptions((prev) => ({ ...prev, [descriptionType]: descriptionText }));
+    closeDescriptionModalDescription();
+  };
 
   const handleInputChange = (field, value) => {
     setMonster({ ...monster, [field]: value });
@@ -242,6 +266,114 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
           </View>
         </View>
 
+        <View style={styles.container}>
+          <View style={styles.columnAdding}>
+            <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>
+              {t('Monster Descriptions')}
+            </Text>
+            <TouchableOpacity
+              style={[styles.addButtonMonCre, { height: 50 * scaleFactor, width: 200 * scaleFactor }]}
+              onPress={openDescriptionModalDescription}
+            >
+              <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize * 1.1 }]}>
+                {t('Edit descriptions')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <Modal visible={descriptionModalVisibleDescription} transparent={true} animationType="slide">
+            <View style={styles.modalContainerMonCre}>
+              <View style={styles.modalContentMonCre}>
+                <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                  <Text style={[styles.modalTitleMonCre, { fontSize: fontSize * 1.2 }]}>
+                    {t('Monster Descriptions')}
+                  </Text>
+
+                  {Object.keys(monsterDescriptions).map((key) => (
+                    <View key={key}>
+                      <Text style={[styles.labelMagicItemCreA, { color: theme.textColor, fontSize: fontSize }]}>
+                        {t(key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase()))}
+                      </Text>
+                      <TextInput
+                        style={[styles.inputMonCre, {
+                          height: 50 * scaleFactor,
+                          fontSize: fontSize,
+                          textAlignVertical: 'top',
+                          padding: 10 * scaleFactor
+                        }]}
+                        multiline
+                        value={monsterDescriptions[key]}
+                        onChangeText={(text) => setMonsterDescriptions(prev => ({
+                          ...prev,
+                          [key]: text
+                        }))}
+                        placeholder={t(`Enter ${key.replace(/([A-Z])/g, ' $1').toLowerCase()}`)}
+                        placeholderTextColor={theme.placeholderColor}
+                      />
+                    </View>
+                  ))}
+
+                  <View style={styles.section}>
+                    <View style={styles.checkboxContainer}>
+                      <CheckBox
+                        value={isLegendary}
+                        onValueChange={(value) => {
+                          setIsLegendary(value);
+                          if (!value) setMonsterDescriptions((prev) => ({
+                            ...prev,
+                            legendaryActionsDescription: ''
+                          }));
+                        }}
+                        tintColors={{ true: theme.checkboxActive, false: theme.checkboxInactive }}
+                      />
+                      <Text style={[styles.labelCheck, { fontSize: fontSize * 1.2 }]}>{t('Legendary?')}</Text>
+                    </View>
+                  </View>
+
+                  {isLegendary && (
+                    <View>
+                      <Text style={[styles.labelMagicItemCreA, { color: theme.textColor, fontSize: fontSize }]}>
+                        {t('Legendary Action Description')}
+                      </Text>
+                      <TextInput
+                        style={[styles.inputMonCre, {
+                          height: 50 * scaleFactor,
+                          fontSize: fontSize,
+                          textAlignVertical: 'top',
+                          padding: 10 * scaleFactor
+                        }]}
+                        multiline
+                        value={monsterDescriptions.legendaryActionsDescription}
+                        onChangeText={(text) => setMonsterDescriptions(prev => ({
+                          ...prev,
+                          legendaryActionsDescription: text
+                        }))}
+                        placeholder={t('Enter legendary action description')}
+                        placeholderTextColor={theme.placeholderColor}
+                      />
+                    </View>
+                  )}
+
+                  <View style={styles.rowContainer}>
+                    <TouchableOpacity
+                      style={[styles.modalButtonSession, { padding: 10 * scaleFactor, backgroundColor: 'green' }]}
+                      onPress={saveDescription}
+                    >
+                      <Text style={[styles.modalCloseButtonText, { fontSize: fontSize * 0.8 }]}>{t('Save')}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.modalButtonSession, { padding: 10 * scaleFactor, backgroundColor: 'red' }]}
+                      onPress={closeDescriptionModalDescription}
+                    >
+                      <Text style={[styles.modalCloseButtonText, { fontSize: fontSize * 0.8 }]}>{t('Cancel')}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </ScrollView>
+              </View>
+            </View>
+          </Modal>
+        </View>
+
           <View style={styles.columnAdding}>
             <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Movements')}</Text>
             <TouchableOpacity style={[styles.addButtonMonCre, { height: 50 * scaleFactor, width: 200 * scaleFactor }]} onPress={() => openInputModal('movements')}>
@@ -302,7 +434,6 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
               </View>
             ))}
 
-        {/* Hit Points */}
         <Modal visible={hitPointsModalVisible} transparent={true} animationType="slide">
           <View style={styles.modalContainerMonCre}>
             <View style={styles.modalContentMonCre}>
@@ -355,7 +486,6 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
           </View>
         </Modal>
 
-        {/* Add visible description */}
         <Modal visible={inputModalVisible} transparent={true} animationType="slide">
           <View style={styles.modalContainerMonCre}>
             <View style={styles.modalContentMonCre}>
@@ -372,7 +502,6 @@ const MonsterCreationScreen: React.FC = ({ navigation }) => {
           </View>
         </Modal>
 
-        {/* Description */}
         <Modal visible={descriptionModalVisible} transparent={true} animationType="slide">
           <View style={styles.modalContainerMonCre}>
             <View style={styles.modalContentMonCre}>

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { SettingsContext } from './SettingsContext'; // Замените на реальный путь к вашему контексту
+import { SettingsContext } from './SettingsContext';
 import { ThemeContext } from './theme/ThemeContext';
 
 const HiddenText = ({ title, content }) => {

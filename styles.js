@@ -1456,7 +1456,6 @@ const styles = StyleSheet.create({
   selectedImageCharacter: {
     width: 250,
     height: 250,
-    marginTop: '-15%',
     marginBottom: '10%',
     resizeMode: 'contain',
   },

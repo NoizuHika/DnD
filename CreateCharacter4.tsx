@@ -21,6 +21,14 @@ const alignments = [
   'True Neutral'
 ];
 
+const background = [
+  'background1',
+  'background2',
+  'background3',
+  'background4',
+  'background5',
+];
+
 const CreateCharacter4: React.FC = ({ navigation, route }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const handleGoBack = () => {
@@ -153,7 +161,15 @@ const CreateCharacter4: React.FC = ({ navigation, route }) => {
             <TextInput style={[styles.inputCharacter, { height: 45 * scaleFactor, fontSize: fontSize }]} placeholder={t('Enter_allies')} />
 
             <Text style={[styles.label, { fontSize: fontSize, color: theme.fontColor }]}>{t('Backstory')}:</Text>
-            <TextInput style={[styles.inputCharacter, { height: 45 * scaleFactor, fontSize: fontSize }]} placeholder={t('Enter_backstory')} multiline />
+            <Picker
+              selectedValue={alignment}
+              style={styles.pickerCharacter3}
+              onValueChange={(itemValue) => setAlignment(itemValue)}
+            >
+              {background.map((align) => (
+                <Picker.Item key={align} label={align} value={align} />
+              ))}
+            </Picker>
 
             <Text style={[styles.label, { fontSize: fontSize, color: theme.fontColor }]}>{t('Other_Notes')}:</Text>
             <TextInput style={[styles.inputCharacter, { height: 45 * scaleFactor, fontSize: fontSize }]} placeholder={t('Enter_other_notes')} multiline />
