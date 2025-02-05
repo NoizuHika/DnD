@@ -248,7 +248,16 @@ const Character1: React.FC = ({ route,navigation }) => {
       </View>
     );
   };
+    const handleAttack = () =>
+    {
+       const action = {
+            name: "attack",
+            hit: `hit ${character.eqWeapon.diceNumber} ${character.eqWeapon.diceType} +0`,
+            damageType: character.eqWeapon.damageType
+            };
+        navigation.navigate('RzutKostka_Bonus_SpellStat', { player:character,spell:action,session: session });
 
+        };
   const ReactWindow = ({ onClose }) => {
     const [showPowerLevels, setShowPowerLevels] = useState(false);
 
@@ -259,7 +268,7 @@ const Character1: React.FC = ({ route,navigation }) => {
     return (
       <View style={styles.abilityWindow}>
         <View style={styles.skillsContainer}>
-          <TouchableOpacity onPress={handleImagePress}>
+          <TouchableOpacity onPress={handleAttack}>
             <Image source={require('./assets/skills/firearrow.png')} style={styles.abilityImage} />
           </TouchableOpacity>
         </View>

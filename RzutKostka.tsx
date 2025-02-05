@@ -67,7 +67,7 @@ useEffect(() => {
   const handleRollDice = () => {
     const newDiceValues = [];
     const resultsSummary = [];
-    const forFetchResult = [];
+    const forFetchResult = '';
     if (spell && spell.hit) {
       selectedDice.forEach(({ index, count }) => {
         const diceResults = Array.from({ length: count }, () =>
@@ -75,12 +75,13 @@ useEffect(() => {
           );
 
           const modifiedResults = diceResults.map(result => result + (modifier || 0));
+           const finalDmg = modifiedResults.reduce((sum, value) => sum + value, 0);
 
           newDiceValues.push({ index, results: modifiedResults });
         resultsSummary.push(`roll ${diceTypes[index].sides}: ${modifiedResults.join(', ')}`);
 
 
-          forFetchResult.push(`${player.name} roll for attack ${diceTypes[index].sides}: ${modifiedResults.join(', ')}`);
+          forFetchResult=(`${player.name} dealed  ${finalDmg} ${spell.damageType} dmg`);
            fetchData(forFetchResult)
 
         Animated.timing(rotateValues[index], {

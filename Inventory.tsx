@@ -32,7 +32,7 @@ const Inventory: React.FC = ({ route,navigation }) => {
     }
   };
 
-use
+
 
   const handleItemPress = (item) => {
     setSelectedItem(item);

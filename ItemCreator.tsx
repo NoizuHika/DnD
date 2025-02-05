@@ -220,7 +220,7 @@ const addNewItem = async () => {
          </View>
          </View>
 
-        {selectedType === 'Weapon' && (
+        {selectedType === 'weapon' && (
           <>
           <View style={styles.rowCreateItemContainer}>
             <View style={styles.column}>
@@ -271,7 +271,7 @@ const addNewItem = async () => {
           </>
         )}
 
-        {selectedType === 'Armor' && (
+        {selectedType === 'armor' && (
           <>
           <View style={styles.rowCreateItemContainer}>
             <View style={styles.column}>
