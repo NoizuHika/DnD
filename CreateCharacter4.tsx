@@ -105,7 +105,7 @@ const addBackgrounds= async () => {
     >
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
 
-        {/* Харки */}
+       <View style={styles.blockContainer}>
         <TouchableOpacity onPress={() => setCharacterDetailsVisible(!isCharacterDetailsVisible)}>
           <Text style={[styles.blockTitle, { fontSize: fontSize * 1.2 }]}>{t('Character_Details')}</Text>
         </TouchableOpacity>
@@ -139,8 +139,8 @@ const addBackgrounds= async () => {
             />
           </View>
         )}
-
-        {/* Физ дан */}
+       </View>
+       <View style={styles.blockContainer}>
         <TouchableOpacity onPress={() => setPhysicalCharacteristicsVisible(!isPhysicalCharacteristicsVisible)}>
           <Text style={[styles.blockTitle, { fontSize: fontSize * 1.2 }]}>{t('Physical_Characteristics')}</Text>
         </TouchableOpacity>
@@ -165,8 +165,8 @@ const addBackgrounds= async () => {
             <TextInput style={[styles.inputCharacter, { height: 45 * scaleFactor, fontSize: fontSize }]} placeholder={t('Enter_age')} value={age} onChangeText={(text) => setAge(validateNumberInput(text))} keyboardType="numeric" />
           </View>
         )}
-
-        {/* Перса */}
+       </View>
+       <View style={styles.blockContainer}>
         <TouchableOpacity onPress={() => setPersonalCharacteristicsVisible(!isPersonalCharacteristicsVisible)}>
           <Text style={[styles.blockTitle, { fontSize: fontSize * 1.2 }]}>{t('Personal_Characteristics')}</Text>
         </TouchableOpacity>
@@ -182,8 +182,8 @@ const addBackgrounds= async () => {
             <TextInput style={[styles.inputCharacter, { height: 45 * scaleFactor, fontSize: fontSize }]} placeholder={t('Enter_other_personal_characteristics')} />
           </View>
         )}
-
-        {/* Заметки */}
+       </View>
+       <View style={styles.blockContainer}>
         <TouchableOpacity onPress={() => setNotesVisible(!isNotesVisible)}>
           <Text style={[styles.blockTitle, { fontSize: fontSize * 1.2 }]}>{t('Notes')}</Text>
         </TouchableOpacity>
@@ -213,7 +213,7 @@ const addBackgrounds= async () => {
             <TextInput style={[styles.inputCharacter, { height: 45 * scaleFactor, fontSize: fontSize }]} placeholder={t('Enter_other_notes')} multiline />
           </View>
         )}
-
+       </View>
       </ScrollView>
 
         <View style={[styles.ConButtonCharacter, { bottom: 10 * scaleFactor }]}>

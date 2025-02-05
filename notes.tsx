@@ -52,5 +52,3 @@ https://www.w3schools.com/css/css_examples.asp
 
 style createCharacter 4
 equipowana bron z inventory
-
-damage type and dice jako picker

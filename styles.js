@@ -728,6 +728,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.8)',
     paddingVertical: 3,
   },
+  labelNameItemCreA: {
+    alignItems: 'center',
+    textAlign: 'center',
+    fontSize: 16,
+    color: '#d6d6d6',
+    width: '50%',
+    marginTop: 40,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingVertical: 3,
+  },
   labelMagicItemCre: {
     width: '100%',
     textAlign: 'center',
@@ -853,6 +863,7 @@ const styles = StyleSheet.create({
   },
   autoAddButtonText: {
     fontSize: 16,
+    color: 'white',
   },
   newNoteImage: {
     marginTop: 10,
@@ -953,6 +964,53 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     alignItems: 'center',
+  },
+  equipButton: {
+    backgroundColor: '#5A9',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    marginLeft: 50,
+    alignItems: 'center',
+  },
+  equipButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  equippedItemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginVertical: 5,
+  },
+  equippedItemText: {
+    flex: 1,
+    textAlign: 'left',
+  },
+  unequipButton: {
+    backgroundColor: 'red',
+    padding: 5,
+    borderRadius: 5,
+  },
+  unequipButtonText: {
+    color: 'white',
+    fontSize: 12,
+  },
+  equipItemList: {
+    marginTop: 10,
+    maxHeight: 200,
+    width: '100%',
+  },
+  equipItemButton: {
+    padding: 10,
+    backgroundColor: '#DDD',
+    marginVertical: 5,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  equipItemButtonText: {
+    fontSize: 14,
   },
   addButton: {
     marginTop: 10,
@@ -1385,6 +1443,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#7F7F7F',
     alignItems: 'center',
+    marginTop: 10,
   },
   ConButton: {
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
@@ -1616,17 +1675,25 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlign: 'center',
   },
+  blockContainer: {
+    marginBottom: 15,
+    alignItems: 'center',
+    width: '100%',
+  },
   blockTitle: {
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     fontSize: 20,
     fontWeight: 'bold',
     color: '#d6d6d6',
-    marginTop: 20,
+    marginVertical: 30,
+    paddingHorizontal: 20,
+    borderRadius: 10,
   },
   blockContent: {
     width: '90%',
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 5,
     borderRadius: 10,
   },
   pickerCharacter3: {
@@ -2779,6 +2846,11 @@ const styles = StyleSheet.create({
   },
   summaryContainer: {
     marginLeft: 15,
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  summaryContainerA: {
     marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
