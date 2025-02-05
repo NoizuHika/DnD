@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity, FlatList, Image, TextInput } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
@@ -6,47 +6,76 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
+import { UserData } from './UserData';
+import { useAuth } from './AuthContext';
 
 Appearance.setColorScheme('light');
 
+
 const CreateCharacter: React.FC = ({ navigation }) => {
+    const { token } = useAuth();
+      const { ipv4 } = useContext(UserData);
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const handleGoBack = () => {
     navigation.goBack();
   };
-
+useEffect(() => {
+      classes();
+      species();
+    }, []);
+  const [positions,setPositions]= useState([]);
+  const [races,setRaces]=useState([]);
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
+const classes= async () => {
 
-  const races = [
-    { name: '-' },
-    { name: 'Dwarf' },
-    { name: 'Halfling' },
-    { name: 'Human' },
-    { name: 'Elf' },
-    { name: 'Gnome' },
-    { name: 'Dragonborn' },
-    { name: 'Half-orc' },
-    { name: 'Half-elf' },
-    { name: 'Tiefling' },
-  ];
+  try {
+         const response = await fetch(`http://${ipv4}:8000/classes/all/short`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      }}
+    );
 
-  const positions = [
-    { name: '-' },
-    { name: 'Bard' },
-    { name: 'Barbarian' },
-    { name: 'Warrior' },
-    { name: 'Wizard' },
-    { name: 'Druid' },
-    { name: 'Priest' },
-    { name: 'Inventor' },
-    { name: 'Warlock' },
-    { name: 'Monk' },
-    { name: 'Paladin' },
-    { name: 'Rogue' },
-    { name: 'Ranger' },
-    { name: 'Sorcerer' },
-  ];
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    setPositions(result);
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
+const species= async () => {
+
+  try {
+         const response = await fetch(`http://${ipv4}:8000/species/all/short`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      }}
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    setRaces(result);
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
+
 
   const positionsImages = {
     'Dwarf-M-Bard': require('./assets/Dwarf-M-Bard.jpg'),
@@ -365,8 +394,8 @@ const CreateCharacter: React.FC = ({ navigation }) => {
     const selectedClassInfo = classInfo[selectedClassKey];
     const keys = Object.keys(classInfo);
     const image = keys.indexOf(selectedClassKey);
-    const race = selectedRace.id;
-    const playerClass = selectedPosition.id;
+    const race = selectedRace;
+    const playerClass = selectedPosition;
     const description = `${selectedGender}`;
     navigation.navigate('CreateCharacter2', { selectedClassInfo, nickname,description,race,playerClass, image });
   };
@@ -384,7 +413,7 @@ const CreateCharacter: React.FC = ({ navigation }) => {
                 style={[styles.pickerCharacter, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}
                 onValueChange={(itemValue) => setSelectedRace(itemValue)}>
                 {races.map((race, index) => (
-                  <Picker.Item key={index} label={race.name} value={race} />
+                  <Picker.Item key={index} label={race[0]} value={race[1]} />
                 ))}
             </Picker>
 
@@ -404,7 +433,7 @@ const CreateCharacter: React.FC = ({ navigation }) => {
                   style={[styles.pickerCharacter, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}
                   onValueChange={(itemValue) => setSelectedPosition(itemValue)}>
                   {positions.map((position, index) => (
-                     <Picker.Item key={index} label={position.name} value={position} />
+                     <Picker.Item key={index} label={position[0]} value={position[1]} />
                   ))}
              </Picker>
 

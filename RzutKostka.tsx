@@ -67,8 +67,9 @@ useEffect(() => {
   const handleRollDice = () => {
     const newDiceValues = [];
     const resultsSummary = [];
-    const forFetchResult = '';
+    let forFetchResult = '';
     if (spell && spell.hit) {
+
       selectedDice.forEach(({ index, count }) => {
         const diceResults = Array.from({ length: count }, () =>
             Math.floor(Math.random() * diceTypes[index].sides) + 1
@@ -93,7 +94,13 @@ useEffect(() => {
           rotateValues[index].setValue(0);
         });
       });
+  if (navigation && navigation.canGoBack()) {
+         navigation.goBack();
+         setTimeout(() => {
+           navigation.goBack();
+         }, 100);}
     } else {
+        forFetchResult = [];
       selectedDice.forEach(({ index, count }) => {
         const diceResults = Array.from({ length: count }, () =>
           Math.floor(Math.random() * diceTypes[index].sides) + 1
@@ -124,9 +131,7 @@ useEffect(() => {
 
      if (navigation && navigation.canGoBack()) {
        navigation.goBack();
-       setTimeout(() => {
-         navigation.goBack();
-       }, 100);
+
      }
    }
 

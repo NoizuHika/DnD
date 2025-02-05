@@ -5,7 +5,8 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
-
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
 Appearance.setColorScheme('light');
 
 const CreateCharacter5: React.FC = ({ navigation, route }) => {
@@ -14,6 +15,8 @@ const CreateCharacter5: React.FC = ({ navigation, route }) => {
   const [gold, setGold] = useState({ copper: '0', silver: '0', gold: '0', platinum: '0' });
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
+   const { ipv4 } = useContext(UserData);
+     const { token } = useAuth();
   const startingEquipment = {
     Bard: {
       items: [
@@ -39,7 +42,7 @@ const addCharacter = async () => {
     description: description2,
     name:nickname,
     race:race,
-    firstClass:firstClass,
+    firstClass:playerClass,
     token: token,
     strScore:attributes.Strength,
   	dexScore:attributes.Dexterity,

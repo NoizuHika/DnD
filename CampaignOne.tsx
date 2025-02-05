@@ -93,21 +93,134 @@ const CampaignOne: React.FC = ({ route,navigation }) => {
       setSelectedPlayers([...selectedPlayers, player.id]);
     }
   };
+const changeHP = async (player) => {
 
+  try {
+     const requestBody = {
+         id:player.id,
+         value: player.actualHP-1};
+         console.log(requestBody)
+    const response = await fetch(`http://${ipv4}:8000/characters/hp`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
+const levelUp = async (player) => {
+
+  try {
+     const requestBody = {
+         id:player.id};
+         console.log(requestBody)
+    const response = await fetch(`http://${ipv4}:8000/characters/levelUP`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
+const addCoins = async (player) => {
+
+  try {
+     const requestBody = {
+         id:player.id,value:player.money+10};
+         console.log(requestBody)
+    const response = await fetch(`http://${ipv4}:8000/characters/money`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
+const removeFromCampaign = async (player) => {
+
+  try {
+     const requestBody = {
+         id:player.id};
+         console.log(requestBody)
+    const response = await fetch(`http://${ipv4}:8000/characters/removeCampaign/{character_id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
   const handlePlayerAction = (action) => {
     const updatedPlayers = players.map(player => {
       if (selectedPlayers.includes(player.id)) {
         switch (action) {
           case 'addCoins':
-            player.coins += 10;
+            addCoins(player);
             break;
           case 'levelUp':
-            player.level += 1;
+            levelUp(player);
             break;
           case 'changeHP':
-            player.hp = player.hp < 100 ? 100 : player.hp - 10;
+            changeHP(player);
             break;
           case 'remove':
+             removeFromCampaign(player);
             return null;
         }
       }
@@ -179,9 +292,10 @@ const addNewNote = async (newNoteTitle,newNoteContent) => {
   try {
      const requestBody = {
          token: token,
-         sessionID: sessions[activeSessionIndex]?.id,
+         id: sessions[activeSessionIndex]?.id,
          itemNoteTitle: newNoteTitle,
-         itemNoteDescription: newNoteContent};
+         itemNoteDescription: newNoteContent,
+         type:"c"};
          console.log(requestBody)
     const response = await fetch(`http://${ipv4}:8000/notes/add`, {
       method: 'POST',
@@ -246,7 +360,39 @@ const updateSession = async (newSessionContent) => {
       Alert.alert(t('Please enter both name and description for the session.'));
     }
   };
+const updateNote = async () => {
+  try {
+         const requestBody = {
+            token: token,
+         id: sessions[activeSessionIndex]?.notes[editingNoteIndex].id,
+         itemNoteTitle: newNoteTitle,
+         itemNoteDescription: newNoteContent,
+         type:"c"
+             };
+         console.log(requestBody);
+console.log(sessions[activeSessionIndex]?.notes[editingNoteIndex].id);
+    const response = await fetch(`http://${ipv4}:8000/notes/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
 
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New session:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+  fetchData();
+};
   const handleEditSession = (index) => {
     setEditingSession(index);
     setNewSessionName(sessions[index].name);
@@ -375,6 +521,7 @@ const deleteNote = async () => {
         description: newNoteContent,
         image: newNoteImage ? { uri: newNoteImage } : require('./assets/Human-W-Mage.jpg')
       };
+      updateNote();
       setNotes(updatedNotes);
       setEditingNoteIndex(null);
       setNewNoteTitle('');

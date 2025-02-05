@@ -27,7 +27,7 @@ const CreateCharacter2: React.FC = ({ navigation, route }) => {
   //const { selectedRace, selectedGender, selectedPosition } = route.params;
 
   const renderDescription = (description) => {
-    return description.split('\n\n\n').map((block, index) => {
+    return description?.split('\n\n\n').map((block, index) => {
       const [title, ...contentArr] = block.split(': ');
       const content = contentArr.join(': ');
 
@@ -66,13 +66,13 @@ const CreateCharacter2: React.FC = ({ navigation, route }) => {
 
         <View style={styles.selectedImageContainer}>
           <Image
-            source={selectedClassInfo.image}
+            source={selectedClassInfo?.image}
             style={[styles.selectedImage, { width: 400 * scaleFactor, height: 400 * scaleFactor }]}
           />
           <View style={styles.nicknameContainer}>
             <Text style={[styles.nicknameText, { fontSize: fontSize * 1.2 }]}>{nickname}</Text>
           </View>
-          {renderDescription(selectedClassInfo.description)}
+          {renderDescription(selectedClassInfo?.description)}
         </View>
 
       </ScrollView>

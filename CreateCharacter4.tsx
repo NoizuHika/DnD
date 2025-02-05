@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
@@ -6,26 +6,28 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
-
-
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
 const CreateCharacter4: React.FC = ({ navigation, route }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const handleGoBack = () => {
     navigation.goBack();
   };
+
+  const { token } = useAuth();
 Appearance.setColorScheme('light');
 
 const[alignments,setAlignments] = useState([]);
-
+ const { ipv4 } = useContext(UserData)
 const [backgrounds,setBackgrounds] = useState([]);
 useEffect(() => {
       addBackgrounds();
       addAlignments();
-      });
+      }, []);
 const addAlignments = async () => {
 
   try {
-         const response = await fetch(`http://${ipv4}:8000/alignments/all`, {
+         const response = await fetch(`http://${ipv4}:8000/alignment/all`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -50,7 +52,7 @@ const addAlignments = async () => {
 const addBackgrounds= async () => {
 
   try {
-         const response = await fetch(`http://${ipv4}:8000/backgrounds/all`, {
+         const response = await fetch(`http://${ipv4}:8000/backgrounds/all/short`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -116,7 +118,7 @@ const addBackgrounds= async () => {
               onValueChange={(itemValue) => setAlignment(itemValue)}
             >
               {alignments.map((align) => (
-                <Picker.Item key={align} label={align} value={align} />
+                <Picker.Item key={align} label={align.name} value={align.id} />
               ))}
             </Picker>
 
@@ -202,8 +204,8 @@ const addBackgrounds= async () => {
               style={styles.pickerCharacter3}
               onValueChange={(itemValue) => setBackground(itemValue)}
             >
-              {background.map((align) => (
-                <Picker.Item key={align} label={align} value={align} />
+              {backgrounds.map((align) => (
+                <Picker.Item key={align} label={align[0]} value={align[1]} />
               ))}
             </Picker>
 
