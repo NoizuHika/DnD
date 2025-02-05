@@ -66,7 +66,7 @@ const CreateCharacter4: React.FC = ({ navigation, route }) => {
     >
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
 
-       <View>
+       <View style={styles.blockContainer}>
         <TouchableOpacity onPress={() => setCharacterDetailsVisible(!isCharacterDetailsVisible)}>
           <Text style={[styles.blockTitle, { fontSize: fontSize * 1.2 }]}>{t('Character_Details')}</Text>
         </TouchableOpacity>
@@ -101,7 +101,7 @@ const CreateCharacter4: React.FC = ({ navigation, route }) => {
           </View>
         )}
        </View>
-       <View>
+       <View style={styles.blockContainer}>
         <TouchableOpacity onPress={() => setPhysicalCharacteristicsVisible(!isPhysicalCharacteristicsVisible)}>
           <Text style={[styles.blockTitle, { fontSize: fontSize * 1.2 }]}>{t('Physical_Characteristics')}</Text>
         </TouchableOpacity>
@@ -127,7 +127,7 @@ const CreateCharacter4: React.FC = ({ navigation, route }) => {
           </View>
         )}
        </View>
-       <View>
+       <View style={styles.blockContainer}>
         <TouchableOpacity onPress={() => setPersonalCharacteristicsVisible(!isPersonalCharacteristicsVisible)}>
           <Text style={[styles.blockTitle, { fontSize: fontSize * 1.2 }]}>{t('Personal_Characteristics')}</Text>
         </TouchableOpacity>
@@ -144,7 +144,7 @@ const CreateCharacter4: React.FC = ({ navigation, route }) => {
           </View>
         )}
        </View>
-       <View>
+       <View style={styles.blockContainer}>
         <TouchableOpacity onPress={() => setNotesVisible(!isNotesVisible)}>
           <Text style={[styles.blockTitle, { fontSize: fontSize * 1.2 }]}>{t('Notes')}</Text>
         </TouchableOpacity>

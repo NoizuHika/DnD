@@ -1627,6 +1627,11 @@ const styles = StyleSheet.create({
     padding: 10,
     textAlign: 'center',
   },
+  blockContainer: {
+    marginBottom: 15,
+    alignItems: 'center',
+    width: '100%',
+  },
   blockTitle: {
     backgroundColor: 'rgba(0, 0, 0, 0.8)',
     fontSize: 20,
