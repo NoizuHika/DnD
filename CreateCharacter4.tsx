@@ -29,10 +29,11 @@ const CreateCharacter4: React.FC = ({ navigation, route }) => {
 
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
-  const { selectedClassInfo, nickname } = route.params;
+  const { selectedClassInfo, nickname,description,race,playerClass, image, attributes } = route.params;
 
   const handleContinue = () => {
-    navigation.navigate('CreateCharacter5', { selectedClassInfo, nickname });
+      const description2= ` Gender: ${description} Fate: ${fate} Lifestyle: ${lifestyle} Height: ${height} Weight: ${weight} Age: ${age}`
+    navigation.navigate('CreateCharacter5', { selectedClassInfo, nickname,description2,race,playerClass, image, attributes,alignment,background });
   };
 
   const [alignment, setAlignment] = useState('');

@@ -28,10 +28,9 @@ const CreateCharacter3: React.FC = ({ navigation, route }) => {
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
 
-  const { selectedClassInfo, nickname } = route.params;
-
+  const { selectedClassInfo, nickname,description,race,playerClass, image } = route.params;
   const handleContinue = () => {
-    navigation.navigate('CreateCharacter4', { selectedClassInfo, nickname, attributes });
+    navigation.navigate('CreateCharacter4', { selectedClassInfo, nickname,description,race,playerClass, image, attributes });
   };
 
   const [attributes, setAttributes] = useState(initialAttributes);

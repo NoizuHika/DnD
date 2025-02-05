@@ -33,7 +33,7 @@ const EncounterRunStart: React.FC = ({ route, navigation }) => {
       ...npcItem,
       type: 'npc',
       id: index + 1000,
-      hp: npcItem.actualHP || 10,
+      hp: npcItem.hitPoints || 10,
     })),
   ]);
 

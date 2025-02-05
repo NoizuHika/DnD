@@ -10,7 +10,7 @@ Appearance.setColorScheme('light');
 
 const CreateCharacter5: React.FC = ({ navigation, route }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
-  const { selectedClassInfo } = route.params;
+  const { selectedClassInfo, nickname,description2,race,playerClass, image, attributes,alignment,background } = route.params;
   const [gold, setGold] = useState({ copper: '0', silver: '0', gold: '0', platinum: '0' });
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
@@ -33,6 +33,14 @@ const CreateCharacter5: React.FC = ({ navigation, route }) => {
     },
   };
 
+  const moneyforPlayer =()=>{
+      const copperValue = parseInt(gold.copper, 10) || 0;
+           const silverValue = parseInt(gold.silver, 10) || 0;
+           const goldValue = parseInt(gold.gold, 10) || 0;
+           const platinumValue = parseInt(gold.platinum, 10) || 0;
+      money = copperValue + (silverValue * 10) + (goldValue * 100) + (platinumValue * 1000)
+      return money;
+      };
   const handleGoBack = () => {
     navigation.goBack();
   };

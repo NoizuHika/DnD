@@ -19,10 +19,10 @@ const CreateCharacter2: React.FC = ({ navigation, route }) => {
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
 
-  const { selectedClassInfo, nickname } = route.params;
+  const { selectedClassInfo, nickname,description,race,playerClass, image } = route.params;
 
   const handleContinue = () => {
-    navigation.navigate('CreateCharacter3', { selectedClassInfo, nickname });
+    navigation.navigate('CreateCharacter3', { selectedClassInfo, nickname,description,race,playerClass, image });
   };
   //const { selectedRace, selectedGender, selectedPosition } = route.params;
 

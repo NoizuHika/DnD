@@ -361,10 +361,14 @@ const CreateCharacter: React.FC = ({ navigation }) => {
   );
 
   const handleContinue = () => {
-    const selectedClassKey = `${selectedRace}-${selectedGender}-${selectedPosition}`;
+    const selectedClassKey = `${selectedRace.name}-${selectedGender}-${selectedPosition.name}`;
     const selectedClassInfo = classInfo[selectedClassKey];
-
-    navigation.navigate('CreateCharacter2', { selectedClassInfo, nickname });
+    const keys = Object.keys(classInfo);
+    const image = keys.indexOf(selectedClassKey);
+    const race = selectedRace.id;
+    const playerClass = selectedPosition.id;
+    const description = `${selectedGender}`;
+    navigation.navigate('CreateCharacter2', { selectedClassInfo, nickname,description,race,playerClass, image });
   };
 
   return (
@@ -380,7 +384,7 @@ const CreateCharacter: React.FC = ({ navigation }) => {
                 style={[styles.pickerCharacter, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}
                 onValueChange={(itemValue) => setSelectedRace(itemValue)}>
                 {races.map((race, index) => (
-                  <Picker.Item key={index} label={race.name} value={race.name} />
+                  <Picker.Item key={index} label={race.name} value={race} />
                 ))}
             </Picker>
 
@@ -400,7 +404,7 @@ const CreateCharacter: React.FC = ({ navigation }) => {
                   style={[styles.pickerCharacter, { height: 50 * scaleFactor, width: 250 * scaleFactor }]}
                   onValueChange={(itemValue) => setSelectedPosition(itemValue)}>
                   {positions.map((position, index) => (
-                     <Picker.Item key={index} label={position.name} value={position.name} />
+                     <Picker.Item key={index} label={position.name} value={position} />
                   ))}
              </Picker>
 
