@@ -45,7 +45,7 @@ const CharacterDetail: React.FC = ({ route,navigation }) => {
         </Picker>
       </View>
 
-      {/* Wyświetlanie danych postaci */}
+
       <View style={{ padding: 20 }}>
         <Text style={[styles.detailText, { color: theme.fontColor, fontSize: fontSize * 1.2 }]}>
           {t('Species')}: {characterData?.playerSpecies?.[0]?.species.name || t('Unknown')}

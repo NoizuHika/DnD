@@ -102,7 +102,7 @@ const handleRollDice = () => {
 
       <View style={styles.diceRollLabelContainer}>
         <Text style={[styles.diceRollLabelText, { color: theme.textColor, fontSize: fontSize * 1.2 }]}>
-          {`${t('Roll for')} ${attributes[statName]}`}
+          {`${t('Roll for')} ${attributes[statName] ?? 'attack'}`}
         </Text>
       </View>
 
