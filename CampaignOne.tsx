@@ -97,8 +97,8 @@ const changeHP = async (player) => {
 
   try {
      const requestBody = {
-         id:player.id,
-         value: player.actualHP-1};
+         player:player.id,
+         id: player.actualHP-1};
          console.log(requestBody)
     const response = await fetch(`http://${ipv4}:8000/characters/hp`, {
       method: 'POST',
@@ -125,16 +125,14 @@ const changeHP = async (player) => {
 const levelUp = async (player) => {
 
   try {
-     const requestBody = {
-         id:player.id};
-         console.log(requestBody)
+
     const response = await fetch(`http://${ipv4}:8000/characters/levelUP`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
 
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify(player.id),
     });
 
     if (!response.ok) {
@@ -154,7 +152,7 @@ const addCoins = async (player) => {
 
   try {
      const requestBody = {
-         id:player.id,value:player.money+10};
+         player:player.id,id:player.money+10};
          console.log(requestBody)
     const response = await fetch(`http://${ipv4}:8000/characters/money`, {
       method: 'POST',
@@ -841,9 +839,7 @@ const handleClosePlayerAdd = () => {
               {player.image ? (
                   <Image source={{ uri: player.image }} style={styles.playerImage} />
                 ) : (
-                  <View style={[styles.playerImage, styles.placeholder]}>
-                    <Text style={styles.placeholderText}>No Image</Text>
-                  </View>
+                  <Image source={require('./addons/defaultPlayer.png')} style={styles.playerImage} />
                 )}
             </TouchableOpacity>
           ))}

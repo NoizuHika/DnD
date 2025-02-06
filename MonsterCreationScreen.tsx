@@ -125,8 +125,34 @@ const autofillBeast = async () => {
     }
 
     const result = await response.json();
-    console.log(result)
-	setMonster(result);
+	       setMonster((prevMonster) => ({
+              ...prevMonster,
+              name: result.name || prevMonster.name,
+              challengeRating: result.challengeRating || prevMonster.challengeRating,
+              armorClass: result.armorClass || prevMonster.armorClass,
+              size: result.size || prevMonster.size,
+              monsterType: result.type || prevMonster.monsterType,
+              hitPoints: result.hitPoints || prevMonster.hitPoints,
+              alignment: result.alignment || prevMonster.alignment,
+              strScore: result.strScore || prevMonster.strScore,
+              dexScore: result.dexScore || prevMonster.dexScore,
+              conScore: result.conScore || prevMonster.conScore,
+              intScore: result.intScore || prevMonster.intScore,
+              wisScore: result.wisScore || prevMonster.wisScore,
+              chaScore: result.chaScore || prevMonster.chaScore,
+              movements: Array.isArray(result.movements) ? result.movements : result.movements ? [result.movements] : [],
+              skills: Array.isArray(result.skills) ? result.skills : result.skills ? [result.skills] : [],
+              senses: Array.isArray(result.senses) ? result.senses : result.senses ? [result.senses] : [],
+              languages: Array.isArray(result.languages) ? result.languages : result.languages ? [result.languages] : [],
+            }));
+
+            setMonsterDescriptions((prevDescriptions) => ({
+              ...prevDescriptions,
+              monsterDescription: result.monsterDescription || prevDescriptions.monsterDescription,
+              actionsDescription: result.actionsDescription || prevDescriptions.actionsDescription,
+              bonusActionsDescription: result.bonusActionsDescription || prevDescriptions.bonusActionsDescription,
+              legendaryActionDescription: result.legendaryActionDescription || prevDescriptions.legendaryActionDescription,
+            }));
 
   } catch (error) {
     console.error('Error fetching data:', error.message);
@@ -135,39 +161,40 @@ const autofillBeast = async () => {
 };
 const addNewBeast = async () => {
 
-  try {
-     const requestBody = {
-         token: token,
-    name: monster.name,
-    challengeRating: monster.challengeRating,
-    armorClass: monster.armorClass,
-    hitPoints: monster.hitPoints,
-    passivePerception: monster.senses.join(", "),
-    strScore: monster.strScore,
-    dexScore: monster.dexScore,
-    intScore: monster.intScore,
-    wisScore: monster.wisScore,
-    chaScore: monster.chaScore,
-    conScore: monster.conScore,
-    legendaryActionDescription: monsterDescriptions.legendaryActionDescription,
-    actionDescription: monsterDescriptions.actionsDescription,
-    bonusActionDescription: monsterDescriptions.bonusActionsDescription,
-    monsterDescription: monsterDescriptions.description,
-    alignment: monster.alignment,
-    hitPointDiceType: monster.hitPointDiceType,
-    monsterType: monster.monsterType,
-    size: monster.size,
-    speed: monster.movements.join(", "),
-    skills: monster.skills.join(", ")};
-         console.log(requestBody)
-    const response = await fetch(`http://${ipv4}:8000/besiaries/add`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
 
-      body: JSON.stringify(requestBody),
-    });
+     try {
+         const requestBody = {
+           token: token,
+           name: monster.name,
+           challengeRating: String(monster.challengeRating),
+           armorClass: String(monster.armorClass),
+           hitPoints: monster.hitPoints,
+           passivePerception: monster.senses ? monster.senses.join(", ") : "",
+           strScore: parseInt(monster.strScore) || 0,
+           dexScore: parseInt(monster.dexScore) || 0,
+           intScore: parseInt(monster.intScore) || 0,
+           wisScore: parseInt(monster.wisScore) || 0,
+           chaScore: parseInt(monster.chaScore) || 0,
+           conScore: parseInt(monster.conScore) || 0,
+           legendaryActionDescription: monsterDescriptions.legendaryActionDescription || null,
+           actionDescription: monsterDescriptions.actionsDescription || null,
+           bonusActionDescription: monsterDescriptions.bonusActionsDescription || null,
+           monsterDescription: monsterDescriptions.description || null,
+           alignment: monster.alignment,
+           monsterType: monster.monsterType,
+           size: monster.size,
+           speed: monster.movements ? monster.movements.join(", ") : "",
+           skills: monster.skills ? monster.skills.join(", ") : ""
+         };
+
+         console.log(requestBody)
+    const response = await fetch(`http://${ipv4}:8000/bestiaries/add`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(requestBody),
+        });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch data: ${response.status}`);
@@ -260,7 +287,7 @@ const addNewBeast = async () => {
           <View style={styles.twoColumnContainer}>
             <View style={styles.column}>
             <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Armor Class')}</Text>
-            <TextInput style={[styles.inputMonCre, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Armor')} value={monster.armorClass} onChangeText={(text) => handleInputChange('armorClass', text)} keyboardType="numeric" />
+            <TextInput style={[styles.inputMonCre, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Armor')} value={monster.armorClass} onChangeText={(text) => handleInputChange('armorClass', text)}  />
 
             <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Hit Points')}</Text>
             <TouchableOpacity onPress={openHitPointsModal} style={styles.inputMonCre}>
@@ -291,17 +318,7 @@ const addNewBeast = async () => {
             </Picker>
 
           <View style={styles.section}>
-            <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Monster Subtype?')}</Text>
-            <View style={styles.checkboxContainer1}>
-              <CheckBox
-                value={isSubtype}
-                onValueChange={(value) => setIsSubtype(value)}
-                tintColors={{
-                  true: theme.checkboxActive || '#4caf50',
-                  false: theme.checkboxInactive || '#f44336',
-                }}
-              />
-            </View>
+
 
             {isSubtype && (
               <View>

@@ -340,7 +340,7 @@ const Character1: React.FC = ({ route,navigation }) => {
         </Picker>
       </View>
       <View style={[styles.imageContainer, { width: 100 * scaleFactor, height: 100 * scaleFactor }]}>
-        <Image source={{uri: characterData.image }} style={styles.image} />
+        <Image source={characterData.image ? { uri: characterData.image } : require('./addons/defaultPlayer.png')} style={styles.image} />
     </View>
 
       <View style={[styles.healthContainer, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>

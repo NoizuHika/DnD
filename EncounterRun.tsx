@@ -313,7 +313,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
               <TouchableOpacity onPress={() => setVisibleAddNPC(false)} style={styles.closeButtonItemEncounter}>
                 <Text style={styles.closeButtonTextEncounter}>{t('Cancel')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.editButtonEncounter} onPress={addNPCsToEncounter}>
+              <TouchableOpacity style={styles.editButtonEncounter} onPress={addNpcsToEncounter}>
                 <Text style={styles.editButtonTextEncounter}>{t('Add')}</Text>
               </TouchableOpacity>
             </View>

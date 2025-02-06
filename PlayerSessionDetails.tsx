@@ -468,7 +468,7 @@ return (
         <View style={styles.rightCampaignContainer}>
           <View style={styles.playerSessionDetailAvatarContainer}>
           <TouchableOpacity onPress={handlePressPortrait}>
-            <Image source={{uri: playerActual.image}} style={[styles.playerSessionDetailAvatar, { width: 100 * scaleFactor, height: 100 * scaleFactor }]} />
+            <Image source={playerActual.image ? { uri: playerActual.image } : require('./addons/defaultPlayer.png')} style={[styles.playerSessionDetailAvatar, { width: 100 * scaleFactor, height: 100 * scaleFactor }]} />
             <Text style={[styles.playerSessionDetailName, { fontSize: fontSize }]}>{playerActual.name}</Text>
             </TouchableOpacity>
           </View>

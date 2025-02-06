@@ -9,7 +9,8 @@ import styles from './styles';
 import autofillNPC from './assets/Library/autofillNPC.json';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
-
+import { UserData } from './UserData';
+import { useAuth } from './AuthContext';
 Appearance.setColorScheme('light');
 
 const CreatorNPC: React.FC = ({ navigation }) => {
@@ -39,19 +40,10 @@ const CreatorNPC: React.FC = ({ navigation }) => {
     description: [],
   });
 
-  const [imageUri, setImageUri] = useState('');
 
-  const selectImage = () => {
-    launchImageLibrary({ mediaType: 'photo' }, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.errorCode) {
-        console.log('ImagePicker Error: ', response.errorMessage);
-      } else {
-        setImageUri(response.assets[0].uri);
-      }
-    });
-  };
+const { token } = useAuth();
+      const { ipv4 } = useContext(UserData);
+
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -99,7 +91,27 @@ const setAutofill = async () => {
 
     const result = await response.json();
     console.log(result)
-	setNpc(result);
+	setMonster({
+        name: result.name,
+        challengeRating: result.challengeRating,
+        armorClass: result.armorClass,
+        size: result.size,
+        monsterType: result.type,
+        hitPoints: result.averageHitPoints,
+        alignment:result.alignment,
+        saveProfs: result.saveProfs ,
+        strength: result.strScore,
+        dexterity: result.dexScore,
+        speed: result.speed,
+        constitution: result.conScore,
+        intelligence: result.intScore,
+        wisdom: result.wisScore,
+        charisma: result.chaScore,
+        bonus_action_description: [result.bonusActionDescription],
+        action_description: [result.actionDescription],
+        language: [result.language],
+        description: [result.description],
+      });
 
   } catch (error) {
     console.error('Error fetching data:', error.message);
@@ -110,28 +122,28 @@ const addNewNpc = async () => {
 
   try {
      const requestBody = {
-         token: token,
-    name: monster.name,
-    challengeRating: `${monster.challengeRating}`,
-    armorClass: `${monster.armorClass}`,
-    hitPoints: monster.averageHitPoints,
-    passivePerception: monster.perception.join(", "),
-    strScore: monster.strScore,
-    dexScore: monster.dexScore,
-    intScore: monster.intScore,
-    wisScore: monster.wisScore,
-    chaScore: monster.chaScore,
-    conScore: monster.conScore,
-    languageNoteOverride: monster.language,
-    actionDescription: monster.action_description.join(", "),
-    bonusActionDescription: monster.bonus_action_description.join(", "),
-    alignment: monster.alignment,
-    description: monster.description,
-    savingThrowProficiencies: monster.saveProfs,
-    monsterType: monster.monsterType,
-    size: monster.size,
-    speed: monster.speed,
-    notes: monster.note};
+       token: token,
+       name: monster.name,
+       challengeRating: `${monster.challengeRating}`,
+       armorClass: `${monster.armorClass}`,
+       hitPoints: monster.hitPoints,
+       passivePerception: `${monster.perception || "0"}`,
+       strScore: parseInt(monster.strength) || 0,
+       dexScore: parseInt(monster.dexterity) || 0,
+       intScore: parseInt(monster.intelligence) || 0,
+       wisScore: parseInt(monster.wisdom) || 0,
+       chaScore: parseInt(monster.charisma) || 0,
+       conScore: parseInt(monster.constitution) || 0,
+       languageNoteOverride: Array.isArray(monster.language) ? monster.language : [],
+       actionDescription: monster.action_description?.join(", ") || null,
+       bonusActionDescription: monster.bonus_action_description?.join(", ") || null,
+       alignment: monster.alignment || "Neutral",
+       description: monster.description.join(", ") || null,
+       savingThrowProficiencies: Array.isArray(monster.saveProfs) ? monster.saveProfs : [],
+       monsterType: monster.monsterType || "Unknown",
+       size: monster.size || "Medium",
+       speed: monster.speed || "0"
+     };
     console.log(requestBody)
     const response = await fetch(`http://${ipv4}:8000/npcs/add`, {
       method: 'POST',
@@ -171,7 +183,7 @@ const addNewNpc = async () => {
   const addItem = () => {
     setMonster((prevMonster) => ({
       ...prevMonster,
-      imageUri: response.assets[0].uri,
+
       [currentInputType]: [...prevMonster[currentInputType], inputValue],
     }));
     closeInputModal();
@@ -297,17 +309,8 @@ const addNewNpc = async () => {
             </Picker>
 
           <View style={styles.section}>
-            <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Monster Subtype?')}</Text>
-            <View style={styles.checkboxContainer1}>
-              <CheckBox
-                value={isSubtype}
-                onValueChange={(value) => setIsSubtype(value)}
-                tintColors={{
-                  true: theme.checkboxActive || '#4caf50',
-                  false: theme.checkboxInactive || '#f44336',
-                }}
-              />
-            </View>
+
+
 
             {isSubtype && (
               <View>
@@ -367,17 +370,17 @@ const addNewNpc = async () => {
           </View>
           <View style={styles.column}>
             <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Constitution')}</Text>
-            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Constitution')} value={monster.dexterity} onChangeText={(text) => handleInputChange('constitution', text)} keyboardType="numeric" />
+            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Constitution')} value={monster.constitution} onChangeText={(text) => handleInputChange('constitution', text)} keyboardType="numeric" />
 
             <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Intelligence')}</Text>
-            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Intelligence')} value={monster.dexterity} onChangeText={(text) => handleInputChange('intelligence', text)} keyboardType="numeric" />
+            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Intelligence')} value={monster.intelligence} onChangeText={(text) => handleInputChange('intelligence', text)} keyboardType="numeric" />
           </View>
           <View style={styles.column}>
             <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Wisdom')}</Text>
-            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Wisdom')} value={monster.dexterity} onChangeText={(text) => handleInputChange('wisdom', text)} keyboardType="numeric" />
+            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Wisdom')} value={monster.wisdom} onChangeText={(text) => handleInputChange('wisdom', text)} keyboardType="numeric" />
 
             <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Charisma')}</Text>
-            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Charisma')} value={monster.dexterity} onChangeText={(text) => handleInputChange('charisma', text)} keyboardType="numeric" />
+            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Charisma')} value={monster.charisma} onChangeText={(text) => handleInputChange('charisma', text)} keyboardType="numeric" />
           </View>
         </View>
 
@@ -402,7 +405,7 @@ const addNewNpc = async () => {
               <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Add perception')}</Text>
             </TouchableOpacity>
           </View>
-            {monster.perception.map((item, index) => (
+            {monster.perception?.map((item, index) => (
               <View key={index} style={styles.itemContainer}>
                 <Text style={styles.itemText}>{item}</Text>
                 <TouchableOpacity onPress={() => removeItem('perception', index)}>
@@ -417,7 +420,7 @@ const addNewNpc = async () => {
               <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Add description')}</Text>
             </TouchableOpacity>
           </View>
-            {monster.action_description.map((item, index) => (
+            {monster.action_description?.map((item, index) => (
               <View key={index} style={styles.itemContainer}>
                 <Text style={styles.itemText}>{item}</Text>
                 <TouchableOpacity onPress={() => removeItem('action_description', index)}>
@@ -432,7 +435,7 @@ const addNewNpc = async () => {
               <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize * 1.1 }]}>{t('Add description')}</Text>
             </TouchableOpacity>
           </View>
-            {monster.bonus_action_description.map((item, index) => (
+            {monster.bonus_action_description?.map((item, index) => (
               <View key={index} style={styles.itemContainer}>
                 <Text style={styles.itemText}>{item}</Text>
                 <TouchableOpacity onPress={() => removeItem('bonus_action_description', index)}>
@@ -441,20 +444,7 @@ const addNewNpc = async () => {
               </View>
             ))}
 
-          <View style={styles.columnAdding}>
-            <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Notes')}</Text>
-            <TouchableOpacity style={[styles.addButtonMonCre, { height: 50 * scaleFactor, width: 200 * scaleFactor }]} onPress={() => openInputModal('note')}>
-              <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize * 1.1 }]}>{t('Add note')}</Text>
-            </TouchableOpacity>
-          </View>
-            {monster.note.map((item, index) => (
-              <View key={index} style={styles.itemContainer}>
-                <Text style={styles.itemText}>{item}</Text>
-                <TouchableOpacity onPress={() => removeItem('note', index)}>
-                  <Text style={[styles.removeButtonText, { fontSize: fontSize }]}>{t('Remove')}</Text>
-                </TouchableOpacity>
-              </View>
-            ))}
+
 
           <View style={styles.columnAdding}>
             <Text style={[styles.labelMonCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Description')}</Text>
@@ -462,7 +452,7 @@ const addNewNpc = async () => {
               <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize * 1.1 }]}>{t('Add description')}</Text>
             </TouchableOpacity>
           </View>
-            {monster.description.map((item, index) => (
+            {monster.description?.map((item, index) => (
               <View key={index} style={styles.itemContainer}>
                 <Text style={styles.itemText}>{item}</Text>
                 <TouchableOpacity onPress={() => removeItem('description', index)}>
@@ -471,39 +461,11 @@ const addNewNpc = async () => {
               </View>
             ))}
 
-        <View>
-          <TouchableOpacity
-            style={[styles.addButtonImageA, { height: 50 * scaleFactor, width: 200 * scaleFactor }]}
-            onPress={() => {
-              launchImageLibrary({ mediaType: 'photo' }, (response) => {
-                if (response.assets && response.assets[0].uri) {
-                  setImageUri(response.assets[0].uri);
-                }
-              });
-            }}
-          >
-            <Text style={[{ color: theme.textColor, fontSize: fontSize * 1.1 }]}>
-              {t('Add image')}
-            </Text>
-          </TouchableOpacity>
-        </View>
 
-        {(imageUri || monster.imageUri) && (
-          <Image
-            source={{ uri: imageUri || monster.imageUri }}
-            style={{
-              width: 250 * scaleFactor,
-              height: 250 * scaleFactor,
-              borderRadius: 10,
-              borderWidth: 1,
-              borderColor: 'gray',
-            }}
-          />
-        )}
 
-          {!imageUri && !monster.imageUri && (
-            <Text style={[styles.addButtonTextEncounter, { color: theme.textColor, fontSize: fontSize * 1.1 }]}>{t('No Image Selected')}</Text>
-          )}
+
+
+
 
         {/* Hit Points */}
         <Modal visible={hitPointsModalVisible} transparent={true} animationType="slide">

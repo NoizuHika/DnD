@@ -13,7 +13,7 @@ Appearance.setColorScheme('light');
 const Inventory: React.FC = ({ route,navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
-  const { character } = route.params;
+  const { characterData } = route.params;
   const { theme } = useContext(ThemeContext);
   const [selectedScreen, setSelectedScreen] = useState('Inventory');
   const [isModalVisible, setModalVisible] = useState(false);
@@ -21,7 +21,7 @@ const Inventory: React.FC = ({ route,navigation }) => {
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedItem, setSelectedItem] = useState(null);
-  const [items, setItems] = useState(sampleItems.items || []);
+  const [items, setItems] = useState(characterData.items || []);
   const [gold, setGold] = useState(sampleItems.gold || 0);
   const [equippedItems, setEquippedItems] = useState({});
   const [isEquipModalVisible, setEquipModalVisible] = useState(false);
@@ -129,7 +129,7 @@ const Inventory: React.FC = ({ route,navigation }) => {
           style={[styles.pickerChooseChar, { width: 200 * scaleFactor }]}
           onValueChange={(itemValue) => {
             setSelectedScreen(itemValue);
-            navigation.navigate(itemValue);
+            navigation.navigate(itemValue,{ characterData : character });
           }}
         >
           <Picker.Item label={t('Main Scene')} value="Character1" />
@@ -279,7 +279,7 @@ const Inventory: React.FC = ({ route,navigation }) => {
       </View>
 
       <View style={styles.summaryContainerA}>
-      <TouchableOpacity style={[styles.autoAddButton, { height: 45 * scaleFactor }]} onPress={handleAddItemsFromJSON}>
+      <TouchableOpacity style={[styles.autoAddButton, { height: 45 * scaleFactor }]} >
         <Text style={[styles.autoAddButtonText, { fontSize: fontSize }]}>{t('Add Automatically')}</Text>
       </TouchableOpacity>
 

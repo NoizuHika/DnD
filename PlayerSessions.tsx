@@ -72,15 +72,59 @@ const PlayerSessions: React.FC = () => {
     };
 
 
+ const joinSession = async () => {
+                requestBody ={
+                        campaign_code: code,
+                        character_id: selectedPlayers.id
+                        };
+        try {
+            console.log('Token:', token.toString());
+            const sessionsResponse = await fetch(`http://${ipv4}:8000/campaigns/addCharacter`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            if (!sessionsResponse.ok) {
+                throw new Error('Failed to fetch data');
+            }
+            const data = await sessionsResponse.json();
+             setResult(data.result)
+
+
+            const charactersResponse = await fetch(`http://${ipv4}:8000/user/characters`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                },
+                body: JSON.stringify({ token: token.toString() }),
+            });
+
+            if (!charactersResponse.ok) {
+                throw new Error('Failed to fetch characters');
+            }
+
+            const charactersData = await charactersResponse.json();
+            setCharacters(charactersData.characters);
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
     const openSessionDetails = (item) => {
         navigation.navigate('PlayerSessionDetails', {campaign: item[1], player:item[0],session:item[1].sessions[item[1].sessions.length - 1] });
 
     };
 
     const addSession = () => {
+        joinSession();
         if (code.trim() === '') return;
-        const newSession = { title: `${code}`, sessions: [], players: selectedPlayers };
-        setResult([...result, [code, newSession]]);
+
+        setResult([...result]);
         setModalVisible(false);
         setCode('');
         setSelectedPlayers([]);
@@ -134,10 +178,9 @@ const PlayerSessions: React.FC = () => {
                     <Text style={[styles.modalTitleMonCre, { fontSize: fontSize }]}>{t('Enter Code')}</Text>
                     <TextInput
                         style={[styles.modalInputEncounter, { fontSize: fontSize }]}
-                        keyboardType="numeric"
+
                         value={code}
                         onChangeText={setCode}
-                        onChangeText={(text) => setCode(text.replace(/[^0-9]/g, ''))}
                         placeholder={t('Enter Code')}
                         placeholderTextColor="#808080"
                         maxLength={6}
@@ -189,7 +232,7 @@ const PlayerSessions: React.FC = () => {
                                         setPlayerModalVisible(false);
                                     }}
                                 >
-                                    <Image source={{ uri: item.image }} style={styles.characterImageSession} />
+                                    <Image source={item.image ? { uri: item.image } : require('./addons/defaultPlayer.png')} style={styles.characterImageSession} />
                                     <Text style={[styles.characterNameSession, { color: theme.fontColor }]}>{item.name}</Text>
                                 </TouchableOpacity>
                             )}
