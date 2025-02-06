@@ -33,7 +33,7 @@ const EncounterRunStart: React.FC = ({ route, navigation }) => {
       ...npcItem,
       type: 'npc',
       id: index + 1000,
-      hp: npcItem.actualHP || 10,
+      hp: npcItem.hitPoints || 10,
     })),
   ]);
 
@@ -142,6 +142,7 @@ const EncounterRunStart: React.FC = ({ route, navigation }) => {
       let action = {
         name: match[1],
         description: match[2].trim(),
+        damageType: "natural"
       };
       const hitRegex = /Hit:\s*(\d+)\s*\(\d+\w+ \+\s*\d+\)/;
       const hitMatch = hitRegex.exec(match[2]);

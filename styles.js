@@ -2670,7 +2670,41 @@ const styles = StyleSheet.create({
   infoColumn: {
     flex: 1,
   },
-
+  containerCharacters: {
+    flex: 1,
+    position: 'relative',
+  },
+  appNameCharacters: {
+    position: 'absolute',
+    top: '16%',
+    width: '100%',
+    textAlign: 'center',
+    alignItems: 'center',
+    fontSize: 30,
+    textShadowColor: 'rgba(0, 0, 0, 0.7)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 3,
+    fontWeight: 'bold',
+    zIndex: 1,
+  },
+  characterContainerCharacters: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingTop: "40%",
+    paddingBottom: 60,
+    minHeight: '100%',
+  },
+  buttonContainerCharacters: {
+    margin: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '30%',
+  },
+  characterImageCharacters: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
   modalTitleSpells: {
     color: '#c5c6c9',
     fontSize: 24,

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { ImageBackground, StyleSheet, View, Text, TouchableOpacity, TextInput, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from 'react-i18next';
@@ -6,41 +6,80 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
-
-Appearance.setColorScheme('light');
-
-const alignments = [
-  'Chaotic Evil',
-  'Chaotic Good',
-  'Chaotic Neutral',
-  'Lawful Evil',
-  'Lawful Good',
-  'Lawful Neutral',
-  'Neutral Evil',
-  'Neutral Good',
-  'True Neutral'
-];
-
-const background = [
-  'background1',
-  'background2',
-  'background3',
-  'background4',
-  'background5',
-];
-
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
 const CreateCharacter4: React.FC = ({ navigation, route }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const handleGoBack = () => {
     navigation.goBack();
   };
 
+  const { token } = useAuth();
+Appearance.setColorScheme('light');
+
+const[alignments,setAlignments] = useState([]);
+ const { ipv4 } = useContext(UserData)
+const [backgrounds,setBackgrounds] = useState([]);
+useEffect(() => {
+      addBackgrounds();
+      addAlignments();
+      }, []);
+const addAlignments = async () => {
+
+  try {
+         const response = await fetch(`http://${ipv4}:8000/alignment/all`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      }}
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    setAlignments(result);
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
+
+const addBackgrounds= async () => {
+
+  try {
+         const response = await fetch(`http://${ipv4}:8000/backgrounds/all/short`, {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+      }}
+    );
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    setBackgrounds(result);
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+};
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
-  const { selectedClassInfo, nickname } = route.params;
+  const { selectedClassInfo, nickname,description,race,playerClass, image, attributes } = route.params;
 
   const handleContinue = () => {
-    navigation.navigate('CreateCharacter5', { selectedClassInfo, nickname });
+      const description2= ` Gender: ${description} Fate: ${fate} Lifestyle: ${lifestyle} Height: ${height} Weight: ${weight} Age: ${age}`
+    navigation.navigate('CreateCharacter5', { selectedClassInfo, nickname,description2,race,playerClass, image, attributes,alignment,background });
   };
 
   const [alignment, setAlignment] = useState('');
@@ -50,7 +89,7 @@ const CreateCharacter4: React.FC = ({ navigation, route }) => {
   const [isPhysicalCharacteristicsVisible, setPhysicalCharacteristicsVisible] = useState(false);
   const [isPersonalCharacteristicsVisible, setPersonalCharacteristicsVisible] = useState(false);
   const [isNotesVisible, setNotesVisible] = useState(false);
-
+  const [background,setBackground] = useState('');
   const validateNumberInput = (text) => {
     return text.replace(/[^0-9]/g, '');
   };
@@ -79,7 +118,7 @@ const CreateCharacter4: React.FC = ({ navigation, route }) => {
               onValueChange={(itemValue) => setAlignment(itemValue)}
             >
               {alignments.map((align) => (
-                <Picker.Item key={align} label={align} value={align} />
+                <Picker.Item key={align} label={align.name} value={align.id} />
               ))}
             </Picker>
 
@@ -163,10 +202,10 @@ const CreateCharacter4: React.FC = ({ navigation, route }) => {
             <Picker
               selectedValue={alignment}
               style={styles.pickerCharacter3}
-              onValueChange={(itemValue) => setAlignment(itemValue)}
+              onValueChange={(itemValue) => setBackground(itemValue)}
             >
-              {background.map((align) => (
-                <Picker.Item key={align} label={align} value={align} />
+              {backgrounds.map((align) => (
+                <Picker.Item key={align} label={align[0]} value={align[1]} />
               ))}
             </Picker>
 

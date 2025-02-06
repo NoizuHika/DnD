@@ -5,15 +5,18 @@ import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
-
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
 Appearance.setColorScheme('light');
 
 const CreateCharacter5: React.FC = ({ navigation, route }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
-  const { selectedClassInfo } = route.params;
+  const { selectedClassInfo, nickname,description2,race,playerClass, image, attributes,alignment,background } = route.params;
   const [gold, setGold] = useState({ copper: '0', silver: '0', gold: '0', platinum: '0' });
   const { t, i18n } = useTranslation();
   const { theme } = useContext(ThemeContext);
+   const { ipv4 } = useContext(UserData);
+     const { token } = useAuth();
   const startingEquipment = {
     Bard: {
       items: [
@@ -32,13 +35,63 @@ const CreateCharacter5: React.FC = ({ navigation, route }) => {
       gold: 0
     },
   };
+const addCharacter = async () => {
 
+  try {
+     const requestBody = {
+    description: description2,
+    name:nickname,
+    race:race,
+    firstClass:playerClass,
+    token: token,
+    strScore:attributes.Strength,
+  	dexScore:attributes.Dexterity,
+  	conScore:attributes.Constitution,
+  	intScore:attributes.Intelligence,
+  	wisScore:attributes.Wisdom,
+  	chaScore:attributes.Charisma,
+    alignment: alignment,
+    background: background,
+    money: moneyforPlayer(totalGold)
+};
+         console.log(requestBody)
+    const response = await fetch(`http://${ipv4}:8000/characters/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+
+}
+  const moneyforPlayer =()=>{
+      const copperValue = parseInt(gold.copper, 10) || 0;
+           const silverValue = parseInt(gold.silver, 10) || 0;
+           const goldValue = parseInt(gold.gold, 10) || 0;
+           const platinumValue = parseInt(gold.platinum, 10) || 0;
+      money = copperValue + (silverValue * 10) + (goldValue * 100) + (platinumValue * 1000)
+      return money;
+      };
   const handleGoBack = () => {
     navigation.goBack();
   };
 
   const handleContinue = () => {
-    const equipment = startingEquipment[selectedClassInfo];
+      addCharacter();
+    navigation.navigate('LoggedScreen');
   };
 
   const handleFocus = (field) => {

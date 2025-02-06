@@ -51,7 +51,7 @@ const Spells: React.FC = ({ navigation }) => {
   const fetchData = async () => {
       try {
           const [spellsResponse, schoolsResponse] = await Promise.all([
-            fetch(`http://${ipv4}:8000/spells/all/10`),
+            fetch(`http://${ipv4}:8000/spells/all`),
             fetch(`http://${ipv4}:8000/schools/all`),
           ]);
 

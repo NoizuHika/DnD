@@ -62,18 +62,7 @@ const Inventory: React.FC = ({ route,navigation }) => {
     }
   };
 
-  const handleAddItemsFromJSON = () => {
-    const updatedItems = [...items];
-    sampleItems.items.forEach(sampleItem => {
-      const existingItemIndex = updatedItems.findIndex(item => item.name === sampleItem.name);
-      if (existingItemIndex >= 0) {
-        updatedItems[existingItemIndex].quantity += sampleItem.quantity;
-      } else {
-        updatedItems.push(sampleItem);
-      }
-    });
-    setItems(updatedItems);
-  };
+
 
   const handleItemPress = (item) => {
     setSelectedItem(item);

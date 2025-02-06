@@ -5,17 +5,26 @@ import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
 import { SettingsContext } from './SettingsContext';
-
+import { useAuth } from './AuthContext';
+import { UserData } from './UserData';
 const BackLibCreator: React.FC = ({ navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
+
+  const { token } = useAuth();
+  const { ipv4 } = useContext(UserData);
   const [inputModalVisible, setInputModalVisible] = useState(false);
   const [inputName, setInputName] = useState('');
   const [inputDescription, setInputDescription] = useState('');
   const [currentInputType, setCurrentInputType] = useState('');
+
   const [backLib, setBackLib] = useState({
     name: '',
     skillProficiency1: '',
     skillProficiency2: '',
+    toolProficiencies: '',
+    languages:'',
+    featureName: '',
+    featureDescription: '',
     additionalProficiency: '',
     equipmentName: '',
     descriptions: [],
@@ -60,8 +69,42 @@ const BackLibCreator: React.FC = ({ navigation }) => {
   const handleInputChange = (field, value) => {
     setBackLib({ ...backLib, [field]: value });
   };
+const addNewBackground = async () => {
 
+  try {
+     const requestBody = {
+         token: token,
+         name: backLib.name,
+         skillProficiencies: [backLib.skillProficiency1,backLib.skillProficiency2],
+         toolProficiencies: [backLib.toolProficiencies],
+         languages: [backLib.languages],
+         features: [[backLib.featureName,backLib.featureDescription]],
+         };
+         console.log(requestBody);
+    const response = await fetch(`http://${ipv4}:8000/feats/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result)
+    console.log('New Feat:', result);
+
+  } catch (error) {
+    console.error('Error fetching data:', error.message);
+  }
+  fetchData();
+};
   const saveBackLib = () => {
+      addNewBackground();
     console.log('BackLib saved:', backLib);
   };
 
@@ -121,17 +164,30 @@ const BackLibCreator: React.FC = ({ navigation }) => {
 
 
         <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
-          <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Additional Proficiency')}</Text>
+          <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Tool Proficiency')}</Text>
           <Picker
-            selectedValue={backLib.additionalProficiency}
+            selectedValue={backLib.toolProficiencies}
             style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
-            onValueChange={(value) => handleInputChange('additionalProficiency', value)}
+            onValueChange={(value) => handleInputChange('toolProficiencies', value)}
           >
-            <Picker.Item label={t('2 Languages')} value="2 Languages" />
-            <Picker.Item label={t('1 Language, 1 Tool')} value="1 Language, 1 Tool" />
+              <Picker.Item label={t('None')} value="None" />
             <Picker.Item label={t('2 Tools')} value="2 Tools" />
+            <Picker.Item label={t('1 Tool')} value="1 Tool" />
+
           </Picker>
         </View>
+        <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
+                  <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Language Proficiency')}</Text>
+                  <Picker
+                    selectedValue={backLib.languages}
+                    style={[styles.pickerMagicItemCre, { width: 200 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}
+                    onValueChange={(value) => handleInputChange('languages', value)}
+                  >
+                     <Picker.Item label={t('None')} value="None" />
+                    <Picker.Item label={t('2 Languages')} value="2 Languages" />
+                    <Picker.Item label={t('1 Language')} value="1 Language" />
+                  </Picker>
+                </View>
 
         <View style={[styles.centeredBlock, { marginBottom: 20 * scaleFactor }]}>
           <Text style={[styles.labelNameItemCre, { fontSize: fontSize, color: theme.textColor }]}>{t('Equipment')}</Text>

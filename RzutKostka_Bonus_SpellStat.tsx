@@ -60,7 +60,11 @@ const handleRollDice = () => {
 
         fetchData(answerMessage);
         if (finalResult > 10){
+            if (spell.hit){
             navigation.navigate('RzutKostka', { player:player,spell:spell,session: session });
+            }
+            else{navigation.goBack();
+                }
             }
       }
     }, 200);

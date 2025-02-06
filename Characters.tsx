@@ -1,5 +1,5 @@
 import React, { useState, useContext,useEffect } from 'react';
-import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity } from 'react-native';
+import { ImageBackground, StyleSheet, View, Button, Text, TouchableOpacity, FlatList } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { ThemeContext } from './theme/ThemeContext';
 import styles from './styles';
@@ -59,40 +59,67 @@ const Characters: React.FC = ({ navigation }) => {
  const handleCharacterCreatePress = (character) => {
      navigation.navigate('CreateCharacter');
   };
+
+  const data = [...characters, { id: 'create_button', isButton: true }];
+
+  const renderItem = ({ item }) => {
+    if (item.isButton) {
+      return (
+        <View style={styles.buttonContainerCharacters}>
+          <TouchableOpacity onPress={() => handleCharacterCreatePress('CreateCharacter')}>
+            <ImageBackground
+              source={require('./assets/Halfling-M-Warlock.jpg')}
+              style={[styles.characterImage, {
+                height: 100 * scaleFactor,
+                width: 100 * scaleFactor
+              }]}
+            >
+              <Text style={[styles.characterStatus, {
+                color: 'white',
+                fontSize: fontSize * 0.8
+              }]}>
+                {t('Create_new')}
+              </Text>
+            </ImageBackground>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.buttonContainerCharacters}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => handleCharacterPress(item)}
+        >
+          <ImageBackground
+            source={item.image ? { uri: item.image } : require('./addons/defaultPlayer.png')}
+            style={[styles.characterImage, {
+              height: 100 * scaleFactor,
+              width: 100 * scaleFactor
+            }]}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
   <ImageBackground
          source={theme.background}
-         style={styles.container}
+         style={styles.containerCharacters}
        >
 
-     <Text style={[styles.appName, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>DMBook</Text>
+     <Text style={[styles.appNameCharacters, { color: theme.fontColor, fontSize: fontSize * 1.5 }]}>DMBook</Text>
 
-
-      <View style={styles.characterRow}>
-              {characters.map((character, index) => (
-
-              <View key={index} style={styles.buttonContainerCampA}>
-
-                <TouchableOpacity style={styles.button} onPress={() => handleCharacterPress(character)}>
-                  <ImageBackground
-                                    source={{uri: character.image }}
-                                    style={[styles.characterImage, { height: 100 * scaleFactor, width: 100 * scaleFactor }]}
-                                      >
-                  </ImageBackground>
-                </TouchableOpacity>
-              </View>
-            ))}
-
-              <TouchableOpacity onPress={() => handleCharacterCreatePress('CreateCharacter')}>
-                <ImageBackground
-                  source={require('./assets/Halfling-M-Warlock.jpg')}
-                  style={[styles.characterImage, { height: 100 * scaleFactor, width: 100 * scaleFactor }]}
-                >
-                  <Text style={[styles.characterStatus, {color:'white', fontSize: fontSize * 0.8 }]}>{t('Create_new')}</Text>
-                </ImageBackground>
-              </TouchableOpacity>
-            </View>
-
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => item.id || index.toString()}
+        numColumns={3}
+        contentContainerStyle={styles.characterContainerCharacters}
+        scrollIndicatorInsets={{ top: 60, bottom: 60 }}
+      />
 
       <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>
