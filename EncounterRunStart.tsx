@@ -144,7 +144,7 @@ const EncounterRunStart: React.FC = ({ route, navigation }) => {
         description: match[2].trim(),
         damageType: "natural"
       };
-      const hitRegex = /Hit:\s*(\d+)\s*\(\d+\w+ \+\s*\d+\)/;
+      const hitRegex = /\s*(\d+)\s*\(\d+\w+ \+\s*\d+\)/;
       const hitMatch = hitRegex.exec(match[2]);
       if (hitMatch) {
         action.hit = hitMatch[0];
