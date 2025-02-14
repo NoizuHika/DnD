@@ -20,17 +20,10 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   const [usedEncounter, setUsedEncounter] = useState(encounter || {});
   const [players,setPlayers] = useState(encounter.players || {});
   const [monsters,setMonsters] = useState(encounter.entities || {});
-  const [npcs, setNpcs] = useState(encounter.npcs ||{});
+  const [npcs, setNpcs] = useState([]);
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [selectedNpcs, setSelectedNpcs] = useState([]);
 
-  const handleSelectNPC = (npc) => {
-    if (selectedNpcs.includes(npc.id)) {
-      setSelectedNpcs(selectedNpcs.filter(id => id !== npc.id));
-    } else {
-      setSelectedNpcs([...selectedNpcs, npc.id]);
-    }
-  };
   const handleSelectPlayer = (player) => {
       console.log(player.id);
       if (selectedPlayers.includes(player.id)) {
@@ -42,41 +35,58 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   const removePlayer = (index) => {
      setPlayers(players.filter((_, i) => i !== index));
     };
+
+  const presetNPCs = [
+    { id: 'npc1', name: 'Mysterious Stranger', armorClass: 14, level: 3, initiative: 0, image: null },
+    { id: 'npc2', name: 'Village Elder', armorClass: 12, level: 2, initiative: 0, image: null },
+  ];
+  const handleSelectNPC = (npc) => {
+    if (selectedNpcs.includes(npc.id)) {
+      setSelectedNpcs(selectedNpcs.filter(id => id !== npc.id));
+    } else {
+      setSelectedNpcs([...selectedNpcs, npc.id]);
+    }
+  };
+  const addNPCsToEncounter = () => {
+    const newNPCs = presetNPCs.filter(npc => selectedNpcs.includes(npc.id));
+    setNpcs([...npcs, ...newNPCs]);
+    setSelectedNpcs([]);
+    setVisibleAddNPC(false);
+  };
   const removeNpcFromEncounter = (npc) => {
-      removeNpc();
     setNpcs(prevNpcs => prevNpcs.filter(item => item.id !== npc.id));
   };
 
   const removePlayerFromEncounter = async (player) => {
-                  const item = {
-                      item:encounter.id,
-                      id:player.id
-                      };
+      const item = {
+          item:encounter.id,
+          id:player.id
+          };
 
 
-                  console.log(value)
-                  try {
-                      const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/removePlayer`, {
-                              method: 'Delete',
-                              headers: {
-                                  'Content-Type': 'application/json',
-                                  'accept': 'application/json'
-                              },
-                          body: JSON.stringify({id:value})
-                          });
+      console.log(value)
+      try {
+          const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/removePlayer`, {
+                  method: 'Delete',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'accept': 'application/json'
+                  },
+              body: JSON.stringify({id:value})
+              });
 
 
 
-                      if (!response.ok) {
-                          throw new Error('Failed to fetch data');
-                      }
-                      const data= await response.json();
+          if (!response.ok) {
+              throw new Error('Failed to fetch data');
+          }
+          const data= await response.json();
 
-                            console.log('Player removed from encounter :', data);
-                  } catch (error) {
-                      console.error('Error fetching data:', error);
-                  }
-              };
+                console.log('Player removed from encounter :', data);
+      } catch (error) {
+          console.error('Error fetching data:', error);
+      }
+  };
 
 
   const addPlayersToEncounter = async () => {
@@ -104,47 +114,23 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
     setVisibleAdd(false);
   };
     const removeNpc = async (npc) => {
-                    const item = {
-                        item:encounter.id,
-                        id:npc.id
-                        };
+        const item = {
+            item:encounter.id,
+            id:npc.id
+            };
 
 
-                    console.log(value)
-                    try {
-                        const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/removeNpc`, {
-                                method: 'Delete',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'accept': 'application/json'
-                                },
-                            body: JSON.stringify({id:value})
-                            });
-
-
-
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch data');
-                        }
-                        const data= await response.json();
-
-                              console.log('Player removed from encounter :', data);
-                    } catch (error) {
-                        console.error('Error fetching data:', error);
-                    }
-                };
-
-
-    const addNpcsToEncounter = async () => {
+        console.log(value)
         try {
-            const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/addNpcs`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'accept': 'application/json'
-                        },
-                    body: JSON.stringify(selectedNpcs)
-                    });
+            const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/removeNpc`, {
+                    method: 'Delete',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'accept': 'application/json'
+                    },
+                body: JSON.stringify({id:value})
+                });
+
 
 
             if (!response.ok) {
@@ -152,22 +138,18 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
             }
             const data= await response.json();
 
-                  console.log('Player added to encounter :', data);
+                  console.log('Player removed from encounter :', data);
         } catch (error) {
             console.error('Error fetching data:', error);
         }
-  setSelectedNpcs([]);
-  setVisibleAdd(false);
-  };
-
-
+    };
 
   const handleGoBack = () => {
     navigation.goBack();
   };
 
   const handleStart = () => {
-    navigation.navigate('EncounterRunStart', { encounter:encounter,playersBase:players,monstersBase:monsters,campaign:campaign, npc:npcs});
+    navigation.navigate('EncounterRunStart', { encounter:encounter,playersBase:players,monstersBase:monsters,campaign:campaign, npc:presetNPCs});
   };
  useEffect(() => {
       fetchData();
@@ -291,7 +273,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
         <Modal visible={true} transparent={true} animationType="fade">
           <View style={styles.modalOverlayItems}>
             <View style={[styles.playersListContainer, { borderColor: theme.borderColor, borderWidth: 1 }]}>
-              {campaign.npcs.map(npc => (
+              {presetNPCs.map(npc => (
                 <TouchableOpacity
                   key={npc.id}
                   style={[

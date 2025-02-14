@@ -88,6 +88,7 @@ const LogInScreen: React.FC = () => {
         onChangeText={setLogin}
         placeholder={t('Login_nick')}
         placeholderTextColor="#a1a1a1"
+        placeholderTextColor="black"
       />
 
       <Text style={[styles.labelPassword, { fontSize: fontSize * 1 }]}>{t('Pass')}</Text>
@@ -98,6 +99,7 @@ const LogInScreen: React.FC = () => {
         placeholder={t('Pass')}
         placeholderTextColor="#a1a1a1"
         secureTextEntry={true}
+        placeholderTextColor="black"
       />
      </View>
 

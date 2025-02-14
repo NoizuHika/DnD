@@ -171,6 +171,7 @@
   "Dungeon Master Campaigns": "Kampanie Mistrza Podziemi",
   "Enter campaign name": "Wpisz nazwę kampanii",
   "Add": "Dodaj",
+  "AddItemChar": "Dodaj",
   "Reset": "Zresetuj",
   "Your Sessions": "Twoje sesje",
   "Change role": "Zmień rolę",
@@ -577,5 +578,15 @@
   "Edit descriptions": "Edytuj opisy",
   "Enter Equipment": "Wpisz wyposażenie",
   "Add feature": "Dodaj cechę",
-  "Feature name": "Nazwa cechy"
+  "Feature name": "Nazwa cechy",
+  "Right Hand": "Prawa Ręka",
+  "Left Hand": "Lewa Ręka",
+  "Body Armor": "Pancerz",
+  "Amulet": "Amulet",
+  "Not enough gold!": "Za mało złota!",
+  "Equipped": "Wyposażone",
+  "Equipped Items": "Wyposażone Przedmioty",
+  "Unequip": "Zdejmij",
+  "Select": "Wybierz",
+  "No items equipped": "Brak wyposażonych przedmiotów"
 }

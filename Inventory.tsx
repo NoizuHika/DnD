@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext,useEffect } from 'react';
 import { Modal, ImageBackground, StyleSheet, View, Text, TouchableOpacity, ScrollView, TextInput, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Picker } from '@react-native-picker/picker';
@@ -7,22 +7,27 @@ import styles from './styles';
 import sampleItems from './items.json';
 import { Appearance } from 'react-native';
 import { SettingsContext } from './SettingsContext';
-
+import { UserData } from './UserData';
+import { useAuth } from './AuthContext';
 Appearance.setColorScheme('light');
 
 const Inventory: React.FC = ({ route,navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
-  const { character } = route.params;
+  const { characterData } = route.params;
+  const [character, setCharacter] = useState(characterData);
   const { theme } = useContext(ThemeContext);
+  const { token } = useAuth();
   const [selectedScreen, setSelectedScreen] = useState('Inventory');
   const [isModalVisible, setModalVisible] = useState(false);
   const [newItem, setNewItem] = useState({ name: '', weight: 0, quantity: 0, cost: 0, description: '', category: '' });
   const [searchText, setSearchText] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedItem, setSelectedItem] = useState(null);
-  const [items, setItems] = useState(sampleItems.items || []);
+  const [items, setItems] = useState(characterData.items || []);
+  const [aItems,setAItems] = useState([]);
   const [gold, setGold] = useState(sampleItems.gold || 0);
+  const { ipv4 } = useContext(UserData);
   const [equippedItems, setEquippedItems] = useState({});
   const [isEquipModalVisible, setEquipModalVisible] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -62,46 +67,124 @@ const Inventory: React.FC = ({ route,navigation }) => {
     }
   };
 
+     useEffect(() => {
+        fetchData();
+      }, []);
+      const fetchData = async () => {
+              try {
+                  const [itemsResponse] = await Promise.all([
+                    fetch(`http://${ipv4}:8000/items/all/10`),
+                  ]);
 
+                  if (!itemsResponse.ok) {
+                    throw new Error('Failed to fetch data');
+                  }
 
-  const handleItemPress = (item) => {
-    setSelectedItem(item);
-  };
-  const closeDescriptionModal = () => {
-    setSelectedItem(null);
-  };
+                  const itemsData = await itemsResponse.json();
+                  setAItems(itemsData);
+                } catch (error) {
+                  console.error('Error fetching data:', error);
+                }
+              };
 
-  const handleGoBack = () => {
-    navigation.goBack();
-  };
+      const handleItemPress = (item) => {
+        setSelectedItem(item);
+      };
+      const closeDescriptionModal = () => {
+        setSelectedItem(null);
+      };
 
-  const calculateTotalWeight = () => {
-    return items.reduce((total, item) => total + item.weight * item.quantity, 0).toFixed(2);
-  };
+      const handleGoBack = () => {
+        navigation.goBack();
+      };
 
-  const calculateTotalCost = () => {
-    const totalGold = items.reduce((total, item) => total + item.cost * item.quantity, 0);
-    return totalGold.toFixed(2);
-  };
+      const calculateTotalWeight = () => {
+        return items.reduce((total, item) => total + item.weight * item.quantity, 0).toFixed(2);
+      };
 
-  const handleAddManualItem = () => {
-    const existingItemIndex = items.findIndex(item => item.name === newItem.name);
+      const calculateTotalCost = () => {
+        const totalGold = items.reduce((total, item) => total + item.cost * item.quantity, 0);
+        return totalGold.toFixed(2);
+      };
 
-    if (existingItemIndex >= 0) {
+      const handleAddManualItem = () => {
+        const existingItemIndex = items.findIndex(item => item.name === newItem.name);
 
-      const updatedItems = [...items];
-      updatedItems[existingItemIndex].quantity += newItem.quantity;
-      setItems(updatedItems);
-    } else {
-      setItems([...items, newItem]);
+        if (existingItemIndex >= 0) {
+
+          const updatedItems = [...items];
+          updatedItems[existingItemIndex].quantity += newItem.quantity;
+          setItems(updatedItems);
+        } else {
+          setItems([...items, newItem]);
+        }
+
+        setNewItem({ name: '', weight: 0, quantity: 0, cost: 0, description: '', category: '' });
+        setModalVisible(false);
+      };
+
+    const handleAddItem=(item) =>{
+            addItem(item);
+            setItems([...items, item]);
+        }
+
+  const addItem = async (item) => {
+    try {
+      const requestBody = {
+        id: item.id,
+        player: characterData.id
+      };
+
+      const [itemsResponse] = await Promise.all([
+        fetch(`http://${ipv4}:8000/characters/itemAdd`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify(requestBody)
+        })
+      ]);
+
+      if (!itemsResponse.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      const itemsData = await itemsResponse.json();
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
-
-    setNewItem({ name: '', weight: 0, quantity: 0, cost: 0, description: '', category: '' });
-    setModalVisible(false);
   };
+   const removeItem = async (index) => {
+     try {
+       const requestBody = {
+         id: items[index].id,
+         player: characterData.id
+       };
 
+       const [itemsResponse] = await Promise.all([
+         fetch(`http://${ipv4}:8000/characters/removeItem`, {
+           method: 'POST',
+           headers: {
+             'Content-Type': 'application/json',
+             "Authorization": `Bearer ${token}`
+           },
+           body: JSON.stringify(requestBody)
+         })
+       ]);
+
+       if (!itemsResponse.ok) {
+         throw new Error('Failed to fetch data');
+       }
+
+       const itemsData = await itemsResponse.json();
+     } catch (error) {
+       console.error('Error fetching data:', error);
+     }
+   };
 
   const handleRemoveItem = (index) => {
+    removeItem(index);
     const newItems = [...items];
     newItems.splice(index, 1);
     setItems(newItems);
@@ -114,12 +197,29 @@ const Inventory: React.FC = ({ route,navigation }) => {
   };
 
   const filteredItems = items.filter(item => {
-    const matchesCategory = selectedCategory === 'All' || item.category.includes(selectedCategory);
+    const matchesCategory = selectedCategory === 'All' || item.type.includes(selectedCategory);
     const matchesSearch = item.name.toLowerCase().includes(searchText.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
- const categories = ['All', 'Weapon', 'Armor', 'Ammunition', 'Tools', 'Potions', 'Scrolls', 'Magic Items', 'Adventuring Gear', 'Other'];
+  useEffect(() => {
+    handleAddItemsFromJSON();
+  }, []);
+
+  const handleAddItemsFromJSON = () => {
+    const updatedItems = [...items];
+    sampleItems.items.forEach(sampleItem => {
+      const existingItemIndex = updatedItems.findIndex(item => item.name === sampleItem.name);
+      if (existingItemIndex >= 0) {
+        updatedItems[existingItemIndex].quantity += sampleItem.quantity;
+      } else {
+        updatedItems.push(sampleItem);
+      }
+    });
+    setItems(updatedItems);
+  };
+
+ const categories = ['All', 'Weapon', 'Armor', 'Consumable', 'Adventuring Gear', 'Magic Item', 'Other'];
 
   return (
     <ImageBackground source={theme.background} style={styles.container}>
@@ -129,7 +229,7 @@ const Inventory: React.FC = ({ route,navigation }) => {
           style={[styles.pickerChooseChar, { width: 200 * scaleFactor }]}
           onValueChange={(itemValue) => {
             setSelectedScreen(itemValue);
-            navigation.navigate(itemValue);
+            navigation.navigate(itemValue,{ characterData : character });
           }}
         >
           <Picker.Item label={t('Main Scene')} value="Character1" />
@@ -141,13 +241,13 @@ const Inventory: React.FC = ({ route,navigation }) => {
       <TextInput
         style={[styles.searchInput, { height: 40 * scaleFactor, fontSize: fontSize }]}
         placeholder={t('Search items')}
-        placeholderTextColor="#7F7F7F"
+        placeholderTextColor="#808080"
         value={searchText}
         onChangeText={setSearchText}
       />
 
       <ScrollView horizontal style={styles.categoryContainer} showsHorizontalScrollIndicator={true}>
-        {['All', 'Weapon', 'Armor', 'Ammunition', 'Tools', 'Potions', 'Scrolls', 'Magic Items', 'Adventuring Gear', 'Other'].map(category => (
+        {['All', 'weapon', 'armor', 'consumable', 'adventuring_gear', 'magic', 'other'].map(category => (
           <TouchableOpacity
             key={category}
             style={[styles.categoryButton, { padding: 10 * scaleFactor }, selectedCategory === category && styles.selectedCategoryButton]}
@@ -159,7 +259,7 @@ const Inventory: React.FC = ({ route,navigation }) => {
       </ScrollView>
 
       <View style={styles.goldBar}>
-        <Text style={[styles.goldText, { fontSize: fontSize }]}>{t('Gold')}: {gold}</Text>
+        <Text style={[styles.goldText, { fontSize: fontSize }]}>{t('Gold')}: {characterData.money}</Text>
       </View>
 
       <ScrollView style={styles.tableContainer}>
@@ -192,64 +292,35 @@ const Inventory: React.FC = ({ route,navigation }) => {
         animationType="slide"
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContentInventory}>
-            <Text style={[styles.modalTitleInv, { fontSize: fontSize * 1.2 }]}>{t('Add New Item')}</Text>
-              <Text style={[styles.invItemDescription, { fontSize: fontSize }]}>{t('Name')}</Text>
-            <TextInput
-              placeholder={t('Name')}
-              style={[styles.inputInventory, { height: 40 * scaleFactor, fontSize: fontSize }]}
-              value={newItem.name}
-              onChangeText={(text) => setNewItem({ ...newItem, name: text })}
-            />
-              <Text style={[styles.invItemDescription, { fontSize: fontSize }]}>{t('Weight')}</Text>
-            <TextInput
-              placeholder={t('Weight')}
-              style={[styles.inputInventory, { height: 40 * scaleFactor, fontSize: fontSize }]}
-              value={newItem.weight.toString()}
-              onChangeText={(text) => setNewItem({ ...newItem, weight: parseFloat(text) || 0 })}
-              keyboardType="numeric"
-            />
-              <Text style={[styles.invItemDescription, { fontSize: fontSize }]}>{t('Quantity')}</Text>
-            <TextInput
-              placeholder={t('Quantity')}
-              style={[styles.inputInventory, { height: 40 * scaleFactor, fontSize: fontSize }]}
-              value={newItem.quantity.toString()}
-              onChangeText={(text) => setNewItem({ ...newItem, quantity: parseInt(text) || 0 })}
-              keyboardType="numeric"
-            />
-              <Text style={[styles.invItemDescription, { fontSize: fontSize }]}>{t('Cost')}</Text>
-            <TextInput
-              placeholder={t('Cost')}
-              style={[styles.inputInventory, { height: 40 * scaleFactor, fontSize: fontSize }]}
-              value={newItem.cost.toString()}
-              onChangeText={(text) => setNewItem({ ...newItem, cost: parseFloat(text) || 0 })}
-              keyboardType="numeric"
-            />
-              <Text style={[styles.invItemDescription, { fontSize: fontSize }]}>{t('Description')}</Text>
-            <TextInput
-              placeholder={t('Description')}
-              style={[styles.inputInventory, { height: 40 * scaleFactor, fontSize: fontSize }]}
-              value={newItem.description}
-              onChangeText={(text) => setNewItem({ ...newItem, description: text })}
-            />
-            <Picker
-              selectedValue={newItem.category}
-              style={[styles.inputInventory, { height: 50 * scaleFactor }]}
-              onValueChange={(itemValue) => setNewItem({ ...newItem, category: itemValue })}
-            >
-              {categories.map((category) => (
-                <Picker.Item key={category} label={t(category)} value={category} />
-              ))}
-            </Picker>
-
-            <TouchableOpacity onPress={handleAddManualItem} style={[styles.addButtonInventory, { height: 50 * scaleFactor }]}>
-              <Text style={[styles.addButtonText, { fontSize: fontSize }]}>{t('Add Item')}</Text>
+        <View style={styles.modalContainerCharacter}>
+        <View style={[styles.tableHeaderA, { paddingVertical: 10 * scaleFactor }]}>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Name')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Rarity')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Type')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Subtype')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Actions')}</Text>
+        </View>
+          <ScrollView style={styles.tableContainerCharacter}>
+            {aItems.map((item, index) => {
+              const { name, rarity, type, itemType } = item;
+              return (
+                <View key={item.id || index} style={[styles.tableRowCharacter, { paddingVertical: 10 * scaleFactor }]}>
+                  <Text style={[styles.tableCellCharacter, { fontSize }]}>{name}</Text>
+                  <Text style={[styles.tableCellCharacter, { fontSize: fontSize * 0.9 }]}>{rarity}</Text>
+                  <Text style={[styles.tableCellCharacter, { fontSize }]}>{type}</Text>
+                  <Text style={[styles.tableCellCharacter, { fontSize }]}>
+                    {itemType.slice(0, 2).join(', ')}
+                  </Text>
+                  <TouchableOpacity style={styles.tableCellCharacter} onPress={() => handleAddItem(item)}>
+                    <Text style={[styles.actionTextCharacter, { fontSize }]}>{t('AddItemChar')}</Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
+          </ScrollView>
+            <TouchableOpacity style={styles.closeButtonA} onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeButtonText}>{t('Close')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setModalVisible(false)} style={[styles.cancelButton, { height: 50 * scaleFactor }]}>
-              <Text style={[styles.cancelButtonText, { fontSize: fontSize }]}>{t('Cancel')}</Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </Modal>
 
@@ -279,10 +350,6 @@ const Inventory: React.FC = ({ route,navigation }) => {
       </View>
 
       <View style={styles.summaryContainerA}>
-      <TouchableOpacity style={[styles.autoAddButton, { height: 45 * scaleFactor }]} onPress={handleAddItemsFromJSON}>
-        <Text style={[styles.autoAddButtonText, { fontSize: fontSize }]}>{t('Add Automatically')}</Text>
-      </TouchableOpacity>
-
       <TouchableOpacity style={styles.equipButton} onPress={() => setEquipModalVisible(true)}>
         <Text style={[styles.equipButtonText, { fontSize: fontSize }]}>{t('Equipped')}</Text>
       </TouchableOpacity>

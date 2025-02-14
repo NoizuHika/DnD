@@ -1012,6 +1012,10 @@ const styles = StyleSheet.create({
   equipItemButtonText: {
     fontSize: 14,
   },
+  noEquipmentText: {
+    fontSize: 10,
+    color: 'blue',
+  },
   addButton: {
     marginTop: 10,
     padding: 10,
@@ -2718,6 +2722,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
     padding: 10,
   },
+  closeButtonA: {
+    backgroundColor: '#ff4757',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignSelf: 'center',
+    marginVertical: 15,
+  },
   closeButtonItem: {
     backgroundColor: '#444',
     borderRadius: 4,
@@ -2774,6 +2786,79 @@ const styles = StyleSheet.create({
   tableContainer: {
     flex: 1,
     width: '90%',
+  },
+  tableHeaderA: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#2d2d38',
+    width: '90%',
+    alignItems: 'center',
+    borderRadius: 15,
+  },
+  characterDetailsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 15,
+    padding: 20,
+    marginVertical: 15,
+  },
+  leftDetailsContainer: {
+    flex: 2,
+    paddingRight: 10,
+  },
+  rightDetailsContainer: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    borderRadius: 15,
+    padding: 10,
+  },
+  detailText: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 8,
+  },
+  avatarDetails: {
+    borderRadius: 50,
+    borderWidth: 2,
+  },
+  playerNameDetails: {
+    marginTop: 10,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  modalContainerCharacter: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+  },
+  tableContainerCharacter: {
+    backgroundColor: '#3f3f4d',
+    width: '90%',
+    maxHeight: '80%',
+    borderRadius: 20,
+    padding: 10,
+  },
+  tableRowCharacter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#04021f',
+    paddingVertical: 8,
+  },
+  tableCellCharacter: {
+    flex: 1,
+    color: '#d6d6d6',
+    textAlign: 'center',
+    textAlignVertical: 'center',
+  },
+  actionTextCharacter: {
+    color: '#06bf1e',
+    fontWeight: 'bold',
   },
   tableContainerEncounter: {
     width: '100%',
@@ -2887,7 +2972,9 @@ const styles = StyleSheet.create({
   summaryContainerA: {
     marginTop: 10,
     flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    right: '2%',
   },
   summaryTextRight: {
     marginLeft: 5,

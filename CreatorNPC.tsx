@@ -76,85 +76,7 @@ const CreatorNPC: React.FC = ({ navigation }) => {
   const handleInputChange = (field, value) => {
     setMonster({ ...monster, [field]: value });
   };
-const setAutofill = async () => {
 
-  try {
-     const requestBody = {
-         name:monster.name,
-	        type:monster.monsterType,
-	    cr:monster.challengeRating};
-         console.log(requestBody)
-    const response = await fetch(`http://${ipv4}:8000/bestiaries/generate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch data: ${response.status}`);
-    }
-
-    const result = await response.json();
-    console.log(result)
-	setNpc(result);
-
-  } catch (error) {
-    console.error('Error fetching data:', error.message);
-  }
-
-};
-const addNewNpc = async () => {
-
-  try {
-     const requestBody = {
-         token: token,
-    name: monster.name,
-    challengeRating: `${monster.challengeRating}`,
-    armorClass: `${monster.armorClass}`,
-    hitPoints: monster.averageHitPoints,
-    passivePerception: monster.perception.join(", "),
-    strScore: monster.strScore,
-    dexScore: monster.dexScore,
-    intScore: monster.intScore,
-    wisScore: monster.wisScore,
-    chaScore: monster.chaScore,
-    conScore: monster.conScore,
-    languageNoteOverride: monster.language,
-    actionDescription: monster.action_description.join(", "),
-    bonusActionDescription: monster.bonus_action_description.join(", "),
-    alignment: monster.alignment,
-    description: monster.description,
-    savingThrowProficiencies: monster.saveProfs,
-    monsterType: monster.monsterType,
-    size: monster.size,
-    speed: monster.speed,
-    notes: monster.note};
-    console.log(requestBody)
-    const response = await fetch(`http://${ipv4}:8000/npcs/add`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch data: ${response.status}`);
-    }
-
-    const result = await response.json();
-    console.log(result)
-    console.log('New Feat:', result);
-
-  } catch (error) {
-    console.error('Error fetching data:', error.message);
-  }
-
-};
   const openDescriptionModal = () => setDescriptionModalVisible(true);
   const closeDescriptionModal = () => setDescriptionModalVisible(false);
 
@@ -194,11 +116,10 @@ const addNewNpc = async () => {
   };
 
   const autoFillNPC = () => {
-    setAutofill();
+    setMonster(autofillNPC);
   };
 
   const saveMonster = () => {
-      addNewNpc();
     console.log("Monster saved:", monster);
   };
 

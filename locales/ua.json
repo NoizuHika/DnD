@@ -171,6 +171,7 @@
   "Dungeon Master Campaigns": "Кампанії Майстра Підземелля",
   "Enter campaign name": "Впишіть назву кампанії",
   "Add": "Додати",
+  "AddItemChar": "Додати",
   "Reset": "Скинути",
   "Your Sessions": "Твоі сесії",
   "Change role": "Змінити роль",
@@ -577,5 +578,15 @@
   "Edit descriptions": "Редагувати описи",
   "Enter Equipment": "Введіть спорядження",
   "Add feature": "Додати особливість",
-  "Feature name": "Назва особливості"
+  "Feature name": "Назва особливості",
+  "Right Hand": "Права рука",
+  "Left Hand": "Ліва рука",
+  "Body Armor": "Броня",
+  "Amulet": "Амулет",
+  "Not enough gold!": "Недостатньо золота!",
+  "Equipped": "Екіпіровано",
+  "Equipped Items": "Екіпіровані предмети",
+  "Unequip": "Зняти",
+  "Select": "Вибрати",
+  "No items equipped": "Немає екіпірованих предметів"
 }

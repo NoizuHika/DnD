@@ -200,7 +200,7 @@ const Character1: React.FC = ({ route,navigation }) => {
     return (
       <View style={styles.abilityWindow}>
         <View style={styles.skillsContainer}>
-          <TouchableOpacity onPress={handleImagePress}>
+          <TouchableOpacity onPress={handleAttack}>
             <Image source={require('./assets/skills/firearrow.png')} style={[styles.abilityImage, { height: 50 * scaleFactor, width: 50 * scaleFactor }]} />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleImagePress}>
@@ -250,12 +250,8 @@ const Character1: React.FC = ({ route,navigation }) => {
   };
     const handleAttack = () =>
     {
-       const action = {
-            name: "attack",
-            hit: `hit ${character.eqWeapon.diceNumber} ${character.eqWeapon.diceType} +0`,
-            damageType: character.eqWeapon.damageType
-            };
-        navigation.navigate('RzutKostka_Bonus_SpellStat', { player:character,spell:action,session: session });
+
+        navigation.navigate('RzutKostka_Bonus', { statName:"", statValue:0,player:character,session: session });
 
         };
   const ReactWindow = ({ onClose }) => {
@@ -340,7 +336,7 @@ const Character1: React.FC = ({ route,navigation }) => {
         </Picker>
       </View>
       <View style={[styles.imageContainer, { width: 100 * scaleFactor, height: 100 * scaleFactor }]}>
-        <Image source={{uri: characterData.image }} style={styles.image} />
+        <Image source={characterData.image ? { uri: characterData.image } : require('./addons/defaultPlayer.png')} style={styles.image} />
     </View>
 
       <View style={[styles.healthContainer, { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }]}>

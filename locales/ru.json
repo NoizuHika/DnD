@@ -171,6 +171,7 @@
   "Dungeon Master Campaigns": "Кампании Мастера подземелий",
   "Enter campaign name": "Введите название кампании",
   "Add": "Добавить",
+  "AddItemChar": "Доба-ть",
   "Reset": "Сброс",
   "Your Sessions": "Твои сессии",
   "Change role": "Сменить роль",
@@ -577,5 +578,15 @@
   "Edit descriptions": "Редактировать описания",
   "Enter Equipment": "Введите снаряжение",
   "Add feature": "Добавить особенность",
-  "Feature name": "Название особенности"
+  "Feature name": "Название особенности",
+  "Right Hand": "Правая рука",
+  "Left Hand": "Левая рука",
+  "Body Armor": "Броня",
+  "Amulet": "Амулет",
+  "Not enough gold!": "Недостаточно золота!",
+  "Equipped": "Экипировано",
+  "Equipped Items": "Экипированные предметы",
+  "Unequip": "Снять",
+  "Select": "Выбрать",
+  "No items equipped": "Нет экипированных предметов"
 }
