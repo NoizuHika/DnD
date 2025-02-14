@@ -27,10 +27,19 @@ const PlayerSessions: React.FC = () => {
     const [characters, setCharacters] = useState([]);
     const [selectedPlayers, setSelectedPlayers] = useState([]);
     const [playerModalVisible, setPlayerModalVisible] = useState(false);
+    const [shouldUpdate, setShouldUpdate] = useState(false);
 
     useEffect(() => {
-         fetchData();
+        fetchData();
     }, []);
+
+    useEffect(() => {
+        if (shouldUpdate) {
+            fetchData();
+            setShouldUpdate(false);
+        }
+    }, [shouldUpdate]);
+
     const fetchData = async () => {
         try {
             console.log('Token:', token.toString());
@@ -72,18 +81,63 @@ const PlayerSessions: React.FC = () => {
     };
 
 
+ const joinSession = async () => {
+                requestBody ={
+                        campaign_code: code,
+                        character_id: selectedPlayers.id
+                        };
+        try {
+            console.log('Token:', token.toString());
+            const sessionsResponse = await fetch(`http://${ipv4}:8000/campaigns/addCharacter`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            if (!sessionsResponse.ok) {
+                throw new Error('Failed to fetch data');
+            }
+            const data = await sessionsResponse.json();
+             setResult(data.result)
+
+            await fetchData();
+
+            const charactersResponse = await fetch(`http://${ipv4}:8000/user/characters`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                },
+                body: JSON.stringify({ token: token.toString() }),
+            });
+
+            if (!charactersResponse.ok) {
+                throw new Error('Failed to fetch characters');
+            }
+
+            const charactersData = await charactersResponse.json();
+            setCharacters(charactersData.characters);
+
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
     const openSessionDetails = (item) => {
         navigation.navigate('PlayerSessionDetails', {campaign: item[1], player:item[0],session:item[1].sessions[item[1].sessions.length - 1] });
 
     };
 
-    const addSession = () => {
+    const addSession = async () => {
+        await joinSession();
         if (code.trim() === '') return;
-        const newSession = { title: `${code}`, sessions: [], players: selectedPlayers };
-        setResult([...result, [code, newSession]]);
+        setResult([...result]);
         setModalVisible(false);
         setCode('');
         setSelectedPlayers([]);
+        setShouldUpdate(true);
     };
 
     const handleSelectPlayer = (player) => {
@@ -106,7 +160,7 @@ const PlayerSessions: React.FC = () => {
 
                   <FlatList
                     data={result}
-                    keyExtractor={(item) => item}
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             style={[styles.inputCampNote, { padding: 10 * scaleFactor, marginVertical: 5 * scaleFactor, borderColor: theme.borderColor, borderWidth: 2 }]}
@@ -134,10 +188,8 @@ const PlayerSessions: React.FC = () => {
                     <Text style={[styles.modalTitleMonCre, { fontSize: fontSize }]}>{t('Enter Code')}</Text>
                     <TextInput
                         style={[styles.modalInputEncounter, { fontSize: fontSize }]}
-                        keyboardType="numeric"
                         value={code}
                         onChangeText={setCode}
-                        onChangeText={(text) => setCode(text.replace(/[^0-9]/g, ''))}
                         placeholder={t('Enter Code')}
                         placeholderTextColor="#808080"
                         maxLength={6}
@@ -172,7 +224,7 @@ const PlayerSessions: React.FC = () => {
 
             <Modal transparent={true} visible={playerModalVisible} animationType="slide">
                 <View style={styles.modalContainerMonCre}>
-                    <View style={styles.modalContentMonCre}>
+                    <View style={styles.modalContentMonCreA}>
                         <Text style={[styles.modalTitleMonCre, { fontSize: fontSize }]}>{t('Select Player')}</Text>
 
                         <FlatList
@@ -189,7 +241,7 @@ const PlayerSessions: React.FC = () => {
                                         setPlayerModalVisible(false);
                                     }}
                                 >
-                                    <Image source={{ uri: item.image }} style={styles.characterImageSession} />
+                                    <Image source={item.image ? { uri: item.image } : require('./addons/defaultPlayer.png')} style={styles.characterImageSession} />
                                     <Text style={[styles.characterNameSession, { color: theme.fontColor }]}>{item.name}</Text>
                                 </TouchableOpacity>
                             )}

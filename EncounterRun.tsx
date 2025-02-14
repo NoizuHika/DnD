@@ -20,10 +20,17 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   const [usedEncounter, setUsedEncounter] = useState(encounter || {});
   const [players,setPlayers] = useState(encounter.players || {});
   const [monsters,setMonsters] = useState(encounter.entities || {});
-  const [npcs, setNpcs] = useState([]);
+  const [npcs, setNpcs] = useState(encounter.npcs ||{});
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [selectedNpcs, setSelectedNpcs] = useState([]);
 
+  const handleSelectNPC = (npc) => {
+    if (selectedNpcs.includes(npc.id)) {
+      setSelectedNpcs(selectedNpcs.filter(id => id !== npc.id));
+    } else {
+      setSelectedNpcs([...selectedNpcs, npc.id]);
+    }
+  };
   const handleSelectPlayer = (player) => {
       console.log(player.id);
       if (selectedPlayers.includes(player.id)) {
@@ -35,25 +42,8 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   const removePlayer = (index) => {
      setPlayers(players.filter((_, i) => i !== index));
     };
-
-  const presetNPCs = [
-    { id: 'npc1', name: 'Mysterious Stranger', armorClass: 14, level: 3, initiative: 0, image: null },
-    { id: 'npc2', name: 'Village Elder', armorClass: 12, level: 2, initiative: 0, image: null },
-  ];
-  const handleSelectNPC = (npc) => {
-    if (selectedNpcs.includes(npc.id)) {
-      setSelectedNpcs(selectedNpcs.filter(id => id !== npc.id));
-    } else {
-      setSelectedNpcs([...selectedNpcs, npc.id]);
-    }
-  };
-  const addNPCsToEncounter = () => {
-    const newNPCs = presetNPCs.filter(npc => selectedNpcs.includes(npc.id));
-    setNpcs([...npcs, ...newNPCs]);
-    setSelectedNpcs([]);
-    setVisibleAddNPC(false);
-  };
   const removeNpcFromEncounter = (npc) => {
+      removeNpc();
     setNpcs(prevNpcs => prevNpcs.filter(item => item.id !== npc.id));
   };
 
@@ -92,13 +82,13 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   const addPlayersToEncounter = async () => {
       try {
           const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/addPlayers`, {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json',
-                          'accept': 'application/json'
-                      },
-                  body: JSON.stringify(selectedPlayers)
-                  });
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'accept': 'application/json'
+                  },
+              body: JSON.stringify(selectedPlayers)
+              });
 
 
           if (!response.ok) {
@@ -144,12 +134,40 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
         }
     };
 
+
+    const addNpcsToEncounter = async () => {
+        try {
+            const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/addNpcs`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                },
+            body: JSON.stringify(selectedNpcs)
+            });
+
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+            const data= await response.json();
+
+                  console.log('Player added to encounter :', data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+  setSelectedNpcs([]);
+  setVisibleAdd(false);
+  };
+
+
+
   const handleGoBack = () => {
     navigation.goBack();
   };
 
   const handleStart = () => {
-    navigation.navigate('EncounterRunStart', { encounter:encounter,playersBase:players,monstersBase:monsters,campaign:campaign, npc:presetNPCs});
+    navigation.navigate('EncounterRunStart', { encounter:encounter,playersBase:players,monstersBase:monsters,campaign:campaign, npc:npcs});
   };
  useEffect(() => {
       fetchData();
@@ -273,7 +291,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
         <Modal visible={true} transparent={true} animationType="fade">
           <View style={styles.modalOverlayItems}>
             <View style={[styles.playersListContainer, { borderColor: theme.borderColor, borderWidth: 1 }]}>
-              {presetNPCs.map(npc => (
+              {campaign.npcs.map(npc => (
                 <TouchableOpacity
                   key={npc.id}
                   style={[
@@ -295,7 +313,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
               <TouchableOpacity onPress={() => setVisibleAddNPC(false)} style={styles.closeButtonItemEncounter}>
                 <Text style={styles.closeButtonTextEncounter}>{t('Cancel')}</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.editButtonEncounter} onPress={addNPCsToEncounter}>
+              <TouchableOpacity style={styles.editButtonEncounter} onPress={addNpcsToEncounter}>
                 <Text style={styles.editButtonTextEncounter}>{t('Add')}</Text>
               </TouchableOpacity>
             </View>
