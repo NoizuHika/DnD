@@ -356,7 +356,7 @@ const EncounterRunStart: React.FC = ({ route, navigation }) => {
             <ScrollView style={styles.rightCampaignContainerScrollArea}>
               {session?.logs?.length > 0 ? (
                 <>
-                  {session.logs.reverse().map((logs, index) => (
+                  {[...session.logs].map((logs, index) => (
                     <Text key={index} style={[styles.diceResult, { fontSize: fontSize }]}>
                       {logs}
                     </Text>
