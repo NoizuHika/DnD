@@ -15,8 +15,9 @@ const Inventory: React.FC = ({ route,navigation }) => {
   const { fontSize, scaleFactor } = useContext(SettingsContext);
   const { t } = useTranslation();
   const { characterData } = route.params;
+  const [character, setCharacter] = useState(characterData);
   const { theme } = useContext(ThemeContext);
-    const { token } = useAuth();
+  const { token } = useAuth();
   const [selectedScreen, setSelectedScreen] = useState('Inventory');
   const [isModalVisible, setModalVisible] = useState(false);
   const [newItem, setNewItem] = useState({ name: '', weight: 0, quantity: 0, cost: 0, description: '', category: '' });
@@ -26,6 +27,7 @@ const Inventory: React.FC = ({ route,navigation }) => {
   const [items, setItems] = useState(characterData.items || []);
   const [aItems,setAItems] = useState([]);
   const [gold, setGold] = useState(sampleItems.gold || 0);
+  const { ipv4 } = useContext(UserData);
   const [equippedItems, setEquippedItems] = useState({});
   const [isEquipModalVisible, setEquipModalVisible] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
@@ -64,67 +66,66 @@ const Inventory: React.FC = ({ route,navigation }) => {
       alert(t('Not enough gold!'));
     }
   };
+     useEffect(() => {
+        fetchData();
+      }, []);
+      const fetchData = async () => {
+              try {
+                  const [itemsResponse] = await Promise.all([
+                    fetch(`http://${ipv4}:8000/items/all/10`),
+                  ]);
 
- useEffect(() => {
-    fetchData();
-  }, []);
-  const fetchData = async () => {
-          try {
-              const [itemsResponse] = await Promise.all([
-                fetch(`http://${ipv4}:8000/items/all/10`),
-              ]);
+                  if (!itemsResponse.ok) {
+                    throw new Error('Failed to fetch data');
+                  }
 
-              if (!itemsResponse.ok) {
-                throw new Error('Failed to fetch data');
-              }
+                  const itemsData = await itemsResponse.json();
+                  setAItems(itemsData);
+                } catch (error) {
+                  console.error('Error fetching data:', error);
+                }
+              };
 
-              const itemsData = await itemsResponse.json();
-              setAItems(itemsData);
-            } catch (error) {
-              console.error('Error fetching data:', error);
-            }
-          };
+      const handleItemPress = (item) => {
+        setSelectedItem(item);
+      };
+      const closeDescriptionModal = () => {
+        setSelectedItem(null);
+      };
 
-  const handleItemPress = (item) => {
-    setSelectedItem(item);
-  };
-  const closeDescriptionModal = () => {
-    setSelectedItem(null);
-  };
+      const handleGoBack = () => {
+        navigation.goBack();
+      };
 
-  const handleGoBack = () => {
-    navigation.goBack();
-  };
+      const calculateTotalWeight = () => {
+        return items.reduce((total, item) => total + item.weight * item.quantity, 0).toFixed(2);
+      };
 
-  const calculateTotalWeight = () => {
-    return items.reduce((total, item) => total + item.weight * item.quantity, 0).toFixed(2);
-  };
+      const calculateTotalCost = () => {
+        const totalGold = items.reduce((total, item) => total + item.cost * item.quantity, 0);
+        return totalGold.toFixed(2);
+      };
 
-  const calculateTotalCost = () => {
-    const totalGold = items.reduce((total, item) => total + item.cost * item.quantity, 0);
-    return totalGold.toFixed(2);
-  };
+      const handleAddManualItem = () => {
+        const existingItemIndex = items.findIndex(item => item.name === newItem.name);
 
-  const handleAddManualItem = () => {
-    const existingItemIndex = items.findIndex(item => item.name === newItem.name);
+        if (existingItemIndex >= 0) {
 
-    if (existingItemIndex >= 0) {
+          const updatedItems = [...items];
+          updatedItems[existingItemIndex].quantity += newItem.quantity;
+          setItems(updatedItems);
+        } else {
+          setItems([...items, newItem]);
+        }
 
-      const updatedItems = [...items];
-      updatedItems[existingItemIndex].quantity += newItem.quantity;
-      setItems(updatedItems);
-    } else {
-      setItems([...items, newItem]);
-    }
+        setNewItem({ name: '', weight: 0, quantity: 0, cost: 0, description: '', category: '' });
+        setModalVisible(false);
+      };
 
-    setNewItem({ name: '', weight: 0, quantity: 0, cost: 0, description: '', category: '' });
-    setModalVisible(false);
-  };
-
-const handleAddItem=(item) =>{
-        addItem(item);
-        setItems([...items, item]);
-    }
+    const handleAddItem=(item) =>{
+            addItem(item);
+            setItems([...items, item]);
+        }
 
   const addItem = async (item) => {
     try {
@@ -200,6 +201,24 @@ const handleAddItem=(item) =>{
     return matchesCategory && matchesSearch;
   });
 
+  useEffect(() => {
+    handleAddItemsFromJSON();
+  }, []);
+
+  const handleAddItemsFromJSON = () => {
+    const updatedItems = [...items];
+    sampleItems.items.forEach(sampleItem => {
+      const existingItemIndex = updatedItems.findIndex(item => item.name === sampleItem.name);
+      if (existingItemIndex >= 0) {
+        updatedItems[existingItemIndex].quantity += sampleItem.quantity;
+      } else {
+        updatedItems.push(sampleItem);
+      }
+    });
+    setItems(updatedItems);
+  };
+
+
  const categories = ['All', 'Weapon', 'Armor', 'Consumable', 'Adventuring Gear', 'Magic Item', 'Other'];
 
   return (
@@ -222,7 +241,7 @@ const handleAddItem=(item) =>{
       <TextInput
         style={[styles.searchInput, { height: 40 * scaleFactor, fontSize: fontSize }]}
         placeholder={t('Search items')}
-        placeholderTextColor="#7F7F7F"
+        placeholderTextColor="#808080"
         value={searchText}
         onChangeText={setSearchText}
       />
@@ -273,34 +292,39 @@ const handleAddItem=(item) =>{
         animationType="slide"
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <ScrollView style={styles.tableContainer}>
+
+        <View style={styles.modalContainerCharacter}>
+        <View style={[styles.tableHeaderA, { paddingVertical: 10 * scaleFactor }]}>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Name')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Rarity')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Type')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Subtype')}</Text>
+          <Text style={[styles.tableHeaderText, { fontSize: fontSize * 0.9 }]}>{t('Actions')}</Text>
+        </View>
+          <ScrollView style={styles.tableContainerCharacter}>
             {aItems.map((item, index) => {
               const { name, rarity, type, itemType } = item;
               return (
-                <View key={item.id || index} style={[styles.tableRow, { paddingVertical: 10 * scaleFactor }]}>
-
-                  <Text style={[styles.tableCell, { fontSize }]}>{name}</Text>
-
-
-                  <Text style={[styles.tableCell, { fontSize: fontSize * 0.9 }]}>{rarity}</Text>
-
-
-                  <Text style={[styles.tableCell, { fontSize }]}>{type}</Text>
-
-
-                  <Text style={[styles.tableCell, { fontSize }]}>
+                <View key={item.id || index} style={[styles.tableRowCharacter, { paddingVertical: 10 * scaleFactor }]}>
+                  <Text style={[styles.tableCellCharacter, { fontSize }]}>{name}</Text>
+                  <Text style={[styles.tableCellCharacter, { fontSize: fontSize * 0.9 }]}>{rarity}</Text>
+                  <Text style={[styles.tableCellCharacter, { fontSize }]}>{type}</Text>
+                  <Text style={[styles.tableCellCharacter, { fontSize }]}>
                     {itemType.slice(0, 2).join(', ')}
                   </Text>
+                  <TouchableOpacity style={styles.tableCellCharacter} onPress={() => handleAddItem(item)}>
+                    <Text style={[styles.actionTextCharacter, { fontSize }]}>{t('AddItemChar')}</Text>
 
-
-                  <TouchableOpacity style={styles.tableCell} onPress={() => handleAddItem(item)}>
-                    <Text style={[styles.actionText, { fontSize }]}>{t('Add')}</Text>
                   </TouchableOpacity>
                 </View>
               );
             })}
           </ScrollView>
+
+            <TouchableOpacity style={styles.closeButtonA} onPress={() => setModalVisible(false)}>
+              <Text style={styles.closeButtonText}>{t('Close')}</Text>
+            </TouchableOpacity>
+
         </View>
       </Modal>
 
@@ -330,6 +354,12 @@ const handleAddItem=(item) =>{
         <Text style={[styles.summaryTextRight, { fontSize: fontSize }]}></Text>
       </View>
 
+
+      <View style={styles.summaryContainerA}>
+      <TouchableOpacity style={styles.equipButton} onPress={() => setEquipModalVisible(true)}>
+        <Text style={[styles.equipButtonText, { fontSize: fontSize }]}>{t('Equipped')}</Text>
+      </TouchableOpacity>
+      </View>
 
 
       <Modal

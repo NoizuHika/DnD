@@ -108,7 +108,7 @@
   "Ideals": "Ideals",
   "Enter_ideals": "Enter ideals",
   "Preferences": "Preferences",
-  "Enter_preferences": "Enter_preferences",
+  "Enter_preferences": "Enter preferences",
   "Other": "Other",
   "Enter_other_personal_characteristics": "Enter other personal characteristics",
   "Notes": "Notes",
@@ -167,6 +167,7 @@
   "Dungeon Master Campaigns": "Dungeon Master Campaigns",
   "Enter campaign name": "Enter campaign name",
   "Add": "Add",
+  "AddItemChar": "Add",
   "Reset": "Reset",
   "Your Sessions": "Your Sessions",
   "Change role": "Change role",
@@ -577,5 +578,15 @@
   "Equipment": "Equipment",
   "Enter Equipment": "Enter Equipment",
   "Add feature": "Add feature",
-  "Feature name": "Feature name"
+  "Feature name": "Feature name",
+  "Right Hand": "Right Hand",
+  "Left Hand": "Left Hand",
+  "Body Armor": "Body Armor",
+  "Amulet": "Amulet",
+  "Not enough gold!": "Not enough gold!",
+  "Equipped": "Equipped",
+  "Equipped Items": "Equipped Items",
+  "Unequip": "Unequip",
+  "Select": "Select",
+  "No items equipped": "No items equipped"
 }

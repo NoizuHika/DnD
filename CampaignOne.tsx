@@ -125,14 +125,16 @@ const changeHP = async (player) => {
 const levelUp = async (player) => {
 
   try {
-
+     const requestBody = {
+         id:player.id};
+         console.log(requestBody)
     const response = await fetch(`http://${ipv4}:8000/characters/levelUP`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
 
-      body: JSON.stringify(player.id),
+      body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {

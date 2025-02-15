@@ -1,21 +1,11 @@
 {
   "items":
-[
-  { "name": "Potion of Healing", "weight": 0.5, "quantity": 2, "cost": 50, "description": "heal yourself or friends", "category": "Potions" },
-  { "name": "Rope", "weight": 5, "quantity": 1, "cost": 1, "description": "you can use it when you want", "category": "Adventuring Gear" },
-  { "name": "Torch", "weight": 0.2, "quantity": 5, "cost": 0.01, "description": "To light in dark", "category": "Other" },
-  { "name": "Backpack", "weight": 1, "quantity": 1, "cost": 2, "description": "You can store your items here", "category": "Armor" },
-  { "name": "Spellbook", "weight": 1.5, "quantity": 1, "cost": 75, "description": "Use to find spell", "category": "Scrolls" },
-  { "name": "Sword", "weight": 3, "quantity": 1, "cost": 15, "description": "usual metal sword", "category": "Weapon" },
-  { "name": "Shield", "weight": 6, "quantity": 1, "cost": 20, "description": "Something", "category": "Armor" },
-  { "name": "Helmet", "weight": 2, "quantity": 1, "cost": 10, "description": "Something", "category": "Armor" },
-  { "name": "Armor", "weight": 15, "quantity": 1, "cost": 50, "description": "Something", "category": "Armor" },
-  { "name": "Boots", "weight": 1, "quantity": 1, "cost": 5, "description": "Something", "category": "Armor" },
-  { "name": "Gloves", "weight": 0.5, "quantity": 1, "cost": 2, "description": "Something", "category": "Armor" },
-  { "name": "Ring", "weight": 0.1, "quantity": 1, "cost": 25, "description": "Something", "category": "Magic Items" },
-  { "name": "Amulet", "weight": 0.2, "quantity": 1, "cost": 30, "description": "Something", "category": "Magic Items" },
-  { "name": "Arrow", "weight": 0.1, "quantity": 10, "cost": 1, "description": "A sharp arrow", "category": "Ammunition" },
-  { "name": "Tools", "weight": 0.1, "quantity": 10, "cost": 1, "description": "A sharp arrow", "category": "Tools" }
-],
+  [
+    { "name": "Sword of Flames", "weight": 4, "quantity": 1, "cost": 100, "description": "A blazing sword that burns enemies", "category": "Weapon" },
+    { "name": "Aegis Shield", "weight": 7, "quantity": 1, "cost": 80, "description": "A shield that deflects magic attacks", "category": "Shield" },
+    { "name": "Dragon Scale Armor", "weight": 12, "quantity": 1, "cost": 150, "description": "Light but strong armor made from dragon scales", "category": "Armor" },
+    { "name": "Ring of Invisibility", "weight": 0.1, "quantity": 1, "cost": 200, "description": "Grants temporary invisibility to the wearer", "category": "Ring" },
+    { "name": "Amulet of Protection", "weight": 0.2, "quantity": 1, "cost": 120, "description": "Boosts the wearer's defense against curses", "category": "Amulet" }
+  ],
   "gold": 100
 }

@@ -36,7 +36,7 @@ const CharacterDetail: React.FC = ({ route,navigation }) => {
           style={[styles.pickerChooseChar, { width: 200 * scaleFactor }]}
           onValueChange={(itemValue) => {
             setSelectedScreen(itemValue);
-            navigation.navigate(itemValue,{ characterData : character });
+            navigation.navigate(itemValue,{ characterData : characterData });
           }}
         >
           <Picker.Item label={t('Main Scene')} value="Character1" />
@@ -46,19 +46,28 @@ const CharacterDetail: React.FC = ({ route,navigation }) => {
       </View>
 
 
-      <View style={{ padding: 20 }}>
-        <Text style={[styles.detailText, { color: theme.fontColor, fontSize: fontSize * 1.2 }]}>
-          {t('Species')}: {characterData?.playerSpecies?.[0]?.species.name || t('Unknown')}
-        </Text>
 
-        <Text style={[styles.detailText, { color: theme.fontColor, fontSize: fontSize * 1.2 }]}>
-          {t('Class')}: {characterData?.playerClasses?.[0]?.playerClass?.name || t('Unknown')}
-        </Text>
+<View style={styles.characterDetailsContainer}>
+  <View style={styles.leftDetailsContainer}>
+    <Text style={[styles.detailText, { color: theme.fontColor, fontSize: fontSize * 1.2 }]}>
+      {t('Species')}: {characterData?.playerSpecies?.[0]?.species.name || t('Unknown')}
+    </Text>
 
-        <Text style={[styles.detailText, { color: theme.fontColor, fontSize: fontSize }]}>
-          {t('Description')}: {characterData?.description?.toString() || t('No description available')}
-        </Text>
-      </View>
+    <Text style={[styles.detailText, { color: theme.fontColor, fontSize: fontSize * 1.2 }]}>
+      {t('Class')}: {characterData?.playerClasses?.[0]?.playerClass?.name || t('Unknown')}
+    </Text>
+
+    <Text style={[styles.detailText, { color: theme.fontColor, fontSize: fontSize }]}>
+      {t('Description')}: {characterData?.description?.toString() || t('No description available')}
+    </Text>
+  </View>
+
+  <View style={styles.rightDetailsContainer}>
+     <Image source={{uri: characterData?.image}} style={[styles.avatarDetails, { width: 100 * scaleFactor, height: 100 * scaleFactor }]} />
+     <Text style={[styles.playerNameDetails, { color: theme.fontColor, fontSize: fontSize }]}>{characterData?.name || t('Unknown')}</Text>
+  </View>
+</View>
+
 
       <View style={[styles.GoBack, { height: 40 * scaleFactor, width: 90 * scaleFactor }]}>
         <TouchableOpacity style={styles.button} onPress={handleGoBack}>

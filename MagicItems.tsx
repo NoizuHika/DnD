@@ -206,11 +206,9 @@ const MagicItems: React.FC = ({ navigation }) => {
                 <Text style={[styles.itemDescriptionAttune, { fontSize: fontSize }]}>{selectedItem.attunement}</Text>
                 <Text style={[styles.itemDescription, { fontSize: fontSize }]}>{selectedItem.description}</Text>
                 <View style={styles.modalButtons}>
-                {user.id === magicItem.ownerID && (
                   <TouchableOpacity onPress={() => setIsEditing(true)} style={[styles.editButton, { padding: 10 * scaleFactor }]}>
                     <Text style={[styles.editButtonText, { fontSize: fontSize }]}>{t('Edit')}</Text>
                   </TouchableOpacity>
-                )}
                   <TouchableOpacity onPress={closeItemModal} style={[styles.closeButtonItem, { padding: 10 * scaleFactor }]}>
                     <Text style={[styles.closeButtonText, { fontSize: fontSize }]}>{t('Close')}</Text>
                   </TouchableOpacity>
