@@ -25,23 +25,6 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   const [selectedNpcs, setSelectedNpcs] = useState([]);
 
 
-  const handleSelectPlayer = (player) => {
-      console.log(player.id);
-      if (selectedPlayers.includes(player.id)) {
-        setSelectedPlayers(selectedPlayers.filter(id => id !== player.id));
-      } else {
-        setSelectedPlayers([...selectedPlayers, player.id]);
-      }
-    };
-  const removePlayer = (index) => {
-     setPlayers(players.filter((_, i) => i !== index));
-    };
-
-  const presetNPCs = [
-    { id: 'npc1', name: 'Mysterious Stranger', armorClass: 14, level: 3, initiative: 0, image: null },
-    { id: 'npc2', name: 'Village Elder', armorClass: 12, level: 2, initiative: 0, image: null },
-  ];
-
   const handleSelectNPC = (npc) => {
     if (selectedNpcs.includes(npc.id)) {
       setSelectedNpcs(selectedNpcs.filter(id => id !== npc.id));
@@ -61,14 +44,6 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   const removePlayer = (index) => {
      setPlayers(players.filter((_, i) => i !== index));
     };
-
-  const addNPCsToEncounter = () => {
-    const newNPCs = presetNPCs.filter(npc => selectedNpcs.includes(npc.id));
-    setNpcs([...npcs, ...newNPCs]);
-    setSelectedNpcs([]);
-    setVisibleAddNPC(false);
-  };
-
   const removeNpcFromEncounter = (npc) => {
       removeNpc();
     setNpcs(prevNpcs => prevNpcs.filter(item => item.id !== npc.id));
@@ -110,13 +85,13 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   const addPlayersToEncounter = async () => {
       try {
           const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/addPlayers`, {
-                      method: 'POST',
-                      headers: {
-                          'Content-Type': 'application/json',
-                          'accept': 'application/json'
-                      },
-                  body: JSON.stringify(selectedPlayers)
-                  });
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'accept': 'application/json'
+                  },
+              body: JSON.stringify(selectedPlayers)
+              });
 
 
           if (!response.ok) {
@@ -164,6 +139,30 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
         }
     };
 
+    const addNpcsToEncounter = async () => {
+        try {
+            const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/addNpcs`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'accept': 'application/json'
+                },
+            body: JSON.stringify(selectedNpcs)
+            });
+
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch data');
+            }
+            const data= await response.json();
+
+                  console.log('Player added to encounter :', data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+  setSelectedNpcs([]);
+  setVisibleAdd(false);
+  };
 
   const handleGoBack = () => {
     navigation.goBack();

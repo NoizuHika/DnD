@@ -19,7 +19,7 @@ import { UserProvider } from './UserData';
 import { ThemeProvider } from './theme/ThemeContext';
 import { AuthProvider } from './AuthContext';
 import { SettingsProvider } from './SettingsContext';
-
+import { LogBox } from 'react-native';
 
 import HomeScreen from './HomeScreen';
 import LogInScreen from './LogInScreen';
@@ -75,6 +75,8 @@ import SetupHome from './SetupHome';
 import CreatorNPC from './CreatorNPC';
 
 const Stack = createStackNavigator();
+
+LogBox.ignoreAllLogs(true);
 
 const App = () => {
   return (

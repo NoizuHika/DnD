@@ -323,6 +323,13 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
   },
+  modalContentMonCreA: {
+    width: '80%',
+    height: '80%',
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+  },
   modalTitleMonCre: {
     fontSize: 18,
     marginBottom: 10,
@@ -376,6 +383,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 30,
     marginHorizontal: 20,
+    marginTop: 20,
   },
   modalCloseButton: {
     marginTop: 20,

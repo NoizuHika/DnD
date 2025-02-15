@@ -27,10 +27,19 @@ const PlayerSessions: React.FC = () => {
     const [characters, setCharacters] = useState([]);
     const [selectedPlayers, setSelectedPlayers] = useState([]);
     const [playerModalVisible, setPlayerModalVisible] = useState(false);
+    const [shouldUpdate, setShouldUpdate] = useState(false);
 
     useEffect(() => {
-         fetchData();
+        fetchData();
     }, []);
+
+    useEffect(() => {
+        if (shouldUpdate) {
+            fetchData();
+            setShouldUpdate(false);
+        }
+    }, [shouldUpdate]);
+
     const fetchData = async () => {
         try {
             console.log('Token:', token.toString());
@@ -95,6 +104,9 @@ const PlayerSessions: React.FC = () => {
              setResult(data.result)
 
 
+            await fetchData();
+
+
             const charactersResponse = await fetch(`http://${ipv4}:8000/user/characters`, {
                 method: 'POST',
                 headers: {
@@ -120,14 +132,14 @@ const PlayerSessions: React.FC = () => {
 
     };
 
-    const addSession = () => {
-        joinSession();
+    const addSession = async () => {
+        await joinSession();
         if (code.trim() === '') return;
-
         setResult([...result]);
         setModalVisible(false);
         setCode('');
         setSelectedPlayers([]);
+        setShouldUpdate(true);
     };
 
     const handleSelectPlayer = (player) => {
@@ -150,7 +162,7 @@ const PlayerSessions: React.FC = () => {
 
                   <FlatList
                     data={result}
-                    keyExtractor={(item) => item}
+                    keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             style={[styles.inputCampNote, { padding: 10 * scaleFactor, marginVertical: 5 * scaleFactor, borderColor: theme.borderColor, borderWidth: 2 }]}
@@ -178,7 +190,6 @@ const PlayerSessions: React.FC = () => {
                     <Text style={[styles.modalTitleMonCre, { fontSize: fontSize }]}>{t('Enter Code')}</Text>
                     <TextInput
                         style={[styles.modalInputEncounter, { fontSize: fontSize }]}
-
                         value={code}
                         onChangeText={setCode}
                         placeholder={t('Enter Code')}
@@ -215,7 +226,7 @@ const PlayerSessions: React.FC = () => {
 
             <Modal transparent={true} visible={playerModalVisible} animationType="slide">
                 <View style={styles.modalContainerMonCre}>
-                    <View style={styles.modalContentMonCre}>
+                    <View style={styles.modalContentMonCreA}>
                         <Text style={[styles.modalTitleMonCre, { fontSize: fontSize }]}>{t('Select Player')}</Text>
 
                         <FlatList
