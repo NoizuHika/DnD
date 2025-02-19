@@ -18,9 +18,9 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
   const [visibleAddNPC, setVisibleAddNPC] = useState(false);
   const { encounter,campaign } = route.params || {};
   const [usedEncounter, setUsedEncounter] = useState(encounter || {});
-  const [players,setPlayers] = useState(encounter.players || {});
-  const [monsters,setMonsters] = useState(encounter.entities || {});
-  const [npcs, setNpcs] = useState(encounter.npcs ||{});
+  const [players,setPlayers] = useState(encounter?.players || {});
+  const [monsters,setMonsters] = useState(encounter?.entities || {});
+  const [npcs, setNpcs] = useState(encounter?.npcs ||{});
   const [selectedPlayers, setSelectedPlayers] = useState([]);
   const [selectedNpcs, setSelectedNpcs] = useState([]);
 
@@ -55,8 +55,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
           id:player.id
           };
 
-
-      console.log(value)
+      console.log(item)
       try {
           const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}/removePlayer`, {
                   method: 'Delete',
@@ -64,10 +63,8 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
                       'Content-Type': 'application/json',
                       'accept': 'application/json'
                   },
-              body: JSON.stringify({id:value})
+              body: JSON.stringify(item)
               });
-
-
 
           if (!response.ok) {
               throw new Error('Failed to fetch data');
@@ -78,6 +75,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
       } catch (error) {
           console.error('Error fetching data:', error);
       }
+  reFresh();
   };
 
 
@@ -105,7 +103,7 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
       }
     setSelectedPlayers([]);
     setVisibleAdd(false);
-
+    reFresh();
   };
     const removeNpc = async (npc) => {
         const item = {
@@ -233,7 +231,29 @@ const EncounterRun: React.FC = ({ route, navigation }) => {
           console.error('Error fetching data:', error);
       }
   };
+const reFresh = async () => {
+        console.log("Refresh")
+      try {
+          const response = await fetch(`http://${ipv4}:8000/encounters/${encounter.id}`, {
+                      method: 'GET',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'accept': 'application/json'
+                      }
+                  });
 
+
+          if (!response.ok) {
+              throw new Error('Failed to fetch data');
+          }
+
+          const data= await response.json();
+          console.log(data)
+               setPlayers(data.players);
+      } catch (error) {
+          console.error('Error fetching data:', error);
+      }
+  };
 
 
   return (

@@ -397,7 +397,7 @@ const species= async () => {
     const race = selectedRace;
     const playerClass = selectedPosition;
     const description = `${selectedGender}`;
-    navigation.navigate('CreateCharacter2', { selectedClassInfo, nickname,description,race,playerClass, image });
+    navigation.navigate('CreateCharacter3', { selectedClassInfo, nickname,description,race,playerClass, image });
   };
 
   return (

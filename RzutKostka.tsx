@@ -110,9 +110,9 @@ useEffect(() => {
         resultsSummary.push(`roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
 
         if (player) {
-          forFetchResult.push(`${player.name} roll ${diceTypes[index].sides}: ${diceResults.join(', ')}`);
+            forFetchResult += `${player.name} roll ${diceTypes[index].sides}: ${diceResults.join(', ')}\n`;
         }
-
+        fetchData(forFetchResult)
         Animated.timing(rotateValues[index], {
           toValue: 1,
           duration: 1000,
@@ -123,16 +123,10 @@ useEffect(() => {
         });
       });
     }
-
-
-
-   if (session && Object.keys(session).length > 0 && Array.isArray(forFetchResult) && forFetchResult.length > 0) {
-     fetchData(forFetchResult);
-
      if (navigation && navigation.canGoBack()) {
        navigation.goBack();
 
-     }
+
    }
 
 

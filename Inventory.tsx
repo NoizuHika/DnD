@@ -31,7 +31,6 @@ const Inventory: React.FC = ({ route,navigation }) => {
   const [equippedItems, setEquippedItems] = useState({});
   const [isEquipModalVisible, setEquipModalVisible] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
-  const { ipv4 } = useContext(UserData);
   const equipSlots = [
     { key: "Weapon", label: t('Right Hand') },
     { key: 'Shield', label: t('Left Hand') },

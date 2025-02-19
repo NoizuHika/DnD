@@ -130,7 +130,7 @@ const levelUp = async (player) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(player.id),
+      body: JSON.stringify({character_id:player.id}),
     });
 
     if (!response.ok) {
@@ -359,13 +359,13 @@ const updateNote = async () => {
   try {
          const requestBody = {
             token: token,
-         id: sessions[activeSessionIndex]?.notes[editingNoteIndex].id,
+         id: campaign.sessions[activeSessionIndex]?.notes[editingNoteIndex]?.id,
          itemNoteTitle: newNoteTitle,
          itemNoteDescription: newNoteContent,
          type:"c"
              };
          console.log(requestBody);
-console.log(sessions[activeSessionIndex]?.notes[editingNoteIndex].id);
+console.log(campaign.sessions[activeSessionIndex]?.notes[editingNoteIndex]?.id);
     const response = await fetch(`http://${ipv4}:8000/notes/update`, {
       method: 'POST',
       headers: {
@@ -381,7 +381,7 @@ console.log(sessions[activeSessionIndex]?.notes[editingNoteIndex].id);
 
     const result = await response.json();
     console.log(result)
-    console.log('New session:', result);
+    console.log('New note:', result);
 
   } catch (error) {
     console.error('Error fetching data:', error.message);
@@ -501,9 +501,8 @@ const deleteNote = async () => {
   const handleEditNote = (index) => {
     handleCloseNote();
     setEditingNoteIndex(index);
-    setNewNoteTitle(notes[index].title);
-    setNewNoteContent(notes[index].description);
-    setNewNoteImage(notes[index].image.uri || null);
+    setNewNoteTitle(campaign.sessions[activeSessionIndex]?.notes[index]?.title);
+    setNewNoteContent(campaign.sessions[activeSessionIndex]?.notes[index]?.description);
     setAddingNewNote(!addingNewNote);
     setModalVisible(true);
   };
@@ -511,11 +510,6 @@ const deleteNote = async () => {
   const handleSaveEditNote = () => {
     if (editingNoteIndex !== null) {
       const updatedNotes = [...notes];
-      updatedNotes[editingNoteIndex] = {
-        title: newNoteTitle,
-        description: newNoteContent,
-        image: newNoteImage ? { uri: newNoteImage } : require('./assets/Human-W-Mage.jpg')
-      };
       updateNote();
       setNotes(updatedNotes);
       setEditingNoteIndex(null);
@@ -852,9 +846,6 @@ const handleClosePlayerAdd = () => {
           </TouchableOpacity>
           <TouchableOpacity style={styles.playerActionButton} onPress={() => handlePlayerAction('levelUp')}>
             <Text style={[styles.playerActionText, { fontSize: fontSize }]}>{t('Level Up')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.playerActionButton} onPress={() => handlePlayerAction('manageInventory')}>
-            <Text style={[styles.playerActionText, { fontSize: fontSize }]}>{t('Manage Inventory')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.playerActionButton} onPress={() => handlePlayerAction('changeHP')}>
             <Text style={[styles.playerActionText, { fontSize: fontSize }]}>{t('Change HP')}</Text>

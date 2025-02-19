@@ -72,9 +72,9 @@ const setAutofill = async () => {
 
   try {
      const requestBody = {
-         name:monster.name,
-	        type:monster.monsterType,
-	    cr:monster.challengeRating};
+         name:monster.name || "Unknown",
+	        type:monster.monsterType || "Beast",
+	    cr:monster.challengeRating || 1};
          console.log(requestBody)
     const response = await fetch(`http://${ipv4}:8000/bestiaries/generate`, {
       method: 'POST',
@@ -91,58 +91,62 @@ const setAutofill = async () => {
 
     const result = await response.json();
     console.log(result)
-	setMonster({
+	const monsterData = {
         name: result.name,
-        challengeRating: result.challengeRating,
-        armorClass: result.armorClass,
-        size: result.size,
-        monsterType: result.type,
-        hitPoints: result.averageHitPoints,
-        alignment:result.alignment,
-        saveProfs: result.saveProfs ,
-        strength: result.strScore,
-        dexterity: result.dexScore,
-        speed: result.speed,
-        constitution: result.conScore,
-        intelligence: result.intScore,
-        wisdom: result.wisScore,
-        charisma: result.chaScore,
-        bonus_action_description: [result.bonusActionDescription],
-        action_description: [result.actionDescription],
-        language: [result.language],
-        description: [result.description],
-      });
-
+        challengeRating: result.challengeRating.toString(),
+        armorClass: result.armorClass.toString(),
+        size: result.size.toString(),
+        monsterType: result.type.toString(),
+        hitPoints: result.averageHitPoints.toString(),
+        alignment:result.alignment.toString(),
+        saveProfs: result.saveProfs?.toString(),
+        strength: result.strScore.toString(),
+        dexterity: result.dexScore.toString(),
+        constitution: result.conScore.toString(),
+        intelligence: result.intScore.toString(),
+        wisdom: result.wisScore.toString(),
+        charisma: result.chaScore.toString(),
+        bonus_action_description: result.bonusActionDescription,
+        action_description: result.actionDescription,
+        language: result.language,
+        description: Array[result.description],
+      };
+  setMonster(monsterData);
+setMonster((prev) => ({ ...prev, speed: result.speed.toString() }));
   } catch (error) {
     console.error('Error fetching data:', error.message);
   }
 
 };
 const addNewNpc = async () => {
-
+        console.log("startadd")
   try {
      const requestBody = {
        token: token,
-       name: monster.name,
-       challengeRating: `${monster.challengeRating}`,
-       armorClass: `${monster.armorClass}`,
-       hitPoints: monster.hitPoints,
-       passivePerception: `${monster.perception || "0"}`,
-       strScore: parseInt(monster.strength) || 0,
-       dexScore: parseInt(monster.dexterity) || 0,
-       intScore: parseInt(monster.intelligence) || 0,
-       wisScore: parseInt(monster.wisdom) || 0,
-       chaScore: parseInt(monster.charisma) || 0,
-       conScore: parseInt(monster.constitution) || 0,
-       languageNoteOverride: Array.isArray(monster.language) ? monster.language : [],
-       actionDescription: monster.action_description?.join(", ") || null,
-       bonusActionDescription: monster.bonus_action_description?.join(", ") || null,
-       alignment: monster.alignment || "Neutral",
-       description: monster.description.join(", ") || null,
-       savingThrowProficiencies: Array.isArray(monster.saveProfs) ? monster.saveProfs : [],
-       monsterType: monster.monsterType || "Unknown",
-       size: monster.size || "Medium",
-       speed: monster.speed || "0"
+                   name: monster.name,
+                   challengeRating: `${monster.challengeRating}`,
+                   armorClass: `${monster.armorClass}`,
+                   hitPoints: `${monster.hitPoints}`,
+                   passivePerception: `${monster.perception || "0"}`,
+                   strScore: parseInt(monster.strength) || 0,
+                   dexScore: parseInt(monster.dexterity) || 0,
+                   intScore: parseInt(monster.intelligence) || 0,
+                   wisScore: parseInt(monster.wisdom) || 0,
+                   chaScore: parseInt(monster.charisma) || 0,
+                   conScore: parseInt(monster.constitution) || 0,
+                   languageNoteOverride: Array.isArray(monster.language) ? monster.language : [],
+                   actionDescription: Array.isArray(monster.action_description)
+                       ? monster.action_description.join("\n")
+                       : monster.action_description || null,
+                   bonusActionDescription: Array.isArray(monster.bonus_action_description)
+                       ? monster.bonus_action_description.join("\n")
+                       : monster.bonus_action_description || null,
+                   alignment: monster?.alignment || "True Neutral",
+                   description: monster?.description ?? null,
+                   savingThrowProficiencies: Array.isArray(monster.saveProfs) ? monster.saveProfs : [],
+                   monsterType: monster.monsterType || "Unknown",
+                   size: monster.size || "Medium",
+                   speed: monster.speed ? String(monster.speed) : "0"
      };
     console.log(requestBody)
     const response = await fetch(`http://${ipv4}:8000/npcs/add`, {
@@ -267,7 +271,7 @@ const addNewNpc = async () => {
             </TouchableOpacity>
 
             <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Speed')}</Text>
-            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Speed')} value={monster.speed} onChangeText={(text) => handleInputChange('speed', text)} keyboardType="numeric" />
+            <TextInput style={[styles.inputMonCreStat, { height: 50 * scaleFactor, fontSize: fontSize }]} placeholder={t('Speed')} value={monster.speed} onChangeText={(text) => handleInputChange('speed', text)}  />
 
           </View>
             <View style={styles.column}>
@@ -280,9 +284,9 @@ const addNewNpc = async () => {
 
             <Text style={[styles.labelItemCre, { color: theme.textColor, fontSize: fontSize }]}>{t('Alignment')}</Text>
             <Picker selectedValue={monster.alignment} onValueChange={(value) => handleInputChange('alignment', value)} style={[styles.pickerMagicItemCre, { width: 125 * scaleFactor, transform: [{ scale: 1 * scaleFactor }] }]}>
-              <Picker.Item label={t('Good')} value="Good" />
-              <Picker.Item label={t('Evil')} value="Evil" />
-              <Picker.Item label={t('Neutral')} value="Neutral" />
+              <Picker.Item label={t('Good')} value="neutral good" />
+              <Picker.Item label={t('Evil')} value="neutral evil" />
+              <Picker.Item label={t('Neutral')} value="true neutral" />
             </Picker>
 
             <Text style={[styles.labelItemCreC, { color: theme.textColor, fontSize: fontSize }]}>{t('Save Profs.')}</Text>
@@ -390,7 +394,7 @@ const addNewNpc = async () => {
               <Text style={[styles.labelItemCreA, { color: theme.textColor, fontSize: fontSize }]}>{t('Add language')}</Text>
             </TouchableOpacity>
           </View>
-            {monster.language.map((item, index) => (
+            {monster.language?.map((item, index) => (
               <View key={index} style={styles.itemContainer}>
                 <Text style={styles.itemText}>{item}</Text>
                 <TouchableOpacity onPress={() => removeItem('language', index)}>

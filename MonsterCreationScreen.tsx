@@ -125,33 +125,35 @@ const autofillBeast = async () => {
     }
 
     const result = await response.json();
+    console.log("Result",result)
 	       setMonster((prevMonster) => ({
               ...prevMonster,
               name: result.name || prevMonster.name,
-              challengeRating: result.challengeRating || prevMonster.challengeRating,
-              armorClass: result.armorClass || prevMonster.armorClass,
-              size: result.size || prevMonster.size,
-              monsterType: result.type || prevMonster.monsterType,
-              hitPoints: result.hitPoints || prevMonster.hitPoints,
-              alignment: result.alignment || prevMonster.alignment,
-              strScore: result.strScore || prevMonster.strScore,
-              dexScore: result.dexScore || prevMonster.dexScore,
-              conScore: result.conScore || prevMonster.conScore,
-              intScore: result.intScore || prevMonster.intScore,
-              wisScore: result.wisScore || prevMonster.wisScore,
-              chaScore: result.chaScore || prevMonster.chaScore,
+              challengeRating: result.challengeRating.toString() || prevMonster.challengeRating,
+              armorClass: result.armorClass.toString() || prevMonster.armorClass,
+              size: result.size.toString() || prevMonster.size,
+              monsterType: result.type.toString() || prevMonster.monsterType,
+
+              alignment: result.alignment?.toString() || prevMonster.alignment,
+              strScore: result.strScore.toString() || prevMonster.strScore,
+              dexScore: result.dexScore.toString() || prevMonster.dexScore,
+              conScore: result.conScore.toString() || prevMonster.conScore,
+              intScore: result.intScore.toString() || prevMonster.intScore,
+              wisScore: result.wisScore.toString() || prevMonster.wisScore,
+              chaScore: result.chaScore.toString() || prevMonster.chaScore,
               movements: Array.isArray(result.movements) ? result.movements : result.movements ? [result.movements] : [],
               skills: Array.isArray(result.skills) ? result.skills : result.skills ? [result.skills] : [],
               senses: Array.isArray(result.senses) ? result.senses : result.senses ? [result.senses] : [],
               languages: Array.isArray(result.languages) ? result.languages : result.languages ? [result.languages] : [],
             }));
-
+            setAverageHitPoints(result.averageHitPoints.toString());
+            console.log(result.averageHitPoints.toString());
             setMonsterDescriptions((prevDescriptions) => ({
               ...prevDescriptions,
-              monsterDescription: result.monsterDescription || prevDescriptions.monsterDescription,
-              actionsDescription: result.actionsDescription || prevDescriptions.actionsDescription,
-              bonusActionsDescription: result.bonusActionsDescription || prevDescriptions.bonusActionsDescription,
-              legendaryActionDescription: result.legendaryActionDescription || prevDescriptions.legendaryActionDescription,
+              monsterDescription: result.description?.toString() || prevDescriptions.monsterDescription,
+              actionsDescription: result.actionDescription?.toString() || prevDescriptions.actionsDescription,
+              bonusActionsDescription: result.bonusActionDescription?.toString() || prevDescriptions.bonusActionsDescription,
+              legendaryActionsDescription: result.legendaryActionDescription?.toString() || prevDescriptions.legendaryActionDescription,
             }));
 
   } catch (error) {
@@ -160,32 +162,41 @@ const autofillBeast = async () => {
 
 };
 const addNewBeast = async () => {
-
+    console.log(averageHitPoints);
 
      try {
-         const requestBody = {
-           token: token,
-           name: monster.name,
-           challengeRating: String(monster.challengeRating),
-           armorClass: String(monster.armorClass),
-           hitPoints: monster.hitPoints,
-           passivePerception: monster.senses ? monster.senses.join(", ") : "",
-           strScore: parseInt(monster.strScore) || 0,
-           dexScore: parseInt(monster.dexScore) || 0,
-           intScore: parseInt(monster.intScore) || 0,
-           wisScore: parseInt(monster.wisScore) || 0,
-           chaScore: parseInt(monster.chaScore) || 0,
-           conScore: parseInt(monster.conScore) || 0,
-           legendaryActionDescription: monsterDescriptions.legendaryActionDescription || null,
-           actionDescription: monsterDescriptions.actionsDescription || null,
-           bonusActionDescription: monsterDescriptions.bonusActionsDescription || null,
-           monsterDescription: monsterDescriptions.description || null,
-           alignment: monster.alignment,
-           monsterType: monster.monsterType,
-           size: monster.size,
-           speed: monster.movements ? monster.movements.join(", ") : "",
-           skills: monster.skills ? monster.skills.join(", ") : ""
-         };
+        const requestBody = {
+          token: token,
+          name: monster.name,
+          challengeRating: String(monster.challengeRating),
+          armorClass: String(monster.armorClass),
+          hitPoints: averageHitPoints,
+          passivePerception: monster.senses ? monster.senses.join(", ") : "",
+          strScore: parseInt(monster.strScore) || 0,
+          dexScore: parseInt(monster.dexScore) || 0,
+          intScore: parseInt(monster.intScore) || 0,
+          wisScore: parseInt(monster.wisScore) || 0,
+          chaScore: parseInt(monster.chaScore) || 0,
+          conScore: parseInt(monster.conScore) || 0,
+          languageNoteOverride: monster.languageNoteOverride || [],
+          lairDescription: monsterDescriptions.lairDescription || null,
+          legendaryActionDescription: monsterDescriptions.legendaryActionDescription || null,
+          mythicActionDescription: monsterDescriptions.mythicActionDescription || null,
+          actionDescription: monsterDescriptions.actionsDescription || null,
+          bonusActionDescription: monsterDescriptions.bonusActionsDescription || null,
+          monsterDescription: monsterDescriptions.description || null,
+          alignment: monster.alignment,
+          savingThrowProficiencies: monster.savingThrowProficiencies || [],
+          damageAdjustments: monster.damageAdjustments || [],
+          conditionImmunities: monster.conditionImmunities || [],
+          environments: monster.environments || [],
+          monsterType: monster.monsterType,
+          monsterSubType: monster.monsterSubType || [],
+          size: monster.size,
+          speed: monster.movements ? monster.movements.join(", ") : "10",
+          skills: monster.skills ? monster.skills.join(", ") : ""
+        };
+
 
          console.log(requestBody)
     const response = await fetch(`http://${ipv4}:8000/bestiaries/add`, {
